@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="CasperCBC.Lib.SsrExport.html#"><span class="id" title="library">Lib.SsrExport</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set Implicit Arguments</span>.<br/>
+<span class="id" title="keyword">Unset</span> <span class="id" title="keyword">Strict</span> <span class="id" title="keyword">Implicit</span>.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">Prenex</span> <span class="id" title="var">Implicits</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">invs</span> <span class="id" title="var">h</span> := <span class="id" title="tactic">inversion</span> <span class="id" title="var">h</span>; <span class="id" title="tactic">subst</span> =&gt; {<span class="id" title="var">h</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="Traces"><span class="id" title="section">Traces</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> {<span class="id" title="var">A</span> <span class="id" title="var">B</span> : <span class="id" title="keyword">Type</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">CoInductive</span> <a name="trace"><span class="id" title="inductive">trace</span></a> : <span class="id" title="keyword">Type</span>  :=<br/>
+| <a name="Tnil"><span class="id" title="constructor">Tnil</span></a> : <a class="idref" href="CasperCBC.Lib.Traces.html#Traces.A"><span class="id" title="variable">A</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a><br/>
+| <a name="Tcons"><span class="id" title="constructor">Tcons</span></a> : <a class="idref" href="CasperCBC.Lib.Traces.html#Traces.A"><span class="id" title="variable">A</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#Traces.B"><span class="id" title="variable">B</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a name="trace_decompose"><span class="id" title="definition">trace_decompose</span></a> (<span class="id" title="var">tr</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a>): <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a> :=<br/>
+<span class="id" title="keyword">match</span> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <span class="id" title="keyword">with</span><br/>
+| <a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <span class="id" title="var">a</span> =&gt; <a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <span class="id" title="var">a</span><br/>
+| <a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr'</span> =&gt; <a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr'</span><br/>
+<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="trace_destr"><span class="id" title="lemma">trace_destr</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">tr</span>, <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#trace_decompose"><span class="id" title="definition">trace_decompose</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">case</span> =&gt; //=. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoInductive</span> <a name="bisim"><span class="id" title="inductive">bisim</span></a>: <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span> :=<br/>
+| <a name="bisim_nil"><span class="id" title="constructor">bisim_nil</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">a</span>,<br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> (<a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a>) (<a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a>)<br/>
+| <a name="bisim_cons"><span class="id" title="constructor">bisim_cons</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr</span> <span class="id" title="var">tr'</span>,<br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr'"><span class="id" title="variable">tr'</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> (<a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#b"><span class="id" title="variable">b</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a>) (<a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#b"><span class="id" title="variable">b</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr'"><span class="id" title="variable">tr'</span></a>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="bisim_refl"><span class="id" title="lemma">bisim_refl</span></a> : <span class="id" title="keyword">forall</span> <span class="id" title="var">tr</span>, <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="keyword">cofix</span> <span class="id" title="var">CIH</span>.<br/>
+<span class="id" title="tactic">case</span> =&gt; [<span class="id" title="var">a</span>|<span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr</span>]; <span class="id" title="tactic">first</span> <span class="id" title="tactic">exact</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_nil"><span class="id" title="constructor">bisim_nil</span></a>.<br/>
+<span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_cons"><span class="id" title="constructor">bisim_cons</span></a>.<br/>
+<span class="id" title="tactic">exact</span>: <span class="id" title="var">CIH</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="bisim_sym"><span class="id" title="lemma">bisim_sym</span></a> : <span class="id" title="keyword">forall</span> <span class="id" title="var">tr1</span> <span class="id" title="var">tr2</span>, <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr2"><span class="id" title="variable">tr2</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr2"><span class="id" title="variable">tr2</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="keyword">cofix</span> <span class="id" title="var">CIH</span>.<br/>
+<span class="id" title="tactic">case</span> =&gt; [<span class="id" title="var">a</span>|<span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr1</span>] <span class="id" title="var">tr2</span> <span class="id" title="var">Hbs</span>; <span class="id" title="var">invs</span> <span class="id" title="var">Hbs</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">exact</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_nil"><span class="id" title="constructor">bisim_nil</span></a>.<br/>
+<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_cons"><span class="id" title="constructor">bisim_cons</span></a>; <span class="id" title="tactic">apply</span> (<span class="id" title="var">CIH</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">H3</span>).<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="bisim_trans"><span class="id" title="lemma">bisim_trans</span></a> : <span class="id" title="keyword">forall</span> <span class="id" title="var">tr1</span> <span class="id" title="var">tr2</span> <span class="id" title="var">tr3</span>,<br/>
+&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr2"><span class="id" title="variable">tr2</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr2"><span class="id" title="variable">tr2</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr3"><span class="id" title="variable">tr3</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr3"><span class="id" title="variable">tr3</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="keyword">cofix</span> <span class="id" title="var">CIH</span>.<br/>
+<span class="id" title="tactic">case</span> =&gt; [<span class="id" title="var">a</span>|<span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr1</span>] <span class="id" title="var">tr2</span> <span class="id" title="var">tr0</span> <span class="id" title="var">Hbs</span> <span class="id" title="var">Hbs'</span>; <span class="id" title="var">invs</span> <span class="id" title="var">Hbs</span>; <span class="id" title="var">invs</span> <span class="id" title="var">Hbs'</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">exact</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_nil"><span class="id" title="constructor">bisim_nil</span></a>.<br/>
+<span class="id" title="tactic">apply</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_cons"><span class="id" title="constructor">bisim_cons</span></a>.<br/>
+<span class="id" title="tactic">exact</span>: <span class="id" title="var">CIH</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">H3</span> <span class="id" title="var">H4</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <a name="trace_append"><span class="id" title="definition">trace_append</span></a> (<span class="id" title="var">tr</span> <span class="id" title="var">tr'</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a>): <a class="idref" href="CasperCBC.Lib.Traces.html#trace"><span class="id" title="inductive">trace</span></a> :=<br/>
+<span class="id" title="keyword">match</span> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <span class="id" title="keyword">with</span><br/>
+| <a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <span class="id" title="var">a</span> =&gt; <a class="idref" href="CasperCBC.Lib.Traces.html#tr'"><span class="id" title="variable">tr'</span></a><br/>
+| <a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr0</span> =&gt; <a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <span class="id" title="var">a</span> <span class="id" title="var">b</span> (<a class="idref" href="CasperCBC.Lib.Traces.html#trace_append"><span class="id" title="definition">trace_append</span></a> <span class="id" title="var">tr0</span> <a class="idref" href="CasperCBC.Lib.Traces.html#tr'"><span class="id" title="variable">tr'</span></a>)<br/>
+<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Local</span> <span class="id" title="keyword">Infix</span> "+++" := <a class="idref" href="CasperCBC.Lib.Traces.html#trace_append"><span class="id" title="definition">trace_append</span></a> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 60, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="trace_append_nil"><span class="id" title="lemma">trace_append_nil</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> <span class="id" title="var">tr</span>, <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a><a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">)</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="tactic">move</span> =&gt; <span class="id" title="var">a</span> <span class="id" title="var">tr</span>.<br/>
+<span class="id" title="tactic">rewrite</span> [<a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <span class="id" title="var">a</span> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <span class="id" title="var">tr</span>]<a class="idref" href="CasperCBC.Lib.Traces.html#trace_destr"><span class="id" title="lemma">trace_destr</span></a>.<br/>
+<span class="id" title="tactic">by</span> <span class="id" title="tactic">case</span> <span class="id" title="var">tr</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="trace_append_cons"><span class="id" title="lemma">trace_append_cons</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr</span> <span class="id" title="var">tr'</span>,<br/>
+&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#b"><span class="id" title="variable">b</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a><a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">)</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr'"><span class="id" title="variable">tr'</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#a"><span class="id" title="variable">a</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#b"><span class="id" title="variable">b</span></a> (<a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr'"><span class="id" title="variable">tr'</span></a>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="tactic">move</span> =&gt; <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr</span> <span class="id" title="var">tr'</span>.<br/>
+<span class="id" title="tactic">rewrite</span> [<a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr</span> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <span class="id" title="var">tr'</span>]<a class="idref" href="CasperCBC.Lib.Traces.html#trace_destr"><span class="id" title="lemma">trace_destr</span></a>.<br/>
+<span class="id" title="tactic">by</span> <span class="id" title="tactic">case</span> <span class="id" title="var">tr</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="trace_eq_append"><span class="id" title="lemma">trace_eq_append</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">tr1</span> <span class="id" title="var">tr2</span> <span class="id" title="var">tr3</span> <span class="id" title="var">tr4</span>, <br/>
+&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr2"><span class="id" title="variable">tr2</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr3"><span class="id" title="variable">tr3</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr4"><span class="id" title="variable">tr4</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> (<a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr3"><span class="id" title="variable">tr3</span></a>) (<a class="idref" href="CasperCBC.Lib.Traces.html#tr2"><span class="id" title="variable">tr2</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#f4e9d6e60009b5429cc5ab7614aaa8c7"><span class="id" title="notation">+++</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr4"><span class="id" title="variable">tr4</span></a>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="keyword">cofix</span> <span class="id" title="var">CIH</span>.<br/>
+<span class="id" title="tactic">case</span> =&gt; [<span class="id" title="var">a</span>|<span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr1</span>] <span class="id" title="var">tr2</span> <span class="id" title="var">tr3</span> <span class="id" title="var">tr4</span> <span class="id" title="var">Hbs1</span> <span class="id" title="var">Hbs2</span>; <span class="id" title="var">invs</span> <span class="id" title="var">Hbs1</span>.<br/>
+- <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">rewrite</span> <a class="idref" href="CasperCBC.Lib.Traces.html#trace_append_nil"><span class="id" title="lemma">trace_append_nil</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span>: <span class="id" title="var">Hbs2</span>.<br/>
+- <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">rewrite</span> <a class="idref" href="CasperCBC.Lib.Traces.html#trace_append_cons"><span class="id" title="lemma">trace_append_cons</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="CasperCBC.Lib.Traces.html#bisim_cons"><span class="id" title="constructor">bisim_cons</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span>: <span class="id" title="var">CIH</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a name="hd"><span class="id" title="definition">hd</span></a> <span class="id" title="var">tr</span> := <span class="id" title="keyword">match</span> <a class="idref" href="CasperCBC.Lib.Traces.html#tr"><span class="id" title="variable">tr</span></a> <span class="id" title="keyword">with</span> <a class="idref" href="CasperCBC.Lib.Traces.html#Tnil"><span class="id" title="constructor">Tnil</span></a> <span class="id" title="var">a</span> =&gt; <span class="id" title="var">a</span> | <a class="idref" href="CasperCBC.Lib.Traces.html#Tcons"><span class="id" title="constructor">Tcons</span></a> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">tr0</span> =&gt; <span class="id" title="var">a</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="bisim_hd"><span class="id" title="lemma">bisim_hd</span></a>: <span class="id" title="keyword">forall</span> <span class="id" title="var">tr0</span> <span class="id" title="var">tr1</span>, <a class="idref" href="CasperCBC.Lib.Traces.html#bisim"><span class="id" title="inductive">bisim</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr0"><span class="id" title="variable">tr0</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#hd"><span class="id" title="definition">hd</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr0"><span class="id" title="variable">tr0</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#hd"><span class="id" title="definition">hd</span></a> <a class="idref" href="CasperCBC.Lib.Traces.html#tr1"><span class="id" title="variable">tr1</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span> =&gt; <span class="id" title="var">tr0</span> <span class="id" title="var">tr1</span> <span class="id" title="var">h0</span>; <span class="id" title="var">invs</span> <span class="id" title="var">h0</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.Lib.Traces.html#Traces"><span class="id" title="section">Traces</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Infix</span> <a name="884a3825e256bb17d8a2d0c65f90e67d"><span class="id" title="notation">&quot;</span></a>+++" := <a class="idref" href="CasperCBC.Lib.Traces.html#trace_append"><span class="id" title="definition">trace_append</span></a> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 60, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
