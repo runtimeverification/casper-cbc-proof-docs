@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Logic.FinFun.html#"><span class="id" title="library">FinFun</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.Streams.html#"><span class="id" title="library">Streams</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Lib.Preamble</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#"><span class="id" title="library">VLSM.Common</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#"><span class="id" title="library">VLSM.Composition</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab28"></a><h1 class="section">Validating projections</h1>
+
+
+<div class="paragraph"> </div>
+
+In the sequel we fix a composite VLSM <tt>X</tt> obtained from an indexed family
+of VLSMs <tt>IM</tt> and a <tt>constraint</tt>, and an index <tt>i</tt>, corresponding to
+component <tt>IM i</tt>.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="validating_projection"><span class="id" title="section">validating_projection</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">message</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">index</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">IndEqDec</span> : <a class="idref" href="CasperCBC.Lib.Preamble.html#EqDec"><span class="id" title="class">EqDec</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#index"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i0</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">IT</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#index"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_type"><span class="id" title="class">VLSM_type</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#message"><span class="id" title="variable">message</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">IS</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#index"><span class="id" title="variable">index</span></a>, <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_sign"><span class="id" title="class">VLSM_sign</span></a> (<a class="idref" href="CasperCBC.VLSM.Validating.html#IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#i"><span class="id" title="variable">i</span></a>)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">IM</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">n</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#index"><span class="id" title="variable">index</span></a>, <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="class">VLSM</span></a> (<a class="idref" href="CasperCBC.VLSM.Validating.html#IS"><span class="id" title="variable">IS</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#n"><span class="id" title="variable">n</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">T</span> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_type"><span class="id" title="definition">composite_type</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#IT"><span class="id" title="variable">IT</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">S</span> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_sig"><span class="id" title="definition">composite_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#IS"><span class="id" title="variable">IS</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">constraint</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#label"><span class="id" title="method">label</span></a> <span class="id" title="var">_</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#T"><span class="id" title="variable">T</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> @<a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <span class="id" title="var">_</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#T"><span class="id" title="variable">T</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">X</span> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm"><span class="id" title="definition">composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#constraint"><span class="id" title="variable">constraint</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">valid_i</span> := @<a class="idref" href="CasperCBC.VLSM.Common.html#valid"><span class="id" title="method">valid</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#i"><span class="id" title="variable">i</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">projection_valid_i</span> := <a class="idref" href="CasperCBC.VLSM.Composition.html#projection_valid"><span class="id" title="definition">projection_valid</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#constraint"><span class="id" title="variable">constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#i"><span class="id" title="variable">i</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We say that the component <tt>i</tt> of X is validating received messages if
+non-<span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Composition.html#projection_valid"><span class="id" title="definition">projection_valid</span></a></span>itiy implied non-component-<span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#valid"><span class="id" title="projection">valid</span></a></span>ity.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a name="validating_projection_received_messages_prop"><span class="id" title="definition">validating_projection_received_messages_prop</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">li</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#label"><span class="id" title="method">label</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>)) (<span class="id" title="var">si</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>)) (<span class="id" title="var">mi</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.projection_valid_i"><span class="id" title="variable">projection_valid_i</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#li"><span class="id" title="variable">li</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Validating.html#si"><span class="id" title="variable">si</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#mi"><span class="id" title="variable">mi</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.valid_i"><span class="id" title="variable">valid_i</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#li"><span class="id" title="variable">li</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Validating.html#si"><span class="id" title="variable">si</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#mi"><span class="id" title="variable">mi</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We can slightly generalize the definition above to also include empty messages
+and state it in a positive manner as the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a></span>erty below,
+requiring that <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#valid"><span class="id" title="projection">valid</span></a></span>ity in the component implies <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Composition.html#projection_valid"><span class="id" title="definition">projection_valid</span></a></span>ity.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a name="validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">li</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#label"><span class="id" title="method">label</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>)) (<span class="id" title="var">siomi</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.valid_i"><span class="id" title="variable">valid_i</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#li"><span class="id" title="variable">li</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#siomi"><span class="id" title="variable">siomi</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.projection_valid_i"><span class="id" title="variable">projection_valid_i</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#li"><span class="id" title="variable">li</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#siomi"><span class="id" title="variable">siomi</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+It is easy to see that the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a></span>erty includes the
+<span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_received_messages_prop"><span class="id" title="definition">validating_projection_received_messages_prop</span></a></span>erty.
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <a name="validating_projection_messages_received"><span class="id" title="lemma">validating_projection_messages_received</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_received_messages_prop"><span class="id" title="definition">validating_projection_received_messages_prop</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a>. <span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_received_messages_prop"><span class="id" title="definition">validating_projection_received_messages_prop</span></a>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">Hvalid</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H</span> <span class="id" title="var">li</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><span class="id" title="var">si</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <span class="id" title="var">mi</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <span class="id" title="var">Hvalid</span>). <span class="id" title="tactic">clear</span> <span class="id" title="var">Hvalid</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">ps</span> [<span class="id" title="var">Hsi</span> [<span class="id" title="var">Hps</span> [<span class="id" title="var">Hpm</span> [<span class="id" title="var">Hvalid</span> <span class="id" title="var">Hctr</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">ps</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We say that component <tt>i</tt> is <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_transitions"><span class="id" title="definition">validating_transitions</span></a></span> if any <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#valid"><span class="id" title="projection">valid</span></a></span>
+transition in component <tt>i</tt> can be "lifted" to a <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#protocol_transition"><span class="id" title="definition">protocol_transition</span></a></span> in <tt>X</tt>.
+
+<div class="paragraph"> </div>
+
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a name="validating_transitions"><span class="id" title="definition">validating_transitions</span></a> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">si</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">omi</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">li</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#label"><span class="id" title="method">label</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IT"><span class="id" title="variable">IT</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.valid_i"><span class="id" title="variable">valid_i</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#li"><span class="id" title="variable">li</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Validating.html#si"><span class="id" title="variable">si</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#omi"><span class="id" title="variable">omi</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">(</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">s</span> <span class="id" title="var">s'</span> : @<a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <span class="id" title="var">_</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.T"><span class="id" title="variable">T</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">om'</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.message"><span class="id" title="variable">message</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Validating.html#si"><span class="id" title="variable">si</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#protocol_transition"><span class="id" title="definition">protocol_transition</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.X"><span class="id" title="variable">X</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#existT"><span class="id" title="constructor">existT</span></a> <span class="id" title="var">_</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#li"><span class="id" title="variable">li</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Validating.html#s"><span class="id" title="variable">s</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#omi"><span class="id" title="variable">omi</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Validating.html#s'"><span class="id" title="variable">s'</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#om'"><span class="id" title="variable">om'</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">)</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Next two results show that the (simpler) <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a></span>erty
+is equivalent with the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_transitions"><span class="id" title="definition">validating_transitions</span></a></span> property.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="validating_projection_messages_transitions"><span class="id" title="lemma">validating_projection_messages_transitions</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_transitions"><span class="id" title="definition">validating_transitions</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a>. <span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_transitions"><span class="id" title="definition">validating_transitions</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Composition.html#projection_valid"><span class="id" title="definition">projection_valid</span></a>. <span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_transition"><span class="id" title="definition">protocol_transition</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H</span> <span class="id" title="var">li</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><span class="id" title="var">si</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <span class="id" title="var">omi</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <span class="id" title="var">H0</span>). <span class="id" title="tactic">clear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">s</span> [<span class="id" title="var">Hsi</span> [<span class="id" title="var">Hps</span> [<span class="id" title="var">Hopm</span> [<span class="id" title="var">Hvalid</span> <span class="id" title="var">Hctr</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">remember</span> (@<a class="idref" href="CasperCBC.VLSM.Common.html#transition"><span class="id" title="method">transition</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.X"><span class="id" title="variable">X</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#existT"><span class="id" title="constructor">existT</span></a> <span class="id" title="var">_</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a> <span class="id" title="var">li</span>) <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><span class="id" title="var">s</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <span class="id" title="var">omi</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a>) <span class="id" title="keyword">as</span> <span class="id" title="var">t</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">t</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">s'</span> <span class="id" title="var">om'</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">s</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">s'</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">om'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Hsi</span>. <span class="id" title="tactic">subst</span> <span class="id" title="var">si</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">split</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqt</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">remember</span> (<a class="idref" href="CasperCBC.VLSM.Common.html#transition"><span class="id" title="method">transition</span></a> <span class="id" title="var">li</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><span class="id" title="var">s</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <span class="id" title="var">omi</span><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a>) <span class="id" title="keyword">as</span> <span class="id" title="var">t</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">t</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">si'</span> <span class="id" title="var">om''</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heqt</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <a name="validating_transitions_messages"><span class="id" title="lemma">validating_transitions_messages</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_transitions"><span class="id" title="definition">validating_transitions</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a>. <span class="id" title="tactic">unfold</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_transitions"><span class="id" title="definition">validating_transitions</span></a>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">siomi</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">si</span> <span class="id" title="var">omi</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H</span> <span class="id" title="var">si</span> <span class="id" title="var">omi</span> <span class="id" title="var">li</span> <span class="id" title="var">H0</span>); <span class="id" title="tactic">clear</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">s</span> [<span class="id" title="var">s'</span> [<span class="id" title="var">om'</span> [<span class="id" title="var">Hsi</span> [<span class="id" title="var">Hvalid</span> <span class="id" title="var">Htransition</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Hsi</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">s</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab29"></a><h2 class="section">Validating projections and Byzantine behavior</h2>
+
+
+<div class="paragraph"> </div>
+
+In the sequel we assume that <tt>X</tt> has the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a></span>erty for
+component <tt>i</tt>.  Let <tt>Xi</tt> be the projection of <tt>X</tt> to component <tt>i</tt>
+<div class="paragraph"> </div>
+
+and <tt>Preloaded</tt> be the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a></span> associated to component <tt>i</tt>.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="validating_projection.pre_loaded_validating_proj"><span class="id" title="section">pre_loaded_validating_proj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hvalidating</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Xi</span> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection"><span class="id" title="definition">composite_vlsm_constrained_projection</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.constraint"><span class="id" title="variable">constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">PreLoaded</span> := <a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a> (<a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.i"><span class="id" title="variable">i</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We can show that <tt>Preloaded</tt> is included in <tt>Xi</tt> by applying the
+meta-lemma <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#basic_VLSM_incl"><span class="id" title="lemma">basic_VLSM_incl</span></a></span>, using the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection_prop"><span class="id" title="definition">validating_projection_prop</span></a></span>erty and
+Lemma <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Composition.html#protocol_message_projection"><span class="id" title="lemma">protocol_message_projection</span></a></span> to show that its conditions are fulfilled.
+
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a name="pre_loaded_validating_proj_incl"><span class="id" title="lemma">pre_loaded_validating_proj_incl</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_incl"><span class="id" title="definition">VLSM_incl</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.PreLoaded"><span class="id" title="variable">PreLoaded</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.Xi"><span class="id" title="variable">Xi</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<a class="idref" href="CasperCBC.VLSM.Common.html#basic_VLSM_incl"><span class="id" title="lemma">basic_VLSM_incl</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.PreLoaded"><span class="id" title="variable">PreLoaded</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.Xi"><span class="id" title="variable">Xi</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">_</span> [<span class="id" title="var">_</span> <span class="id" title="var">H</span>]]; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">assumption</span> || <span class="id" title="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.Hvalidating"><span class="id" title="variable">Hvalidating</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">_</span> [<span class="id" title="var">_</span> [<span class="id" title="var">_</span> [<span class="id" title="var">Hopm</span> <span class="id" title="var">_</span>]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Composition.html#protocol_message_projection"><span class="id" title="lemma">protocol_message_projection</span></a>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.Hvalidating"><span class="id" title="variable">Hvalidating</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Given that any projection is included in the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a></span> of its component
+(Lemma <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Composition.html#proj_pre_loaded_incl"><span class="id" title="lemma">proj_pre_loaded_incl</span></a></span>), we conclude that <tt>Preloaded</tt> and <tt>Xi</tt> are
+trace-equal.  This means that all the byzantine behavior of a
+validating component is exhibited by its corresponding projection.
+
+</div>
+<div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a name="pre_loaded_validating_proj_eq"><span class="id" title="lemma">pre_loaded_validating_proj_eq</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_eq"><span class="id" title="definition">VLSM_eq</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.PreLoaded"><span class="id" title="variable">PreLoaded</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj.Xi"><span class="id" title="variable">Xi</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#pre_loaded_validating_proj_incl"><span class="id" title="lemma">pre_loaded_validating_proj_incl</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Composition.html#proj_pre_loaded_incl"><span class="id" title="lemma">proj_pre_loaded_incl</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_validating_proj"><span class="id" title="section">pre_loaded_validating_proj</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_projection"><span class="id" title="section">validating_projection</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab30"></a><h1 class="section">VLSM self-validation</h1>
+
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="validating_vlsm"><span class="id" title="section">validating_vlsm</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">message</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">T</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_type"><span class="id" title="class">VLSM_type</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#message"><span class="id" title="variable">message</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">S</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_sign"><span class="id" title="class">VLSM_sign</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#T"><span class="id" title="variable">T</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">X</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="class">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#S"><span class="id" title="variable">S</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Let us fix a (regular) VLSM <tt>X</tt>. <tt>X</tt> is (self-)validating if every <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#valid"><span class="id" title="projection">valid</span></a></span>
+<span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#state"><span class="id" title="definition">state</span></a></span> and <tt>message</tt> are <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.LightNode.html#protocol_state"><span class="id" title="inductive">protocol_state</span></a></span> and <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#protocol_message"><span class="id" title="definition">protocol_message</span></a></span> for that
+VLSM, respectively.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a name="validating_vlsm_prop"><span class="id" title="definition">validating_vlsm_prop</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#label"><span class="id" title="method">label</span></a>) (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>) (<span class="id" title="var">om</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#valid"><span class="id" title="method">valid</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#l"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Validating.html#s"><span class="id" title="variable">s</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#om"><span class="id" title="variable">om</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#protocol_state_prop"><span class="id" title="definition">protocol_state_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#option_protocol_message_prop"><span class="id" title="definition">option_protocol_message_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#om"><span class="id" title="variable">om</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+In the sequel we will show that a VLSM with the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm_prop"><span class="id" title="definition">validating_vlsm_prop</span></a></span>erty
+is trace-equal to its associated <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a></span>, basically meaning that
+(due to Lemma <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_pre_loaded"><span class="id" title="lemma">byzantine_pre_loaded</span></a></span>) all traces with
+the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_trace_prop"><span class="id" title="definition">byzantine_trace_prop</span></a></span>erty associated to a validating VLSMs are also
+<span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.CommonTraces.html#protocol_trace"><span class="id" title="inductive">protocol_trace</span></a></span>s for that VLSM, meaning that the VLSM cannot exhibit
+byzantine behavior.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hvalidating</span> : <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm_prop"><span class="id" title="definition">validating_vlsm_prop</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">PreLoaded</span> := <a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Let <tt>PreLoaded</tt> be the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a></span> associated to X.
+From Lemma <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#vlsm_incl_pre_loaded_vlsm"><span class="id" title="lemma">vlsm_incl_pre_loaded_vlsm</span></a></span> we know that <tt>X</tt> is included
+in <tt>PreLoaded</tt>.
+
+<div class="paragraph"> </div>
+
+To prove the converse we use the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm_prop"><span class="id" title="definition">validating_vlsm_prop</span></a></span>erty to
+verify the conditions of meta-lemma <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Common.html#basic_VLSM_incl"><span class="id" title="lemma">basic_VLSM_incl</span></a></span>.
+
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a name="pre_loaded_validating_vlsm_incl"><span class="id" title="lemma">pre_loaded_validating_vlsm_incl</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_incl"><span class="id" title="definition">VLSM_incl</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.PreLoaded"><span class="id" title="variable">PreLoaded</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.X"><span class="id" title="variable">X</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<a class="idref" href="CasperCBC.VLSM.Common.html#basic_VLSM_incl"><span class="id" title="lemma">basic_VLSM_incl</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.PreLoaded"><span class="id" title="variable">PreLoaded</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">_</span> [<span class="id" title="var">_</span> <span class="id" title="var">H</span>]]; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">assumption</span> || <span class="id" title="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.Hvalidating"><span class="id" title="variable">Hvalidating</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">_</span> <span class="id" title="var">Hpm</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We conclude that <tt>X</tt> and <tt>Preloaded</tt> are trace-equal.
+
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a name="pre_loaded_validating_vlsm_eq"><span class="id" title="lemma">pre_loaded_validating_vlsm_eq</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM_eq"><span class="id" title="definition">VLSM_eq</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.PreLoaded"><span class="id" title="variable">PreLoaded</span></a> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm.X"><span class="id" title="variable">X</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#pre_loaded_validating_vlsm_incl"><span class="id" title="lemma">pre_loaded_validating_vlsm_incl</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="CasperCBC.VLSM.Common.html#vlsm_incl_pre_loaded_vlsm"><span class="id" title="lemma">vlsm_incl_pre_loaded_vlsm</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Validating.html#validating_vlsm"><span class="id" title="section">validating_vlsm</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
