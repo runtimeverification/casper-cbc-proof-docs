@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Bool.Bool.html#"><span class="id" title="library">Bool</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Reals.Reals.html#"><span class="id" title="library">Reals</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#"><span class="id" title="library">ListSet</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Classes.RelationClasses.html#"><span class="id" title="library">RelationClasses</span></a><br/>
+&nbsp;&nbsp;.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Preamble</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Common.html#"><span class="id" title="library">CBC.Common</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.ListExtras.html#"><span class="id" title="library">ListExtras</span></a><br/>
+&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab46"></a><h1 class="section">An abstract definition of full-node-like equivocation</h1>
+
+
+<div class="paragraph"> </div>
+
+The definition below defines equivocation and fault-weight on sets
+of messages equiped with a <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#sender"><span class="id" title="definition">sender</span></a></span>, relying on a <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.Equivocation.html#message_preceeds_fn"><span class="id" title="projection">message_preceeds_fn</span></a></span>
+which can decide whether two messages having the same sender were seen
+one before another.
+
+<div class="paragraph"> </div>
+
+This allows to define that a message is <span class="inlinecode"><span class="id" title="var">equivocating_with</span></span> another
+if they have the same <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#sender"><span class="id" title="definition">sender</span></a></span> and are not comparable through
+the <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.Equivocation.html#message_preceeds_fn"><span class="id" title="projection">message_preceeds_fn</span></a></span>.
+
+<div class="paragraph"> </div>
+
+Then, we can say that a message is <span class="inlinecode"><span class="id" title="var">equivocating_in_set</span></span> of other messages
+if it is <span class="inlinecode"><span class="id" title="var">equivocating_with</span></span> any of the messages in that set.
+
+<div class="paragraph"> </div>
+
+This allows us to determine the <span class="inlinecode"><span class="id" title="var">equivocating_senders_set</span></span> for a given
+set of messages as those <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#sender"><span class="id" title="definition">sender</span></a></span>s for which there is at least one
+message <span class="inlinecode"><span class="id" title="var">equivocating_in_set</span></span>.
+
+<div class="paragraph"> </div>
+
+The <span class="inlinecode"><span class="id" title="var">set_fault_weight</span></span> is determined the as the sum of weights in the
+<span class="inlinecode"><span class="id" title="var">equivocating_senders_set</span></span>.
+
+<div class="paragraph"> </div>
+
+We call a message <span class="inlinecode"><span class="id" title="var">set_not_heavy</span></span> if its corresponding <span class="inlinecode"><span class="id" title="var">set_fault_weight</span></span>
+is lower than the <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.Common.html#threshold"><span class="id" title="projection">threshold</span></a></span> set for the class.
+
+<div class="paragraph"> </div>
+
+<i>Note</i>: Ideally <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.Equivocation.html#message_preceeds_fn"><span class="id" title="projection">message_preceeds_fn</span></a></span> should determine a strict partial order;
+however this might not happen for the whole set of messages, but only
+for a restricted set, e.g., <span class="inlinecode"><span class="id" title="var">protocol_messsage</span></span>s
+(please see class <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.PreceedsEquivocation.html#HasPreceedsEquivocation"><span class="id" title="record">HasPreceedsEquivocation</span></a></span> for more details).
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Class</span> <a id="HasEquivocation" class="idref" href="#HasEquivocation"><span class="id" title="record">HasEquivocation</span></a> (<a id="message:1" class="idref" href="#message:1"><span class="id" title="binder">message</span></a> : <span class="id" title="keyword">Type</span>) :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <a id="V" class="idref" href="#V"><span class="id" title="projection">V</span></a> : <span class="id" title="keyword">Type</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <a id="about_message" class="idref" href="#about_message"><span class="id" title="projection">about_message</span></a> : <a class="idref" href="CasperCBC.Lib.Preamble.html#StrictlyComparable"><span class="id" title="class">StrictlyComparable</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <a id="about_V" class="idref" href="#about_V"><span class="id" title="projection">about_V</span></a> : <a class="idref" href="CasperCBC.Lib.Preamble.html#StrictlyComparable"><span class="id" title="class">StrictlyComparable</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#V:3"><span class="id" title="method">V</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <a id="measurable_V" class="idref" href="#measurable_V"><span class="id" title="projection">measurable_V</span></a> : <a class="idref" href="CasperCBC.CBC.Common.html#Measurable"><span class="id" title="class">Measurable</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#V:3"><span class="id" title="method">V</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <a id="reachable_threshold" class="idref" href="#reachable_threshold"><span class="id" title="projection">reachable_threshold</span></a> : <a class="idref" href="CasperCBC.CBC.Common.html#ReachableThreshold"><span class="id" title="class">ReachableThreshold</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#V:3"><span class="id" title="method">V</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <a id="sender" class="idref" href="#sender"><span class="id" title="projection">sender</span></a> : <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#V:3"><span class="id" title="method">V</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <a id="message_preceeds_fn" class="idref" href="#message_preceeds_fn"><span class="id" title="projection">message_preceeds_fn</span></a> (<a id="m1:9" class="idref" href="#m1:9"><span class="id" title="binder">m1</span></a> <a id="m2:10" class="idref" href="#m2:10"><span class="id" title="binder">m2</span></a> : <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>) : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="var">equivocating_with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="msg1:14" class="idref" href="#msg1:14"><span class="id" title="binder">msg1</span></a> <a id="msg2:15" class="idref" href="#msg2:15"><span class="id" title="binder">msg2</span></a> : <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>)  : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <a class="idref" href="CasperCBC.Lib.Preamble.html#compare_eq_dec"><span class="id" title="lemma">compare_eq_dec</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg1:14"><span class="id" title="variable">msg1</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg2:15"><span class="id" title="variable">msg2</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">then</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#false"><span class="id" title="constructor">false</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">else</span> <span class="id" title="keyword">if</span> <a class="idref" href="CasperCBC.Lib.Preamble.html#compare_eq_dec"><span class="id" title="lemma">compare_eq_dec</span></a> (<a class="idref" href="CasperCBC.CBC.Equivocation.html#sender:8"><span class="id" title="method">sender</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg1:14"><span class="id" title="variable">msg1</span></a>) (<a class="idref" href="CasperCBC.CBC.Equivocation.html#sender:8"><span class="id" title="method">sender</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg2:15"><span class="id" title="variable">msg2</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#negb"><span class="id" title="definition">negb</span></a> (<a class="idref" href="CasperCBC.CBC.Equivocation.html#message_preceeds_fn:11"><span class="id" title="method">message_preceeds_fn</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg1:14"><span class="id" title="variable">msg1</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg2:15"><span class="id" title="variable">msg2</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#::bool_scope:x_'&amp;&amp;'_x"><span class="id" title="notation">&amp;&amp;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#negb"><span class="id" title="definition">negb</span></a> (<a class="idref" href="CasperCBC.CBC.Equivocation.html#message_preceeds_fn:11"><span class="id" title="method">message_preceeds_fn</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg2:15"><span class="id" title="variable">msg2</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg1:14"><span class="id" title="variable">msg1</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">else</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#false"><span class="id" title="constructor">false</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="var">equivocating_in_set</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="msg:17" class="idref" href="#msg:17"><span class="id" title="binder">msg</span></a> : <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="msgs:18" class="idref" href="#msgs:18"><span class="id" title="binder">msgs</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#set"><span class="id" title="definition">set</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.List.html#existsb"><span class="id" title="definition">existsb</span></a> (<a class="idref" href="CasperCBC.CBC.Equivocation.html#equivocating_with:16"><span class="id" title="method">equivocating_with</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg:17"><span class="id" title="variable">msg</span></a>) <a class="idref" href="CasperCBC.CBC.Equivocation.html#msgs:18"><span class="id" title="variable">msgs</span></a><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="var">equivocating_senders_set</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="msgs:20" class="idref" href="#msgs:20"><span class="id" title="binder">msgs</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#set"><span class="id" title="definition">set</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#set_map"><span class="id" title="definition">set_map</span></a> <a class="idref" href="CasperCBC.Lib.Preamble.html#compare_eq_dec"><span class="id" title="lemma">compare_eq_dec</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#sender:8"><span class="id" title="method">sender</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.List.html#filter"><span class="id" title="definition">filter</span></a> (<span class="id" title="keyword">fun</span> <a id="msg:21" class="idref" href="#msg:21"><span class="id" title="binder">msg</span></a> =&gt; <a class="idref" href="CasperCBC.CBC.Equivocation.html#equivocating_in_set:19"><span class="id" title="method">equivocating_in_set</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msg:21"><span class="id" title="variable">msg</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msgs:20"><span class="id" title="variable">msgs</span></a>) <a class="idref" href="CasperCBC.CBC.Equivocation.html#msgs:20"><span class="id" title="variable">msgs</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="var">set_fault_weight</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="msgs:23" class="idref" href="#msgs:23"><span class="id" title="binder">msgs</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#set"><span class="id" title="definition">set</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Common.html#sum_weights"><span class="id" title="definition">sum_weights</span></a> (<a class="idref" href="CasperCBC.CBC.Equivocation.html#equivocating_senders_set:22"><span class="id" title="method">equivocating_senders_set</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msgs:23"><span class="id" title="variable">msgs</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id" title="var">set_not_heavy</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="msgs:25" class="idref" href="#msgs:25"><span class="id" title="binder">msgs</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#set"><span class="id" title="definition">set</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#message:1"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=  (<a class="idref" href="CasperCBC.CBC.Equivocation.html#set_fault_weight:24"><span class="id" title="method">set_fault_weight</span></a> <a class="idref" href="CasperCBC.CBC.Equivocation.html#msgs:25"><span class="id" title="variable">msgs</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Reals.Rdefinitions.html#77d341fe206b2891763e25999ffddca2"><span class="id" title="notation">&lt;=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.CBC.Common.html#threshold"><span class="id" title="method">threshold</span></a>)%<span class="id" title="var">R</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+
+<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
