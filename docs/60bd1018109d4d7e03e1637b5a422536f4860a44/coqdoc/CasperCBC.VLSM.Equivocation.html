@@ -1,0 +1,611 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.Streams.html#"><span class="id" title="library">Streams</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Logic.ProofIrrelevance.html#"><span class="id" title="library">ProofIrrelevance</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Arith.Plus.html#"><span class="id" title="library">Coq.Arith.Plus</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Arith.Minus.html#"><span class="id" title="library">Coq.Arith.Minus</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Logic.FinFun.html#"><span class="id" title="library">Coq.Logic.FinFun</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Reals.Reals.html#"><span class="id" title="library">Coq.Reals.Reals</span></a>.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">ListNotations</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Lib.Preamble</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#"><span class="id" title="library">VLSM.Common</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#"><span class="id" title="library">VLSM.Composition</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab42"></a><h3 class="section">Summary</h3>
+
+This chapter is dedicated to building the language for discussing equivocation.
+    Equivocation occurs on the receipt of a message which has not been previously sent.
+    The designated sender (validator) of the message is then said to be equivocating.
+    Our main purpose is to keep track of equivocating senders in a composite context
+    and limit equivocation by means of a composition constraint.
+
+<div class="paragraph"> </div>
+
+ 
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+<a name="lab43"></a><h3 class="section">State-message oracles. Endowing states with history.</h3>
+
+
+<div class="paragraph"> </div>
+
+    Our first step is to define some useful concepts in the context of a single VLSM.
+
+<div class="paragraph"> </div>
+
+    Apart from basic definitions of equivocation, we introduce the concept of a
+    <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a></span>. Such an oracle can, given a state and a message,
+    decide whether the message has been sent (or received) in the history leading
+    to the current state. Formally, we say that a <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#message"><span class="id" title="inductive">message</span></a></span> &lt;m&gt; <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="projection">has_been_sent</span></a></span>
+    if we're in  <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#state"><span class="id" title="definition">state</span></a></span> &lt;s&gt; iff every protocol trace which produces &lt;s&gt; contains &lt;m&gt;
+    as a sent message somewhere along the way.
+
+<div class="paragraph"> </div>
+
+    The existence of such oracles, which practically imply endowing states with history,
+    is necessary if we are to detect equivocation using a composition constaint, as these
+    constraints act upon states, not traces.
+ 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="Simple"><span class="id" title="section">Simple</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">message</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">vlsm</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message"><span class="id" title="variable">message</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We begin with a basic utility function. 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="trace_has_message"><span class="id" title="definition">trace_has_message</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">message_selector</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">msg</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">tr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_trace"><span class="id" title="definition">protocol_trace</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">last</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">prefix</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#trace_prefix"><span class="id" title="definition">trace_prefix</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#tr"><span class="id" title="variable">tr</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message_selector"><span class="id" title="variable">message_selector</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#msg"><span class="id" title="variable">msg</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The following property detects equivocation in a given trace for a given message. 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="equivocation_in_trace"><span class="id" title="definition">equivocation_in_trace</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">msg</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">tr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_trace"><span class="id" title="definition">protocol_trace</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">last</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">prefix</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#trace_prefix"><span class="id" title="definition">trace_prefix</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#tr"><span class="id" title="variable">tr</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a>  <a class="idref" href="CasperCBC.VLSM.Common.html#input"><span class="id" title="projection">input</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#msg"><span class="id" title="variable">msg</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a>  <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">In</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#msg"><span class="id" title="variable">msg</span></a>) (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#map"><span class="id" title="definition">List.map</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#output"><span class="id" title="projection">output</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We intend to give define several message oracles: <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="projection">has_been_sent</span></a></span>, <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="projection">has_not_been_sent</span></a></span>,
+    <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received"><span class="id" title="projection">has_been_received</span></a></span> and <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_received"><span class="id" title="projection">has_not_been_received</span></a></span>. To avoid repetition, we give
+    build some generic definitions first. 
+<div class="paragraph"> </div>
+
+ General signature of a message oracle 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Checks if all <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.CommonTraces.html#protocol_trace"><span class="id" title="inductive">protocol_trace</span></a></span>s leading to a certain state contain a certain message.
+    The <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#message_selector"><span class="id" title="variable">message_selector</span></a></span> argument specifices whether we're looking for received or sent
+    messages.
+
+<div class="paragraph"> </div>
+
+    Notably, the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.CommonTraces.html#protocol_trace"><span class="id" title="inductive">protocol_trace</span></a></span>s over which we are iterating belong to the preloaded
+    version of the target VLSM. This is because we want VLSMs to have oracles which
+    are valid irrespective of the composition they take part in. As we know,
+    the behaviour preloaded VLSMs includes behaviours of its projections in any
+    composition. 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="all_traces_have_message_prop"><span class="id" title="definition">all_traces_have_message_prop</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">message_selector</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">oracle</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#oracle"><span class="id" title="variable">oracle</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#4bfb4f2d0721ba668e3a802ab1b745a1"><span class="id" title="notation">&lt;-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">tr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_trace"><span class="id" title="definition">protocol_trace</span></a> (<a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">last</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">prefix</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hpr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#trace_prefix"><span class="id" title="definition">trace_prefix</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#tr"><span class="id" title="variable">tr</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hlast</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#destination"><span class="id" title="projection">destination</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#Exists"><span class="id" title="inductive">List.Exists</span></a> (<span class="id" title="keyword">fun</span> (<span class="id" title="var">elem</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>) =&gt; <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message_selector"><span class="id" title="variable">message_selector</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#elem"><span class="id" title="variable">elem</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="no_traces_have_message_prop"><span class="id" title="definition">no_traces_have_message_prop</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">message_selector</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">oracle</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>)<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#oracle"><span class="id" title="variable">oracle</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#4bfb4f2d0721ba668e3a802ab1b745a1"><span class="id" title="notation">&lt;-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">tr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_trace"><span class="id" title="definition">protocol_trace</span></a> (<a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm"><span class="id" title="definition">pre_loaded_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">last</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">prefix</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hpr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#trace_prefix"><span class="id" title="definition">trace_prefix</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.vlsm"><span class="id" title="variable">vlsm</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#tr"><span class="id" title="variable">tr</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hlast</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#destination"><span class="id" title="projection">destination</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#Exists"><span class="id" title="inductive">List.Exists</span></a> (<span class="id" title="keyword">fun</span> (<span class="id" title="var">elem</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>) =&gt; <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message_selector"><span class="id" title="variable">message_selector</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#elem"><span class="id" title="variable">elem</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="has_been_sent_prop"><span class="id" title="definition">has_been_sent_prop</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#all_traces_have_message_prop"><span class="id" title="definition">all_traces_have_message_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#output"><span class="id" title="projection">output</span></a>).<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="has_not_been_sent_prop"><span class="id" title="definition">has_not_been_sent_prop</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#no_traces_have_message_prop"><span class="id" title="definition">no_traces_have_message_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#output"><span class="id" title="projection">output</span></a>).<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="has_been_received_prop"><span class="id" title="definition">has_been_received_prop</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#all_traces_have_message_prop"><span class="id" title="definition">all_traces_have_message_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#input"><span class="id" title="projection">input</span></a>).<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="has_not_been_received_prop"><span class="id" title="definition">has_not_been_received_prop</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#no_traces_have_message_prop"><span class="id" title="definition">no_traces_have_message_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#input"><span class="id" title="projection">input</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Per the vocabulary of the official VLSM document, we say that VLSMs endowed
+    with a <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a></span> for sent messages have the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="projection">has_been_sent</span></a></span> capability.
+    Capabilities for receiving messages are treated analogously, so we omit mentioning
+    them explicitly.
+
+<div class="paragraph"> </div>
+
+    Notably, we also define the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="projection">has_not_been_sent</span></a></span> oracle, which decides if a message
+    has definitely not been sent, on any of the traces producing a current state.
+
+<div class="paragraph"> </div>
+
+    Furthermore, we require a <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#sent_excluded_middle"><span class="id" title="projection">sent_excluded_middle</span></a></span> property, which stipulates
+    that any argument to the oracle should return true in exactly one of
+    <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="projection">has_been_sent</span></a></span> and <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="projection">has_not_been_sent</span></a></span>. 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a name="has_been_sent_capability"><span class="id" title="record">has_been_sent_capability</span></a> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="has_been_sent"><span class="id" title="projection">has_been_sent</span></a>: <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a>;<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="proper_sent"><span class="id" title="projection">proper_sent</span></a>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent_prop"><span class="id" title="definition">has_been_sent_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="method">has_been_sent</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>);<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="has_not_been_sent"><span class="id" title="projection">has_not_been_sent</span></a>: <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="proper_not_sent"><span class="id" title="projection">proper_not_sent</span></a>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent_prop"><span class="id" title="definition">has_not_been_sent_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="method">has_not_been_sent</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>;<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="sent_excluded_middle"><span class="id" title="projection">sent_excluded_middle</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="method">has_been_sent</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#4bfb4f2d0721ba668e3a802ab1b745a1"><span class="id" title="notation">&lt;-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="method">has_not_been_sent</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#false"><span class="id" title="constructor">false</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a name="has_been_received_capability"><span class="id" title="record">has_been_received_capability</span></a> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="has_been_received"><span class="id" title="projection">has_been_received</span></a>: <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a>;<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="proper_received"><span class="id" title="projection">proper_received</span></a>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received_prop"><span class="id" title="definition">has_been_received_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received"><span class="id" title="method">has_been_received</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>);<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="has_not_been_received"><span class="id" title="projection">has_not_been_received</span></a>: <a class="idref" href="CasperCBC.VLSM.Equivocation.html#state_message_oracle"><span class="id" title="definition">state_message_oracle</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="proper_not_received"><span class="id" title="projection">proper_not_received</span></a>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_received_prop"><span class="id" title="definition">has_not_been_received_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_received"><span class="id" title="method">has_not_been_received</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>;<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="received_excluded_middle"><span class="id" title="projection">received_excluded_middle</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received"><span class="id" title="method">has_been_received</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#4bfb4f2d0721ba668e3a802ab1b745a1"><span class="id" title="notation">&lt;-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_received"><span class="id" title="method">has_not_been_received</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#false"><span class="id" title="constructor">false</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Simple"><span class="id" title="section">Simple</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab44"></a><h3 class="section">Equivocation in compositions.</h3>
+
+
+<div class="paragraph"> </div>
+
+ We now move on to a composite context. Each component of our composition
+    will have <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="projection">has_been_sent</span></a></span> and <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received"><span class="id" title="projection">has_been_received</span></a></span> capabilities.
+
+<div class="paragraph"> </div>
+
+    We introduce <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator"><span class="id" title="variable">validator</span></a></span>s along with their respective <span class="inlinecode"><span class="id" title="var">Weight</span></span>s, the
+    <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.Binary.html#A"><span class="id" title="variable">A</span></a></span> function which maps validators to indices of component VLSMs and
+    the <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#sender"><span class="id" title="definition">sender</span></a></span> function which maps messages to their (unique) designated
+    sender (if any).
+
+<div class="paragraph"> </div>
+
+    For the equivocation fault sum to be computable, we also require that
+    the number of <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator"><span class="id" title="variable">validator</span></a></span>s and the number of machines in the
+    composition are both finite. See <span class="inlinecode"><span class="id" title="var">finite_index</span></span>, <span class="inlinecode"><span class="id" title="var">finite_validator</span></span>.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a name="Composite"><span class="id" title="section">Composite</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<span class="id" title="var">message</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">index</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">index_listing</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">finite_index</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Logic.FinFun.html#Listing"><span class="id" title="definition">Listing</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index_listing"><span class="id" title="variable">index_listing</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">validator</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">validator_listing</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">finite_validator</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Logic.FinFun.html#Listing"><span class="id" title="definition">Listing</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator_listing"><span class="id" title="variable">validator_listing</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id" title="var">IndEqDec</span> : <a class="idref" href="CasperCBC.Lib.Preamble.html#EqDec"><span class="id" title="class">EqDec</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">IM</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i0</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">constraint</span> : <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#IM"><span class="id" title="variable">IM</span></a>  <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">has_been_sent_capabilities</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a>, (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability"><span class="id" title="class">has_been_sent_capability</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">has_been_received_capabilities</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a>, (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received_capability"><span class="id" title="class">has_been_received_capability</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">sender</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">A</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator"><span class="id" title="variable">validator</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Weight</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#validator"><span class="id" title="variable">validator</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R"><span class="id" title="axiom">R</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">T</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R"><span class="id" title="axiom">R</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">X</span> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm"><span class="id" title="definition">composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#constraint"><span class="id" title="variable">constraint</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+It is now straightforward to define a <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#no_equivocations"><span class="id" title="definition">no_equivocations</span></a></span> composition constraint.
+         An equivocating transition can be detected by calling the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="projection">has_been_sent</span></a></span>
+         oracle on its arguments and we simply forbid them 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="equivocation"><span class="id" title="definition">equivocation</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.index"><span class="id" title="variable">index</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="method">has_not_been_sent</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>) (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;TODO:&nbsp;Reevaluate&nbsp;if&nbsp;this&nbsp;looks&nbsp;better&nbsp;in&nbsp;a&nbsp;positive&nbsp;form&nbsp;*)</span><br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="no_equivocations"><span class="id" title="definition">no_equivocations</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vlabel"><span class="id" title="definition">vlabel</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">som</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<span class="id" title="var">s</span>, <span class="id" title="var">om</span>) := <a class="idref" href="CasperCBC.VLSM.Equivocation.html#som"><span class="id" title="variable">som</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#om"><span class="id" title="variable">om</span></a> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#None"><span class="id" title="constructor">None</span></a> =&gt; <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#True"><span class="id" title="inductive">True</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <span class="id" title="var">m</span> =&gt; <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a><a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocation"><span class="id" title="definition">equivocation</span></a> <span class="id" title="var">m</span> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Definitions for safety and nontriviality of the <span class="inlinecode"><a class="idref" href="CasperCBC.CBC.FullNode.Validator.State.html#sender"><span class="id" title="definition">sender</span></a></span> function.
+          Safety means that if we designate a validator as the sender
+          of a certain messsage, then it is impossible for other components
+          to produce that message
+
+<div class="paragraph"> </div>
+
+          Weak/strong nontriviality say that each validator should
+          be designated sender for at least one/all its protocol
+          messages.
+      
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="sender_safety_prop"><span class="id" title="definition">sender_safety_prop</span></a> : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hid</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hsender</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#can_emit"><span class="id" title="definition">can_emit</span></a> (<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection"><span class="id" title="definition">composite_vlsm_constrained_projection</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.constraint"><span class="id" title="variable">constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hdif</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a0a5068f83a704fcfbda8cd473a6cfea"><span class="id" title="notation">&lt;&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a><a class="idref" href="CasperCBC.VLSM.Common.html#can_emit"><span class="id" title="definition">can_emit</span></a> (<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection"><span class="id" title="definition">composite_vlsm_constrained_projection</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.constraint"><span class="id" title="variable">constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An alternative, possibly friendlier, formulation. Note that it is
+           slightly weaker, in that it does not require that the sender
+           is able to send the message. 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="sender_safety_alt_prop"><span class="id" title="definition">sender_safety_alt_prop</span></a> : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hsender</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#can_emit"><span class="id" title="definition">can_emit</span></a> (<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection"><span class="id" title="definition">composite_vlsm_constrained_projection</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.constraint"><span class="id" title="variable">constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="sender_weak_nontriviality_prop"><span class="id" title="definition">sender_weak_nontriviality_prop</span></a> : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#can_emit"><span class="id" title="definition">can_emit</span></a> (<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection"><span class="id" title="definition">composite_vlsm_constrained_projection</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.constraint"><span class="id" title="variable">constraint</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>)) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="sender_strong_nontriviality_prop"><span class="id" title="definition">sender_strong_nontriviality_prop</span></a> : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#can_emit"><span class="id" title="definition">can_emit</span></a> (<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection"><span class="id" title="definition">composite_vlsm_constrained_projection</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.i0"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.constraint"><span class="id" title="variable">constraint</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>)) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#1c93e43e07fbeaeb6a625cb6614beb5d"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We say that a validator &lt;v&gt; (with associated component &lt;i&gt;) is equivocating wrt.
+       to another component &lt;j&gt;, if there exists a message which <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received"><span class="id" title="projection">has_been_received</span></a></span> by
+       &lt;j&gt; but <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="projection">has_not_been_sent</span></a></span> by &lt;i&gt; 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="equivocating_wrt"><span class="id" title="definition">equivocating_wrt</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">j</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">sv</span> <span class="id" title="var">sj</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#state"><span class="id" title="method">state</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> := <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a>(<a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_not_been_sent"><span class="id" title="method">has_not_been_sent</span></a>  (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#i"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#sv"><span class="id" title="variable">sv</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_received"><span class="id" title="method">has_been_received</span></a>  (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#sj"><span class="id" title="variable">sj</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We can now decide whether a validator is equivocating in a certain state. 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="is_equivocating_statewise"><span class="id" title="definition">is_equivocating_statewise</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">j</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.index"><span class="id" title="variable">index</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a0a5068f83a704fcfbda8cd473a6cfea"><span class="id" title="notation">&lt;&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a0a5068f83a704fcfbda8cd473a6cfea"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a0a5068f83a704fcfbda8cd473a6cfea"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocating_wrt"><span class="id" title="definition">equivocating_wrt</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>)) (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An alternative definition for detecting equivocation in a certain state,
+            which checks if for every <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.CommonTraces.html#protocol_trace"><span class="id" title="inductive">protocol_trace</span></a></span> there exists equivocation
+            involving the given validator
+
+<div class="paragraph"> </div>
+
+            Notably, this definition is not generally equivalent to <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#is_equivocating_statewise"><span class="id" title="definition">is_equivocating_statewise</span></a></span>,
+            which does not verify the order in which receiving and sending occurred.
+        
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="is_equivocating_tracewise"><span class="id" title="definition">is_equivocating_tracewise</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">j</span> := <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">tr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_trace"><span class="id" title="definition">protocol_trace</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">last</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">prefix</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hpr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#trace_prefix"><span class="id" title="definition">trace_prefix</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#tr"><span class="id" title="variable">tr</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hlast</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#destination"><span class="id" title="projection">destination</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#Exists"><span class="id" title="inductive">List.Exists</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="keyword">fun</span> (<span class="id" title="var">elem</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vtransition_item"><span class="id" title="definition">vtransition_item</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>) =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#input"><span class="id" title="projection">input</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#elem"><span class="id" title="variable">elem</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="method">has_been_sent</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a>) ((<a class="idref" href="CasperCBC.VLSM.Common.html#destination"><span class="id" title="projection">destination</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#elem"><span class="id" title="variable">elem</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#j"><span class="id" title="variable">j</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#false"><span class="id" title="constructor">false</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A possibly friendlier version using a previously defined primitive. 
+</div>
+<div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="is_equivocating_tracewise_alt"><span class="id" title="definition">is_equivocating_tracewise_alt</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">j</span> := <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.A"><span class="id" title="variable">A</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">tr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#protocol_trace"><span class="id" title="definition">protocol_trace</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">last</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">prefix</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#transition_item"><span class="id" title="record">transition_item</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hpr</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#trace_prefix"><span class="id" title="definition">trace_prefix</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#tr"><span class="id" title="variable">tr</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#prefix"><span class="id" title="variable">prefix</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Hlast</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#destination"><span class="id" title="projection">destination</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#last"><span class="id" title="variable">last</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><span class="id" title="var">m</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.sender"><span class="id" title="variable">sender</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocation_in_trace"><span class="id" title="definition">equivocation_in_trace</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#m"><span class="id" title="variable">m</span></a> (<a class="idref" href="CasperCBC.VLSM.Common.html#build_trace_prefix_protocol"><span class="id" title="definition">build_trace_prefix_protocol</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Hpr"><span class="id" title="variable">Hpr</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+For the equivocation sum fault to be computable, we require that
+            our is_equivocating property is decidable. The current implementation
+            refers to <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Equivocation.html#is_equivocating_statewise"><span class="id" title="definition">is_equivocating_statewise</span></a></span>, but this might change
+            in the future 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a name="equivocation_dec_statewise"><span class="id" title="record">equivocation_dec_statewise</span></a> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="is_equivocating_fn"><span class="id" title="projection">is_equivocating_fn</span></a> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>) (<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>) : <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a>;<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="is_equivocating_dec"><span class="id" title="projection">is_equivocating_dec</span></a> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>) (<span class="id" title="var">v</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#is_equivocating_fn"><span class="id" title="method">is_equivocating_fn</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#true"><span class="id" title="constructor">true</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Logic.html#4bfb4f2d0721ba668e3a802ab1b745a1"><span class="id" title="notation">&lt;-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#is_equivocating_statewise"><span class="id" title="definition">is_equivocating_statewise</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#v"><span class="id" title="variable">v</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+All validators which are equivocating in a given composite state 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="equivocating_validators"><span class="id" title="definition">equivocating_validators</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Dec</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocation_dec_statewise"><span class="id" title="class">equivocation_dec_statewise</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator"><span class="id" title="variable">validator</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#filter"><span class="id" title="definition">List.filter</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#is_equivocating_fn"><span class="id" title="method">is_equivocating_fn</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.validator_listing"><span class="id" title="variable">validator_listing</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The equivocation fault sum: the sum of the weights of equivocating
+          validators 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="equivocation_fault"><span class="id" title="definition">equivocation_fault</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Dec</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocation_dec_statewise"><span class="id" title="class">equivocation_dec_statewise</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">s</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R"><span class="id" title="axiom">R</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#fold_left"><span class="id" title="definition">List.fold_left</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.Rplus"><span class="id" title="axiom">Rplus</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Lists.List.html#map"><span class="id" title="definition">List.map</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.Weight"><span class="id" title="variable">Weight</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocating_validators"><span class="id" title="definition">equivocating_validators</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Dec"><span class="id" title="variable">Dec</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s"><span class="id" title="variable">s</span></a>)) 0%<span class="id" title="var">R</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Finally, we are able to define a composition constraint which limits
+        the equivocation fault to a threshold &lt;T&gt; 
+</div>
+<div class="code">
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a name="equivocation_fault_constraint"><span class="id" title="definition">equivocation_fault_constraint</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Dec</span> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocation_dec_statewise"><span class="id" title="class">equivocation_dec_statewise</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vlabel"><span class="id" title="definition">vlabel</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">som</span> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<span class="id" title="var">s'</span>, <span class="id" title="var">om'</span>) := (<a class="idref" href="CasperCBC.VLSM.Common.html#vtransition"><span class="id" title="definition">vtransition</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#l"><span class="id" title="variable">l</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#som"><span class="id" title="variable">som</span></a>) <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.11.2/stdlib//Coq.Reals.Rdefinitions.html#Rle"><span class="id" title="definition">Rle</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocation.html#equivocation_fault"><span class="id" title="definition">equivocation_fault</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Dec"><span class="id" title="variable">Dec</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#s'"><span class="id" title="variable">s'</span></a>) <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite.T"><span class="id" title="variable">T</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#Composite"><span class="id" title="section">Composite</span></a>.<br/>
+
+<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
