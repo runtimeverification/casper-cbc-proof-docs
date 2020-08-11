@@ -1,0 +1,678 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.ListSetExtras</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.ListSetExtras" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.ListSetExtras</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">Coq.Lists.ListSet</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html">CasperCBC.Lib.Preamble</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html">CasperCBC.Lib.ListExtras</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="eq_dec_left">eq_dec_left</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">v</span>,<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">n</span>, <span class="id">Aeq_dec</span> <span class="id">v</span> <span class="id">v</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">n</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof63')">Proof.</div>
+<div class="proofscript" id="proof63">
+&nbsp;&nbsp;<span class="tactic">intros</span>.  <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">v</span> <span class="id">v</span>) <span class="id">eqn</span>:<span class="id">Hv</span>.<br/>
+&nbsp;&nbsp;- <span class="id">exists</span> <span class="id">e</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">n</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="eq_dec_right">eq_dec_right</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>,<br/>
+&nbsp;&nbsp;<span class="id">x</span> &lt;&gt; <span class="id">y</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">n</span>, <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">n</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof64')">Proof.</div>
+<div class="proofscript" id="proof64">
+&nbsp;&nbsp;<span class="tactic">intros</span>.  <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hv</span>.<br/>
+&nbsp;&nbsp;- <span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">H</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">exists</span> <span class="id">n</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="set_eq">set_eq</a></span> {<span class="id">A</span>} (<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s1</span> <span class="id">s2</span> /\ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s2</span> <span class="id">s1</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_empty">set_eq_empty</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span>}<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">l</span> [] -&gt; <span class="id">l</span> = [].<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof65')">Proof.</div>
+<div class="proofscript" id="proof65">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> [|<span class="id">hd</span> <span class="id">tl</span>].<br/>
+&nbsp;&nbsp;- <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H</span> <span class="id">hd</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_eq">in_eq</a></span> <span class="id">hd</span> <span class="id">tl</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_proj1">set_eq_proj1</a></span> {<span class="id">A</span>} : <span class="kwd">forall</span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s1</span> <span class="id">s2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof66')">Proof.</div>
+<div class="proofscript" id="proof66">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_proj2">set_eq_proj2</a></span> {<span class="id">A</span>} : <span class="kwd">forall</span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s2</span> <span class="id">s1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof67')">Proof.</div>
+<div class="proofscript" id="proof67">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_refl">set_eq_refl</a></span> {<span class="id">A</span>} : <span class="kwd">forall</span> (<span class="id">s</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>), <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s</span> <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof68')">Proof.</div>
+<div class="proofscript" id="proof68">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>;<span class="tactic">split</span>; <span class="tactic">intro</span>; <span class="tactic">intro</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_comm">set_eq_comm</a></span> {<span class="id">A</span>} : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> &lt;-&gt; <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s2</span> <span class="id">s1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof69')">Proof.</div>
+<div class="proofscript" id="proof69">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intro</span>; <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_tran">set_eq_tran</a></span> {<span class="id">A</span>} : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">s3</span> : <span class="tactic">set</span> <span class="id">A</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s2</span> <span class="id">s3</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s3</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof70')">Proof.</div>
+<div class="proofscript" id="proof70">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">split</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_tran">incl_tran</a></span> <span class="kwd">with</span> <span class="id">s2</span>; <span class="tactic">apply</span> <span class="id">H</span> || <span class="tactic">apply</span> <span class="id">H0</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_cons">set_eq_cons</a></span> {<span class="id">A</span>} : <span class="kwd">forall</span> (<span class="id">a</span> : <span class="id">A</span>) (<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id">a</span> :: <span class="id">s1</span>) (<span class="id">a</span> :: <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof71')">Proof.</div>
+<div class="proofscript" id="proof71">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>; <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">subst</span><br/>
+&nbsp;&nbsp;; (<span class="id">left</span>; <span class="tactic">reflexivity</span>) || (<span class="id">right</span>; <span class="tactic">apply</span> <span class="id">H</span>; <span class="tactic">assumption</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_Forall">set_eq_Forall</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">H12</span> : <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span>)<br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id">P</span> <span class="id">s1</span> &lt;-&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id">P</span> <span class="id">s2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof72')">Proof.</div>
+<div class="proofscript" id="proof72">
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">H</span>; <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> *; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hx</span><br/>
+&nbsp;&nbsp;; <span class="tactic">apply</span> <span class="id">H</span>; <span class="tactic">apply</span> <span class="id">H12</span>; <span class="tactic">assumption</span><br/>
+&nbsp;&nbsp;.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="set_eq_fn_rec">set_eq_fn_rec</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">s1</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">s2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| [] =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;| <span class="id">h</span> :: <span class="id">t</span> =&gt; <span class="kwd">if</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id">Aeq_dec</span> <span class="id">h</span> <span class="id">s2</span> <span class="kwd">then</span> <span class="id">set_eq_fn_rec</span> <span class="id">Aeq_dec</span> <span class="id">t</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">h</span> <span class="id">s2</span>) <span class="kwd">else</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="set_eq_fn">set_eq_fn</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn_rec">set_eq_fn_rec</a></span> <span class="id">Aeq_dec</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#nodup">nodup</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#nodup">nodup</a></span> <span class="id">Aeq_dec</span> <span class="id">s2</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_fn_rec_iff">set_eq_fn_rec_iff</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> &lt;-&gt; <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn_rec">set_eq_fn_rec</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof73')">Proof.</div>
+<div class="proofscript" id="proof73">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">s2</span>. <span class="tactic">induction</span> <span class="id">s1</span>; <span class="tactic">intros</span>; <span class="tactic">destruct</span> <span class="id">s2</span>; <span class="tactic">destruct</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html#incl_empty">incl_empty</a></span> <span class="kwd">in</span>  <span class="id">H2</span>. <span class="tactic">inversion</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html#incl_empty">incl_empty</a></span> <span class="kwd">in</span>  <span class="id">H1</span>. <span class="tactic">inversion</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_cons_iff">NoDup_cons_iff</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_cons_iff">NoDup_cons_iff</a></span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">destruct</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">a0</span> <span class="id">a</span>); <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#eq_dec_if_true">eq_dec_if_true</a></span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHs1</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">H1</span> <span class="id">x</span>); <span class="tactic">try</span> (<span class="id">right</span>; <span class="tactic">assumption</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">H</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">H2</span> <span class="id">x</span>); <span class="tactic">try</span> (<span class="id">right</span>; <span class="tactic">assumption</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">H0</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* { <span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id">Aeq_dec</span> <span class="id">a</span> <span class="id">s2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#eq_dec_if_false">eq_dec_if_false</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHs1</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_cons_iff">NoDup_cons_iff</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">intro</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">H5</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H0</span>. <span class="tactic">destruct</span> <span class="id">H5</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* { <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a0</span>); <span class="tactic">subst</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> (<span class="id">H1</span> <span class="id">x</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">try</span> (<span class="id">right</span>; <span class="tactic">assumption</span>); <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">n0</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intro</span>; <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id">H</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> (<span class="id">H2</span> <span class="id">x</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>); <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>; <span class="tactic">apply</span> <span class="id">n</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">H5</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">destruct</span> <span class="id">H5</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">H2</span> <span class="id">x</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">try</span> (<span class="id">right</span>; <span class="tactic">assumption</span>); <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>; <span class="tactic">apply</span> <span class="id">H6</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intro</span>; <span class="tactic">subst</span>; <span class="tactic">apply</span> <span class="id">n</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">n0</span>. <span class="tactic">destruct</span> (<span class="id">H1</span> <span class="id">a</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>); <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>; <span class="tactic">apply</span> <span class="id">n</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;- <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">s2</span>. <span class="tactic">induction</span> <span class="id">s1</span>; <span class="tactic">intros</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H1</span>; <span class="tactic">destruct</span> <span class="id">s2</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">split</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_refl">incl_refl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id">Aeq_dec</span> <span class="id">a</span> (<span class="id">a0</span> :: <span class="id">s2</span>)); <span class="tactic">try</span> <span class="tactic">discriminate</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHs1</span> <span class="kwd">in</span> <span class="id">H1</span>; <span class="tactic">destruct</span> <span class="id">H1</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>; <span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">subst</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id">H1</span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a</span>); <span class="tactic">subst</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id">H2</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a</span>); <span class="tactic">subst</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id">H2</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_cons_iff">NoDup_cons_iff</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_functional">set_eq_functional</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#PredicateFunction2">PredicateFunction2</a></span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn">set_eq_fn</a></span> <span class="id">Aeq_dec</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof74')">Proof.</div>
+<div class="proofscript" id="proof74">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span>. <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn">set_eq_fn</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn_rec_iff">set_eq_fn_rec_iff</a></span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_nodup">NoDup_nodup</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">H12</span> <span class="id">H21</span>]. <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#nodup_In">nodup_In</a></span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#nodup_In">nodup_In</a></span> <span class="kwd">in</span> <span class="id">Hin</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">apply</span> <span class="id">H12</span> || <span class="tactic">apply</span> <span class="id">H21</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn_rec_iff">set_eq_fn_rec_iff</a></span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_nodup">NoDup_nodup</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">H12</span> <span class="id">H21</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>; <span class="tactic">rewrite</span> &lt;- (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#nodup_In">nodup_In</a></span> <span class="id">Aeq_dec</span>); <span class="tactic">rewrite</span> &lt;- (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#nodup_In">nodup_In</a></span> <span class="id">Aeq_dec</span>) <span class="kwd">in</span> <span class="id">Hin</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">apply</span> <span class="id">H12</span> || <span class="tactic">apply</span> <span class="id">H21</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_dec">set_eq_dec</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>),<br/>
+&nbsp;&nbsp;{<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span>} + {~ <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span>}.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof75')">Proof.</div>
+<div class="proofscript" id="proof75">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_fn">set_eq_fn</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>) <span class="id">eqn</span>:<span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;- <span class="id">left</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_functional">set_eq_functional</a></span> <span class="id">Aeq_dec</span>). <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="tactic">intro</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_functional">set_eq_functional</a></span> <span class="id">Aeq_dec</span>) <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">rewrite</span> <span class="id">Heq</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">discriminate</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_singleton_iff">set_eq_singleton_iff</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">s1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) (<span class="id">a</span> : <span class="id">A</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> [<span class="id">a</span>] &lt;-&gt; <span class="id">s1</span> = [<span class="id">a</span>].<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof76')">Proof.</div>
+<div class="proofscript" id="proof76">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;{ <span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">Hincl1a</span> <span class="id">Hincla1</span>]. <span class="tactic">destruct</span> <span class="id">s1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">exfalso</span>. <span class="tactic">destruct</span> (<span class="id">Hincla1</span> <span class="id">a</span>). <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListExtras.html#incl_singleton">incl_singleton</a></span> <span class="id">_</span> <span class="id">a</span> <span class="id">Hincl1a</span> <span class="id">a0</span>); <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>) .<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">s1</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListExtras.html#incl_singleton">incl_singleton</a></span> <span class="id">_</span> <span class="id">a0</span> <span class="id">Hincl1a</span> <span class="id">a</span>); <span class="tactic">try</span> (<span class="id">right</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>) .<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>. <span class="tactic">apply</span> <span class="id">H2</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_refl">set_eq_refl</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_singleton">set_eq_singleton</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">s1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) (<span class="id">a</span> : <span class="id">A</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> [<span class="id">a</span>] -&gt; <span class="id">s1</span> = [<span class="id">a</span>].<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof77')">Proof.</div>
+<div class="proofscript" id="proof77">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_singleton_iff">set_eq_singleton_iff</a></span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_singleton_rev">set_eq_singleton_rev</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">s1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) (<span class="id">a</span> : <span class="id">A</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id">s1</span> = [<span class="id">a</span>] -&gt; <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> [<span class="id">a</span>].<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof78')">Proof.</div>
+<div class="proofscript" id="proof78">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_singleton_iff">set_eq_singleton_iff</a></span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_comm">set_union_comm</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})  : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s2</span> <span class="id">s1</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof79')">Proof.</div>
+<div class="proofscript" id="proof79">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intro</span> <span class="id">x</span>; <span class="tactic">intros</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>; <span class="tactic">destruct</span> <span class="id">H</span>;<br/>
+&nbsp;&nbsp;(<span class="id">left</span> ; <span class="tactic">assumption</span>) || (<span class="id">right</span>; <span class="tactic">assumption</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_empty">set_union_empty</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})  : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id">s1</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> /\ <span class="id">s2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof80')">Proof.</div>
+<div class="proofscript" id="proof80">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">s2</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_union_comm">set_union_comm</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span>). <span class="tactic">rewrite</span> <span class="id">H</span> <span class="kwd">in</span> <span class="id">H1</span>. <span class="tactic">destruct</span> <span class="id">s1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">split</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H1</span>. <span class="tactic">destruct</span> (<span class="id">H1</span> <span class="id">a</span>). <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_intro">set_add_intro</a></span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">assert</span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span>); <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_refl">incl_refl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">H</span> <span class="kwd">in</span> <span class="id">H0</span> <span class="tactic">at</span> 1. <span class="tactic">destruct</span> (<span class="id">H0</span> <span class="id">a</span>). <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_intro">set_add_intro</a></span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_incl_left">set_union_incl_left</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})  : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof81')">Proof.</div>
+<div class="proofscript" id="proof81">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">H</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_intro">set_union_intro</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">left</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_incl_right">set_union_incl_right</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})  : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s2</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof82')">Proof.</div>
+<div class="proofscript" id="proof82">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">H</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_intro">set_union_intro</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_incl_iterated">set_union_incl_iterated</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})  : <span class="kwd">forall</span> <span class="id">ss</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">s</span> <span class="id">ss</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span>) <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> <span class="id">ss</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof83')">Proof.</div>
+<div class="proofscript" id="proof83">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">ss</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">destruct</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_union_incl_left">set_union_incl_left</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHss</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_tran">incl_tran</a></span> <span class="kwd">with</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span>) [] <span class="id">ss</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_union_incl_right">set_union_incl_right</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_in_iterated">set_union_in_iterated</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})<br/>
+&nbsp;&nbsp;(<span class="id">ss</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="tactic">set</span> <span class="id">A</span>))<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span>) <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> <span class="id">ss</span>)<br/>
+&nbsp;&nbsp;&lt;-&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists">Exists</a></span> (<span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id">s</span>) <span class="id">ss</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof84')">Proof.</div>
+<div class="proofscript" id="proof84">
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">ss</span>; <span class="tactic">split</span>; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intro</span> <span class="id">H</span>; <span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> [<span class="id">x</span> [<span class="id">Hin</span> <span class="id">_</span>]]; <span class="tactic">inversion</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intro</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">Hina0</span> | <span class="id">Hinss</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">exists</span> <span class="id">a0</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHss</span> <span class="kwd">in</span> <span class="id">Hinss</span>. <span class="tactic">destruct</span> <span class="id">Hinss</span> <span class="kwd">as</span> [<span class="id">x</span> [<span class="id">Hinss</span> <span class="id">Hinx</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">x</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">x</span> [[<span class="id">Heqa0</span> | <span class="id">Hinss</span>] <span class="id">Hinx</span>]]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHss</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">x</span>. <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_union_empty_left">set_union_empty_left</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})  : <span class="kwd">forall</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> <span class="id">s</span>) <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof85')">Proof.</div>
+<div class="proofscript" id="proof85">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_elim">set_union_elim</a></span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">destruct</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_intro">set_union_intro</a></span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="map_set_eq">map_set_eq</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">s</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s</span> <span class="id">s</span>' -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> <span class="id">f</span> <span class="id">s</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> <span class="id">f</span> <span class="id">s</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof86')">Proof.</div>
+<div class="proofscript" id="proof86">
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html#map_incl">map_incl</a></span>; <span class="tactic">apply</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_nodup">set_map_nodup</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof87')">Proof.</div>
+<div class="proofscript" id="proof87">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">simpl</span>; <span class="tactic">try</span> <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_nodup">set_add_nodup</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_in">set_map_in</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> (<span class="id">f</span> <span class="id">x</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof88')">Proof.</div>
+<div class="proofscript" id="proof88">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">intros</span>; <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_intro2">set_add_intro2</a></span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_intro1">set_add_intro1</a></span>. <span class="tactic">apply</span> <span class="id">IHs</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_exists">set_map_exists</a></span>  {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">y</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">y</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>) &lt;-&gt;<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">x</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s</span> /\ <span class="id">f</span> <span class="id">x</span> = <span class="id">y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof89')">Proof.</div>
+<div class="proofscript" id="proof89">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">F</span> <span class="id">_</span>]]. <span class="tactic">inversion</span> <span class="id">F</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_iff">set_add_iff</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">exists</span> <span class="id">a</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>. <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHs</span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">x</span> [<span class="id">Hin</span> <span class="id">Heq</span>]]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">x</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>. <span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">x</span> [[<span class="id">Heq</span> | <span class="id">Hin</span>] <span class="id">Heqf</span>]]; <span class="tactic">subst</span>; <span class="tactic">simpl</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_iff">set_add_iff</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>) .<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHs</span>. <span class="id">exists</span> <span class="id">x</span>. <span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_incl">set_map_incl</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">s</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s</span> <span class="id">s</span>' -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof90')">Proof.</div>
+<div class="proofscript" id="proof90">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">intros</span>; <span class="tactic">intro</span> <span class="id">msg</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add_elim">set_add_elim</a></span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">destruct</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_map_in">set_map_in</a></span>. <span class="tactic">apply</span> <span class="id">H</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHs</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">intros</span> <span class="id">x</span>; <span class="tactic">intros</span>. <span class="tactic">apply</span> <span class="id">H</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_eq">set_map_eq</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">s</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s</span> <span class="id">s</span>' -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof91')">Proof.</div>
+<div class="proofscript" id="proof91">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">split</span>; <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_map_incl">set_map_incl</a></span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_singleton">set_map_singleton</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">forall</span> <span class="id">s</span> <span class="id">a</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span> = [<span class="id">a</span>] -&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">b</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">b</span> <span class="id">s</span> -&gt; <span class="id">f</span> <span class="id">b</span> = <span class="id">a</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof92')">Proof.</div>
+<div class="proofscript" id="proof92">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_map_in">set_map_in</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span>) <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">rewrite</span> <span class="id">H</span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">subst</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="id">exfalso</span>. <span class="tactic">inversion</span> <span class="id">H1</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_map_injective">set_map_injective</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#Injective">Injective</a></span> <span class="id">f</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span> <span class="id">s</span>') -&gt; <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s</span> <span class="id">s</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof93')">Proof.</div>
+<div class="proofscript" id="proof93">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_map_in">set_map_in</a></span> <span class="id">Aeq_dec</span> <span class="id">f</span>) <span class="kwd">in</span> <span class="id">Hin</span>; <span class="tactic">apply</span> <span class="id">H0</span> <span class="kwd">in</span> <span class="id">Hin</span>; <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_map_exists">set_map_exists</a></span> <span class="kwd">in</span> <span class="id">Hin</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">x</span>' [<span class="id">Hin</span> <span class="id">Heq</span>]]; <span class="tactic">apply</span> <span class="id">H</span> <span class="kwd">in</span> <span class="id">Heq</span>; <span class="tactic">subst</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="filter_set_add">filter_set_add</a></span> {<span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">X</span>) (<span class="id">f</span> : <span class="id">X</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>) (<span class="id">x</span> : <span class="id">X</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">f</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> <span class="id">f</span> <span class="id">l</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> <span class="id">f</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add">set_add</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x</span> <span class="id">l</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof94')">Proof.</div>
+<div class="proofscript" id="proof94">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span> <span class="kwd">as</span> [|<span class="id">hd</span> <span class="id">tl</span> <span class="id">IHl</span>]; <span class="tactic">intros</span> <span class="id">f</span> <span class="id">x</span> <span class="id">H_false</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id">H_false</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="id">spec</span> <span class="id">IHl</span> <span class="id">f</span> <span class="id">x</span> <span class="id">H_false</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x</span> <span class="id">hd</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">rewrite</span> <span class="id">H_false</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id">H_false</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">case_eq</span> (<span class="id">f</span> <span class="id">hd</span>); <span class="tactic">intro</span> <span class="id">H_eq</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">H_eq</span>; <span class="tactic">rewrite</span> &lt;- <span class="id">IHl</span>; <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_add_ignore">set_add_ignore</a></span> {<span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">X</span>) (<span class="id">x</span> : <span class="id">X</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">l</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add">set_add</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x</span> <span class="id">l</span> = <span class="id">l</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof95')">Proof.</div>
+<div class="proofscript" id="proof95">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span> <span class="kwd">as</span> [|<span class="id">hd</span> <span class="id">tl</span> <span class="id">IHl</span>]; <span class="tactic">intros</span> <span class="id">x</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x</span> <span class="id">x</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">contradiction</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">spec</span> <span class="id">IHl</span> <span class="id">x</span> <span class="id">H0</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x</span> <span class="id">hd</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">IHl</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_remove_not_in">set_remove_not_in</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s</span> = <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof96')">Proof.</div>
+<div class="proofscript" id="proof96">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#not_in_cons">not_in_cons</a></span> <span class="kwd">in</span> <span class="id">H</span>.  <span class="tactic">destruct</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#eq_dec_right">eq_dec_right</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a</span> <span class="id">H</span>). <span class="tactic">rewrite</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> (<span class="id">IHs</span> <span class="id">H0</span>). <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_remove_elim">set_remove_elim</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s</span> -&gt; ~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof97')">Proof.</div>
+<div class="proofscript" id="proof97">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">intro</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">H0</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H0</span>. <span class="tactic">apply</span> <span class="id">H1</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_remove_first">set_remove_first</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id">x</span> = <span class="id">y</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> (<span class="id">y</span>::<span class="id">s</span>) = <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof98')">Proof.</div>
+<div class="proofscript" id="proof98">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>; <span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">Hcmp</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">n</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_remove_nodup_1">set_remove_nodup_1</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s</span>) -&gt;<br/>
+&nbsp;&nbsp;~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof99')">Proof.</div>
+<div class="proofscript" id="proof99">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H0</span> . <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#eq_dec_left">eq_dec_left</a></span> <span class="id">Aeq_dec</span> <span class="id">a</span>). <span class="tactic">rewrite</span> <span class="id">H1</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="id">constructor</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#not_in_cons">not_in_cons</a></span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">destruct</span> <span class="id">H0</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#eq_dec_right">eq_dec_right</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a</span> <span class="id">H0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">H2</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">constructor</span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id">IHs</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span>. <span class="tactic">apply</span> <span class="id">H5</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_3">set_remove_3</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">intro</span>; <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id">H0</span>; <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_remove_in_iff">set_remove_in_iff</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})<br/>
+&nbsp;&nbsp;:  <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> <span class="id">s</span><br/>
+&nbsp;&nbsp;,  <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s</span><br/>
+&nbsp;&nbsp;-&gt;  <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">y</span> <span class="id">s</span><br/>
+&nbsp;&nbsp;-&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s</span> &lt;-&gt; <span class="id">x</span> = <span class="id">y</span> \/ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">y</span> <span class="id">s</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof100')">Proof.</div>
+<div class="proofscript" id="proof100">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">y</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_3">set_remove_3</a></span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H1</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_1">set_remove_1</a></span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_remove_length">set_remove_length</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>})<br/>
+&nbsp;&nbsp;(<span class="id">x</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="tactic">set</span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id">s</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#S">S</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s</span>)).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof101')">Proof.</div>
+<div class="proofscript" id="proof101">
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">x</span>. <span class="tactic">induction</span> <span class="id">s</span>; <span class="tactic">intros</span>; <span class="tactic">inversion</span> <span class="id">Hx</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_remove_first">set_remove_first</a></span>;  <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">a</span>); <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHs</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_remove">set_eq_remove</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s1</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof102')">Proof.</div>
+<div class="proofscript" id="proof102">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H1</span>. <span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">a</span> <span class="id">Hin</span><br/>
+&nbsp;&nbsp;; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span><br/>
+&nbsp;&nbsp;; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>; <span class="tactic">destruct</span> <span class="id">Hin</span><br/>
+&nbsp;&nbsp;; <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span><br/>
+&nbsp;&nbsp;.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">H1</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">H2</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="incl_remove_union">incl_remove_union</a></span>  {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s2</span>)).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof103')">Proof.</div>
+<div class="proofscript" id="proof103">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">intros</span> <span class="id">y</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_intro">set_union_intro</a></span>. <span class="tactic">destruct</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_elim">set_union_elim</a></span> <span class="kwd">in</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H1</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_3">set_remove_3</a></span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_nodup">set_union_nodup</a></span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_remove_union_in">set_eq_remove_union_in</a></span>  {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s2</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof104')">Proof.</div>
+<div class="proofscript" id="proof104">
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">msg</span> <span class="id">Hin</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span><br/>
+&nbsp;&nbsp;; <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">assumption</span>)<br/>
+&nbsp;&nbsp;.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">H2</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">destruct</span> <span class="id">H2</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">Aeq_dec</span> <span class="id">msg</span> <span class="id">x</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_remove_union_not_in">set_eq_remove_union_not_in</a></span>  {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> <span class="id">s2</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">Aeq_dec</span> <span class="id">x</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>)).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof105')">Proof.</div>
+<div class="proofscript" id="proof105">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">HnodupUs1s2</span> := <span class="id">H0</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_nodup">set_union_nodup</a></span> <span class="id">Aeq_dec</span> <span class="id">H</span>) <span class="kwd">in</span> <span class="id">HnodupUs1s2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">msg</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intro</span>; <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id">H1</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">H2</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H2</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intro</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">H2</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H2</span>. <span class="tactic">apply</span> <span class="id">H3</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">Hin</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span> <span class="kwd">in</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H2</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="diff_app_nodup">diff_app_nodup</a></span> {<span class="id">A</span>} (<span class="id">Aeq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>:<span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> ((<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_diff">set_diff</a></span> <span class="id">Aeq_dec</span> <span class="id">s1</span> <span class="id">s2</span>) ++ <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof106')">Proof.</div>
+<div class="proofscript" id="proof106">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html#nodup_append">nodup_append</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_diff_nodup">set_diff_nodup</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>. <span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_diff_elim2">set_diff_elim2</a></span> <span class="id">Aeq_dec</span> <span class="id">a</span> <span class="id">s1</span>); <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>. <span class="tactic">intro</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_diff_iff">set_diff_iff</a></span> <span class="kwd">in</span> <span class="id">H2</span>. <span class="tactic">destruct</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H3</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_remove_inverse">add_remove_inverse</a></span> {<span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>}:<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">lv</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">X</span>) (<span class="id">v</span> : <span class="id">X</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">v</span> <span class="id">lv</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">v</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_add">set_add</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">v</span> <span class="id">lv</span>) = <span class="id">lv</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof107')">Proof.</div>
+<div class="proofscript" id="proof107">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">lv</span> <span class="kwd">as</span> [|<span class="id">hd</span> <span class="id">tl</span> <span class="id">IHlv</span>]; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">compute</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">v</span> <span class="id">v</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">reflexivity</span>. <span class="id">contradiction</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">v</span> <span class="id">hd</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="id">exfalso</span>; <span class="tactic">apply</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_eq">in_eq</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHlv</span> <span class="id">v</span>. <span class="id">spec</span> <span class="id">IHlv</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">Habsurd</span>. <span class="tactic">apply</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">IHlv</span> <span class="tactic">at</span> 2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">v</span> <span class="id">hd</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">contradiction</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">v</span> <span class="id">hd</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">contradiction</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Unset</span> <span class="kwd">Implicit</span> <span class="id">Arguments</span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
