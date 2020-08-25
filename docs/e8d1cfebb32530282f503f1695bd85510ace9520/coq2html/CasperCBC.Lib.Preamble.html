@@ -1,0 +1,767 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.Preamble</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.Preamble" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.Preamble</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Reals</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relations.html">Relations</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.EqdepFacts.html">EqdepFacts</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ProofIrrelevance.html">ProofIrrelevance</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Eqdep_dec.html">Eqdep_dec</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">spec</span>" <span class="id">hyp</span>(<span class="id">H</span>) :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">type</span> <span class="id">of</span> <span class="id">H</span> <span class="kwd">with</span> ?<span class="id">a</span> -&gt; <span class="id">_</span> =&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">H1</span> := <span class="tactic">fresh</span> <span class="kwd">in</span> (<span class="tactic">assert</span> (<span class="id">H1</span>: <span class="id">a</span>);<br/>
+&nbsp;&nbsp;[|<span class="tactic">generalize</span> (<span class="id">H</span> <span class="id">H1</span>); <span class="tactic">clear</span> <span class="id">H</span> <span class="id">H1</span>; <span class="tactic">intro</span> <span class="id">H</span>]) <span class="kwd">end</span>.<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">spec</span>" <span class="id">hyp</span>(<span class="id">H</span>) <span class="id">constr</span>(<span class="id">a</span>) :=<br/>
+&nbsp;&nbsp;(<span class="tactic">generalize</span> (<span class="id">H</span> <span class="id">a</span>); <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">intro</span> <span class="id">H</span>).<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">spec</span>" <span class="id">hyp</span>(<span class="id">H</span>) <span class="id">constr</span>(<span class="id">a</span>) <span class="id">constr</span>(<span class="id">b</span>) :=<br/>
+&nbsp;&nbsp;(<span class="tactic">generalize</span> (<span class="id">H</span> <span class="id">a</span> <span class="id">b</span>); <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">intro</span> <span class="id">H</span>).<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">spec</span>" <span class="id">hyp</span>(<span class="id">H</span>) <span class="id">constr</span>(<span class="id">a</span>) <span class="id">constr</span>(<span class="id">b</span>) <span class="id">constr</span>(<span class="id">c</span>) :=<br/>
+&nbsp;&nbsp;(<span class="tactic">generalize</span> (<span class="id">H</span> <span class="id">a</span> <span class="id">b</span> <span class="id">c</span>); <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">intro</span> <span class="id">H</span>).<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">spec</span>" <span class="id">hyp</span>(<span class="id">H</span>) <span class="id">constr</span>(<span class="id">a</span>) <span class="id">constr</span>(<span class="id">b</span>) <span class="id">constr</span>(<span class="id">c</span>) <span class="id">constr</span>(<span class="id">d</span>) :=<br/>
+&nbsp;&nbsp;(<span class="tactic">generalize</span> (<span class="id">H</span> <span class="id">a</span> <span class="id">b</span> <span class="id">c</span> <span class="id">d</span>); <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">intro</span> <span class="id">H</span>).<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">spec</span>" <span class="id">hyp</span>(<span class="id">H</span>) <span class="id">constr</span>(<span class="id">a</span>) <span class="id">constr</span>(<span class="id">b</span>) <span class="id">constr</span>(<span class="id">c</span>) <span class="id">constr</span>(<span class="id">d</span>) <span class="id">constr</span>(<span class="id">e</span>) :=<br/>
+&nbsp;&nbsp;(<span class="tactic">generalize</span> (<span class="id">H</span> <span class="id">a</span> <span class="id">b</span> <span class="id">c</span> <span class="id">d</span> <span class="id">e</span>); <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">intro</span> <span class="id">H</span>).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="noneOrAll">noneOrAll</a></span><br/>
+&nbsp;&nbsp;(<span class="id">op</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">op</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span><br/>
+&nbsp;&nbsp;| (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">p</span>) =&gt; <span class="id">p</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="exist_eq">exist_eq</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span>}<br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id">X</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> : {<span class="id">x</span> : <span class="id">X</span> | <span class="id">P</span> <span class="id">x</span>})<br/>
+&nbsp;&nbsp;: <span class="id">a</span> = <span class="id">b</span> &lt;-&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">a</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">b</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof109')">Proof.</div>
+<div class="proofscript" id="proof109">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">a</span> <span class="kwd">as</span> [<span class="id">a</span> <span class="id">Ha</span>]; <span class="tactic">destruct</span> <span class="id">b</span> <span class="kwd">as</span> [<span class="id">b</span> <span class="id">Hb</span>]; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">Heq</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="tactic">f_equal</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ProofIrrelevance.html#proof_irrelevance">proof_irrelevance</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="EqDec">EqDec</a></span> <span class="id">X</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="eq_dec">eq_dec</a></span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id">X</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="eq_dec_refl">eq_dec_refl</a></span> <span class="id">A</span> (<span class="id">eq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) <span class="id">x</span> :<br/>
+&nbsp;&nbsp;<span class="id">eq_dec</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof110')">Proof.</div>
+<div class="proofscript" id="proof110">
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">eq_dec</span> <span class="id">x</span> <span class="id">x</span>) <span class="kwd">as</span> [|[]]; <span class="tactic">trivial</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Eqdep_dec.html#K_dec_type">K_dec_type</a></span> <span class="kwd">with</span> (<span class="id">P</span> := <span class="kwd">fun</span> <span class="id">prf</span> =&gt; <span class="id">prf</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="nat_eq_dec">nat_eq_dec</a></span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#EqDec">EqDec</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof111')">Proof.</div>
+<div class="proofscript" id="proof111">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#EqDec">EqDec</a></span>. <span class="tactic">induction</span> <span class="id">x</span>; <span class="tactic">destruct</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;- <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="tactic">intros</span> <span class="id">C</span>; <span class="tactic">inversion</span> <span class="id">C</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="tactic">intros</span> <span class="id">C</span>; <span class="tactic">inversion</span> <span class="id">C</span>.<br/>
+&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id">IHx</span> <span class="id">y</span>). <span class="tactic">destruct</span> <span class="id">IHx</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hneq</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">left</span>. <span class="tactic">subst</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">intros</span> <span class="id">Heq</span>. <span class="tactic">inversion</span> <span class="id">Heq</span>. <span class="id">contradiction</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="mid">mid</a></span> {<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span> : <span class="kwd">Type</span>} (<span class="id">xyz</span> : <span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>) : <span class="id">Y</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#snd">snd</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#fst">fst</a></span> <span class="id">xyz</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="or_and_distr_left">or_and_distr_left</a></span> : <span class="kwd">forall</span> <span class="id">A</span> <span class="id">B</span> <span class="id">C</span>, (<span class="id">A</span> /\ <span class="id">B</span>) \/ <span class="id">C</span> &lt;-&gt; (<span class="id">A</span> \/ <span class="id">C</span>) /\ (<span class="id">B</span> \/ <span class="id">C</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof112')">Proof.</div>
+<div class="proofscript" id="proof112">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intro</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">split</span>; <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [[<span class="id">HA</span> <span class="id">HB</span>] | <span class="id">HC</span>]; (<span class="id">left</span>; <span class="tactic">assumption</span>) || <span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">Hac</span> <span class="id">Hbc</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hac</span> <span class="kwd">as</span> [<span class="id">Ha</span> | <span class="id">Hc</span>]; <span class="tactic">try</span> (<span class="id">right</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hbc</span> <span class="kwd">as</span> [<span class="id">Hb</span> | <span class="id">Hc</span>]; <span class="tactic">try</span> (<span class="id">right</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">left</span>. <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_ex_all_not">not_ex_all_not</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hne</span> : ~ (<span class="id">exists</span> <span class="id">a</span> : <span class="id">A</span>, <span class="id">P</span> <span class="id">a</span>))<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> <span class="id">a</span>:<span class="id">A</span>, ~ <span class="id">P</span> <span class="id">a</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof113')">Proof.</div>
+<div class="proofscript" id="proof113">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">a</span> <span class="id">Hpa</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hne</span>.<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">a</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="mirror_reflect">mirror_reflect</a></span>: <span class="kwd">forall</span> <span class="id">X</span> (<span class="id">f</span> : <span class="id">X</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>) (<span class="id">P</span> : <span class="id">X</span> -&gt; <span class="kwd">Prop</span>),<br/>
+&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">x</span> : <span class="id">X</span>, <span class="id">f</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> &lt;-&gt; <span class="id">P</span> <span class="id">x</span>) -&gt;<br/>
+&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">x</span> : <span class="id">X</span>, <span class="id">f</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> &lt;-&gt; ~<span class="id">P</span> <span class="id">x</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof114')">Proof.</div>
+<div class="proofscript" id="proof114">
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">repeat</span> <span class="tactic">intro</span>.<br/>
+&nbsp;&nbsp;+ <span class="tactic">rewrite</span> &lt;- <span class="id">H</span> <span class="kwd">in</span> <span class="id">H1</span>. <span class="tactic">rewrite</span> <span class="id">H0</span> <span class="kwd">in</span> <span class="id">H1</span>. <span class="tactic">discriminate</span>.<br/>
+&nbsp;&nbsp;+ <span class="id">specialize</span> (<span class="id">H</span> <span class="id">x</span>). <span class="tactic">destruct</span> (<span class="id">f</span> <span class="id">x</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">H0</span>. <span class="tactic">rewrite</span> &lt;- <span class="id">H</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Theorem</span> <span class="id"><a name="mirror_reflect_curry">mirror_reflect_curry</a></span> :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>) (<span class="id">f</span> : <span class="id">X</span> -&gt; <span class="id">Y</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>) (<span class="id">P</span> : <span class="id">X</span> -&gt; <span class="id">Y</span> -&gt; <span class="kwd">Prop</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">f</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> &lt;-&gt; <span class="id">P</span> <span class="id">x</span> <span class="id">y</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">f</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> &lt;-&gt; ~ <span class="id">P</span> <span class="id">x</span> <span class="id">y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof115')">Proof.</div>
+<div class="proofscript" id="proof115">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">H_absurd</span>. <span class="tactic">apply</span> <span class="id">H</span> <span class="kwd">in</span> <span class="id">H_absurd</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">H0</span> <span class="kwd">in</span> <span class="id">H_absurd</span>; <span class="tactic">discriminate</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#not_true_is_false">not_true_is_false</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">H_not</span>. <span class="tactic">apply</span> <span class="id">H</span> <span class="kwd">in</span> <span class="id">H_not</span>.<br/>
+&nbsp;&nbsp;<span class="id">contradiction</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="eq_dec_if_true">eq_dec_if_true</a></span> {<span class="id">A</span> <span class="id">B</span>: <span class="kwd">Type</span>} (<span class="id">eq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> (<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>) (<span class="id">t</span> <span class="id">e</span> : <span class="id">B</span>),<br/>
+&nbsp;&nbsp;<span class="id">x</span> = <span class="id">y</span> -&gt; (<span class="kwd">if</span> <span class="id">eq_dec</span> <span class="id">x</span> <span class="id">y</span> <span class="kwd">then</span> <span class="id">t</span> <span class="kwd">else</span> <span class="id">e</span>) = <span class="id">t</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof116')">Proof.</div>
+<div class="proofscript" id="proof116">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> (<span class="id">eq_dec</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">n</span>; <span class="tactic">apply</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="eq_dec_if_false">eq_dec_if_false</a></span> {<span class="id">A</span> <span class="id">B</span>: <span class="kwd">Type</span>} (<span class="id">eq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) : <span class="kwd">forall</span> (<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>) (<span class="id">t</span> <span class="id">e</span> : <span class="id">B</span>),<br/>
+&nbsp;&nbsp;<span class="id">x</span> &lt;&gt; <span class="id">y</span> -&gt; (<span class="kwd">if</span> <span class="id">eq_dec</span> <span class="id">x</span> <span class="id">y</span> <span class="kwd">then</span> <span class="id">t</span> <span class="kwd">else</span> <span class="id">e</span>) = <span class="id">e</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof117')">Proof.</div>
+<div class="proofscript" id="proof117">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> (<span class="id">eq_dec</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id">exfalso</span>. <span class="tactic">apply</span> <span class="id">H</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="TotalOrder">TotalOrder</a></span> {<span class="id">A</span>} (<span class="id">lt</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a name="totality">totality</a></span> : <span class="kwd">forall</span> <span class="id">c1</span> <span class="id">c2</span>, <span class="id">c1</span> = <span class="id">c2</span> \/ <span class="id">lt</span> <span class="id">c1</span> <span class="id">c2</span> \/ <span class="id">lt</span> <span class="id">c2</span> <span class="id">c1</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Injective">Injective</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">B</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="injective">injective</a></span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">f</span> <span class="id">x</span> = <span class="id">f</span> <span class="id">y</span> &lt;-&gt; <span class="id">x</span> = <span class="id">y</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Commutative">Commutative</a></span> {<span class="id">A</span> <span class="id">B</span> : <span class="kwd">Type</span>} (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">B</span>) :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="commutative">commutative</a></span> : <span class="kwd">forall</span> <span class="id">a1</span> <span class="id">a2</span>, <span class="id">f</span> <span class="id">a1</span> <span class="id">a2</span> = <span class="id">f</span> <span class="id">a2</span> <span class="id">a1</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Decidable">Decidable</a></span> {<span class="id">A</span>} (<span class="id">r</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="dec">dec</a></span> : <span class="kwd">forall</span> (<span class="id">a</span> : <span class="id">A</span>), <span class="id">r</span> <span class="id">a</span> \/ ~ <span class="id">r</span> <span class="id">a</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="PredicateFunction">PredicateFunction</a></span> {<span class="id">A</span>} (<span class="id">r</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) (<span class="id">r_fn</span> : <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="equiv">equiv</a></span> : <span class="kwd">forall</span> <span class="id">a</span>, <span class="id">r</span> <span class="id">a</span> &lt;-&gt; <span class="id">r_fn</span> <span class="id">a</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="predicate_function_dec">predicate_function_dec</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Preamble.html#Decidable">Decidable</a></span> <span class="id">r</span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="predicate_not">predicate_not</a></span> {<span class="id">A</span>} (<span class="id">p</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) : <span class="id">A</span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">a</span> =&gt; ~ <span class="id">p</span> <span class="id">a</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="predicate_function_neg">predicate_function_neg</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#PredicateFunction">PredicateFunction</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">a</span>, ~ <span class="id">r</span> <span class="id">a</span> &lt;-&gt; <span class="id">r_fn</span> <span class="id">a</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof118')">Proof.</div>
+<div class="proofscript" id="proof118">
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">a</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#not_true_iff_false">not_true_iff_false</a></span>. <span class="tactic">intro</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#equiv">equiv</a></span> <span class="kwd">in</span> <span class="id">Hnot</span>. <span class="id">contradiction</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">Hnot</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#not_true_iff_false">not_true_iff_false</a></span> <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H0</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#equiv">equiv</a></span> <span class="id">a</span>). <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="PredicateFunction2">PredicateFunction2</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">r</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="kwd">Prop</span>) (<span class="id">r_fn</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="predicate_function2">predicate_function2</a></span> : <span class="kwd">forall</span> <span class="id">a</span> <span class="id">b</span>, <span class="id">r</span> <span class="id">a</span> <span class="id">b</span> &lt;-&gt; <span class="id">r_fn</span> <span class="id">a</span> <span class="id">b</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="predicate_function2_neg">predicate_function2_neg</a></span> : <span class="kwd">forall</span> <span class="id">A</span> <span class="id">B</span> (<span class="id">r</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="kwd">Prop</span>) (<span class="id">r_fn</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#PredicateFunction2">PredicateFunction2</a></span> <span class="id">r</span> <span class="id">r_fn</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">a</span> <span class="id">b</span>, ~ <span class="id">r</span> <span class="id">a</span> <span class="id">b</span> &lt;-&gt; <span class="id">r_fn</span> <span class="id">a</span> <span class="id">b</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof119')">Proof.</div>
+<div class="proofscript" id="proof119">
+  <span class="tactic">intros</span>. <span class="tactic">rewrite</span> (<span class="id">H</span> <span class="id">a</span> <span class="id">b</span>).   <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#not_true_iff_false">not_true_iff_false</a></span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="predicate_function2_decidable">predicate_function2_decidable</a></span> : <span class="kwd">forall</span> <span class="id">A</span> <span class="id">B</span> (<span class="id">r</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="kwd">Prop</span>) (<span class="id">r_fn</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#PredicateFunction2">PredicateFunction2</a></span> <span class="id">r</span> <span class="id">r_fn</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">a</span> <span class="id">b</span>, <span class="id">r</span> <span class="id">a</span> <span class="id">b</span> \/ ~<span class="id">r</span> <span class="id">a</span> <span class="id">b</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof120')">Proof.</div>
+<div class="proofscript" id="proof120">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> (<span class="id">r_fn</span> <span class="id">a</span> <span class="id">b</span>) <span class="id">eqn</span>:<span class="id">Hr</span>.<br/>
+&nbsp;&nbsp;- <span class="id">left</span>. <span class="tactic">apply</span> <span class="id">H</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#predicate_function2_neg">predicate_function2_neg</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H</span>). <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="CompareReflexive">CompareReflexive</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="compare_eq">compare_eq</a></span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">compare</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> &lt;-&gt; <span class="id">x</span> = <span class="id">y</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_eq_refl">compare_eq_refl</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span>, <span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof121')">Proof.</div>
+<div class="proofscript" id="proof121">
+ <span class="tactic">intros</span>; <span class="id">now</span> <span class="tactic">apply</span> <span class="id">H</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_eq_lt">compare_eq_lt</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span>, ~ <span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof122')">Proof.</div>
+<div class="proofscript" id="proof122">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span>) <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hnot</span> <span class="kwd">in</span> <span class="id">H0</span>; <span class="tactic">discriminate</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_lt_neq">compare_lt_neq</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">compare</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span> -&gt; <span class="id">x</span> &lt;&gt; <span class="id">y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof123')">Proof.</div>
+<div class="proofscript" id="proof123">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span> <span class="id">Hcomp</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="id">now</span> <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_lt">compare_eq_lt</a></span> <span class="id">y</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_eq_gt">compare_eq_gt</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span>, ~ <span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof124')">Proof.</div>
+<div class="proofscript" id="proof124">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span>) <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hnot</span> <span class="kwd">in</span> <span class="id">H0</span>; <span class="tactic">discriminate</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_gt_neq">compare_gt_neq</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">compare</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span> -&gt; <span class="id">x</span> &lt;&gt; <span class="id">y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof125')">Proof.</div>
+<div class="proofscript" id="proof125">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span> <span class="id">H_comp</span> <span class="id">H_not</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_gt">compare_eq_gt</a></span> <span class="kwd">in</span> <span class="id">H_comp</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="CompareTransitive">CompareTransitive</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="compare_transitive">compare_transitive</a></span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> <span class="id">comp</span>, <span class="id">compare</span> <span class="id">x</span> <span class="id">y</span> = <span class="id">comp</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">compare</span> <span class="id">y</span> <span class="id">z</span> = <span class="id">comp</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">compare</span> <span class="id">x</span> <span class="id">z</span> = <span class="id">comp</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="CompareStrictOrder">CompareStrictOrder</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">compare</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="StrictOrder_Transitive">StrictOrder_Transitive</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareTransitive">CompareTransitive</a></span> <span class="id">compare</span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_eq_dec">compare_eq_dec</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof126')">Proof.</div>
+<div class="proofscript" id="proof126">
+&nbsp;&nbsp;<span class="tactic">intros</span>;<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hxy</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">left</span>; <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span>; <span class="tactic">assumption</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|| (<span class="id">right</span>; <span class="tactic">intro</span>; <span class="tactic">subst</span>; [<span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_lt">compare_eq_lt</a></span> <span class="kwd">in</span> <span class="id">Hxy</span> || <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_gt">compare_eq_gt</a></span> <span class="kwd">in</span> <span class="id">Hxy</span>]).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="eq_bool">eq_bool</a></span> {<span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">X</span>} (<span class="id">x</span> <span class="id">y</span> : <span class="id">X</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x</span> <span class="id">y</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="CompareAsymmetric">CompareAsymmetric</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="compare_asymmetric">compare_asymmetric</a></span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>, <span class="id">compare</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span> &lt;-&gt; <span class="id">compare</span> <span class="id">y</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_asymmetric_intro">compare_asymmetric_intro</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareAsymmetric">CompareAsymmetric</a></span> <span class="id">compare</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof127')">Proof.</div>
+<div class="proofscript" id="proof127">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">R</span> <span class="id">TR</span>]. <span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">y</span> <span class="id">x</span>) <span class="id">eqn</span>:<span class="id">Hyx</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>; <span class="id">exfalso</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">R</span> <span class="kwd">in</span> <span class="id">Hyx</span>; <span class="tactic">subst</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_lt">compare_eq_lt</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> (<span class="id">TR</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hyx</span>) <span class="kwd">in</span> <span class="id">H</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_lt">compare_eq_lt</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hyx</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>; <span class="id">exfalso</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">R</span> <span class="kwd">in</span> <span class="id">Hyx</span>; <span class="tactic">subst</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_gt">compare_eq_gt</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> (<span class="id">TR</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hyx</span>) <span class="kwd">in</span> <span class="id">H</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_gt">compare_eq_gt</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="CompareStrictOrder_Asymmetric">CompareStrictOrder_Asymmetric</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareAsymmetric">CompareAsymmetric</a></span> <span class="id">compare</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof128')">Proof.</div>
+<div class="proofscript" id="proof128">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_asymmetric_intro">compare_asymmetric_intro</a></span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="compare_lt">compare_lt</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) (<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id">compare</span> <span class="id">x</span> <span class="id">y</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_lt_irreflexive">compare_lt_irreflexive</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Irreflexive">Irreflexive</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof129')">Proof.</div>
+<div class="proofscript" id="proof129">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hlt</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span>) <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hlt</span> <span class="kwd">in</span> <span class="id">H0</span>; <span class="tactic">discriminate</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_lt_transitive">compare_lt_transitive</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareTransitive">CompareTransitive</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof130')">Proof.</div>
+<div class="proofscript" id="proof130">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> <span class="id">Hxy</span> <span class="id">Hyz</span>; <span class="id">now</span> <span class="tactic">apply</span> (<span class="id">H</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hxy</span> <span class="id">Hyz</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_lt_strict_order">compare_lt_strict_order</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof131')">Proof.</div>
+<div class="proofscript" id="proof131">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">R</span> <span class="id">T</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt_irreflexive">compare_lt_irreflexive</a></span>.<br/>
+&nbsp;&nbsp;- <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt_transitive">compare_lt_transitive</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_lt_asymmetric">compare_lt_asymmetric</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Asymmetric">Asymmetric</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof132')">Proof.</div>
+<div class="proofscript" id="proof132">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">IR</span> <span class="id">TR</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span> <span class="id">Hxy</span> <span class="id">Hyx</span>. <span class="tactic">apply</span> (<span class="id">TR</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hxy</span>) <span class="kwd">in</span> <span class="id">Hyx</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span>) <span class="tactic">by</span> (<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq">compare_eq</a></span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hyx</span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">discriminate</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_lt_total_order">compare_lt_total_order</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#TotalOrder">TotalOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof133')">Proof.</div>
+<div class="proofscript" id="proof133">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">CSO</span> := <span class="id">H</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">R</span> <span class="id">TR</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">R</span> <span class="kwd">in</span> <span class="id">Hcmp</span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="id">right</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_asymmetric_intro">compare_asymmetric_intro</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Program</span> <span class="kwd">Definition</span> <span class="id"><a name="make_compare_lt_asymmetric">make_compare_lt_asymmetric</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span>} : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Asymmetric">Asymmetric</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof134')">Proof.</div>
+<div class="proofscript" id="proof134">
+&nbsp;&nbsp;<span class="tactic">exact</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt_asymmetric">compare_lt_asymmetric</a></span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> : <span class="kwd">Type</span>) : <span class="kwd">Type</span> :=<br/>
+&nbsp;&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="inhabited">inhabited</a></span> : <span class="id">X</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="compare">compare</a></span> : <span class="id">X</span> -&gt; <span class="id">X</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="compare_strictorder">compare_strictorder</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">compare</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="strictly_comparable_eq_dec">strictly_comparable_eq_dec</a></span><br/>
+&nbsp;&nbsp;{<span class="id">M</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">HM</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">M</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#EqDec">EqDec</a></span> <span class="id">M</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof135')">Proof.</div>
+<div class="proofscript" id="proof135">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_two_cases">compare_two_cases</a></span><br/>
+&nbsp;&nbsp;{<span class="id">M</span>} `{<span class="id">Hsc</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">M</span>}<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> <span class="id">m1</span> <span class="id">m2</span> : <span class="id">M</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m1</span> <span class="id">m2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> /\ <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m2</span> <span class="id">m1</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span>) \/<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m1</span> <span class="id">m2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span> /\ <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m2</span> <span class="id">m1</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span>) \/<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m1</span> <span class="id">m2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span> /\ <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m2</span> <span class="id">m1</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof136')">Proof.</div>
+<div class="proofscript" id="proof136">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">m1</span> <span class="id">m2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">m1</span> <span class="id">m2</span>) <span class="id">eqn</span>:<span class="id">H_m</span>.<br/>
+&nbsp;&nbsp;<span class="id">left</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq">compare_eq</a></span> <span class="kwd">in</span> <span class="id">H_m</span>. <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">right</span>. <span class="id">left</span>; <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_asymmetric">compare_asymmetric</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">right</span>; <span class="id">right</span>; <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_asymmetric">compare_asymmetric</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Tactic</span> <span class="kwd">Notation</span> "<span class="id">case_pair</span>" <span class="id">constr</span>(<span class="id">about_M</span>) <span class="id">constr</span>(<span class="id">m1</span>) <span class="id">constr</span>(<span class="id">m2</span>) :=<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_fresh</span> := @<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_two_cases">compare_two_cases</a></span> <span class="id">_</span> <span class="id">about_M</span> <span class="id">m1</span> <span class="id">m2</span>);<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_fresh</span> <span class="kwd">as</span> [[<span class="id">H_eq1</span> <span class="id">H_eq2</span>] | [[<span class="id">H_lt</span> <span class="id">H_gt</span>] | [<span class="id">H_gt</span> <span class="id">H_lt</span>]]].<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="sigify_eq_dec">sigify_eq_dec</a></span> {<span class="id">X</span> : <span class="kwd">Type</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">P</span> : <span class="id">X</span> -&gt; <span class="kwd">Prop</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">x1</span> <span class="id">x2</span> : {<span class="id">x</span> | <span class="id">P</span> <span class="id">x</span>}), {<span class="id">x1</span> = <span class="id">x2</span>} + {<span class="id">x1</span> &lt;&gt; <span class="id">x2</span>}.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof137')">Proof.</div>
+<div class="proofscript" id="proof137">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">P</span> <span class="id">x1</span> <span class="id">x2</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">x1</span> <span class="kwd">as</span> [<span class="id">x1</span> <span class="id">about_x1</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">x2</span> <span class="kwd">as</span> [<span class="id">x2</span> <span class="id">about_x2</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span> <span class="id">x1</span> <span class="id">x2</span>) <span class="kwd">as</span> [<span class="id">left</span> | <span class="id">right</span>].<br/>
+&nbsp;&nbsp;<span class="id">left</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#exist_eq">exist_eq</a></span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">intro</span> <span class="id">Hnot</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#exist_eq">exist_eq</a></span> <span class="kwd">in</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;<span class="id">contradiction</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Program</span> <span class="kwd">Definition</span> <span class="id"><a name="sigify_compare">sigify_compare</a></span> {<span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} (<span class="id">P</span> : <span class="id">X</span> -&gt; <span class="kwd">Prop</span>) : {<span class="id">x</span> | <span class="id">P</span> <span class="id">x</span>} -&gt; {<span class="id">x</span> | <span class="id">P</span> <span class="id">x</span>} -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span> := <span class="id">_</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof138')">Next Obligation.</div>
+<div class="proofscript" id="proof138">
+&nbsp;&nbsp;<span class="tactic">exact</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">X0</span> <span class="id">X1</span>).<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="option_compare">option_compare</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">compare</span> : <span class="id">X</span> -&gt; <span class="id">X</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">ox</span> <span class="id">oy</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">X</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">ox</span>, <span class="id">oy</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>, <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span><br/>
+&nbsp;&nbsp;| <span class="id">_</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">x</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">y</span> =&gt; <span class="id">compare</span> <span class="id">x</span> <span class="id">y</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="option_compare_reflexive">option_compare_reflexive</a></span><br/>
+&nbsp;&nbsp;(<span class="id">X</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;{<span class="id">Xsc</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>}<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#option_compare">option_compare</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof139')">Proof.</div>
+<div class="proofscript" id="proof139">
+&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">x</span>|] [<span class="id">y</span>|]; <span class="tactic">simpl</span>; <span class="tactic">split</span>; <span class="tactic">intro</span> <span class="id">H</span>; <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">f_equal</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="option_compare_transitive">option_compare_transitive</a></span><br/>
+&nbsp;&nbsp;(<span class="id">X</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;{<span class="id">Xsc</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>}<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareTransitive">CompareTransitive</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#option_compare">option_compare</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof140')">Proof.</div>
+<div class="proofscript" id="proof140">
+&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">x</span>|] [<span class="id">y</span>|] [<span class="id">z</span>|] [| |]; <span class="tactic">simpl</span>; <span class="tactic">intros</span> <span class="id">Hxy</span> <span class="id">Hyz</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> <span class="id">_</span>); <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> <span class="id">_</span>); <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> <span class="id">_</span>); <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="strictorder_option">strictorder_option</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span>: <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">Xsc</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#option_compare">option_compare</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof141')">Proof.</div>
+<div class="proofscript" id="proof141">
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">exact</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#option_compare_reflexive">option_compare_reflexive</a></span> <span class="id">X</span>) || <span class="tactic">exact</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#option_compare_transitive">option_compare_transitive</a></span> <span class="id">X</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="OptionStrictlyComparable">OptionStrictlyComparable</a></span><br/>
+&nbsp;&nbsp;(<span class="id">X</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;{<span class="id">Xsc</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>}<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">X</span>) :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#option_compare">option_compare</a></span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_strictorder">compare_strictorder</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#strictorder_option">strictorder_option</a></span> <span class="id">Xsc</span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="compare_compose">compare_compose</a></span> (<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>) `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} : (<span class="id">X</span> * <span class="id">Y</span>) -&gt; (<span class="id">X</span> * <span class="id">Y</span>) -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">p1</span> <span class="id">p2</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">p1</span>, <span class="id">p2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| (<span class="id">x1</span>, <span class="id">y1</span>), (<span class="id">x2</span>, <span class="id">y2</span>) =&gt; <span class="kwd">match</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> =&gt; <span class="kwd">match</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="inhabited_compose">inhabited_compose</a></span> {<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>} `{<span class="id">HscX</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id">HscY</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>}<br/>
+&nbsp;&nbsp;: <span class="id">X</span> * <span class="id">Y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof142')">Proof.</div>
+<div class="proofscript" id="proof142">
+&nbsp;&nbsp;<span class="id">remember</span> (@<span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> <span class="id">_</span> <span class="id">HscX</span> ) <span class="kwd">as</span> <span class="id">x</span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (@<span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> <span class="id">_</span> <span class="id">HscY</span>) <span class="kwd">as</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> (<span class="id">x</span>,<span class="id">y</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="reflexive_compose">reflexive_compose</a></span> {<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} : <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareReflexive">CompareReflexive</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose">compare_compose</a></span> <span class="id">X</span> <span class="id">Y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof143')">Proof.</div>
+<div class="proofscript" id="proof143">
+&nbsp;&nbsp;<span class="tactic">intros</span> (<span class="id">x1</span>, <span class="id">y1</span>) (<span class="id">x2</span>, <span class="id">y2</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x2</span>) <span class="id">eqn</span>:<span class="id">H_x</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y2</span>) <span class="id">eqn</span>: <span class="id">H_y</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">try</span> <span class="tactic">discriminate</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H_x</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H_y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">H1</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">do</span> 2 <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>; <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_compose_lt">compare_compose_lt</a></span> {<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} : <span class="kwd">forall</span> (<span class="id">x1</span> <span class="id">x2</span> : <span class="id">X</span>) (<span class="id">y1</span> <span class="id">y2</span> : <span class="id">Y</span>) (<span class="id">c</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose">compare_compose</a></span> <span class="id">X</span> <span class="id">Y</span> (<span class="id">x1</span>, <span class="id">y1</span>) (<span class="id">x2</span>, <span class="id">y2</span>) = <span class="id">c</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x2</span> = <span class="id">c</span> \/<br/>
+&nbsp;&nbsp;<span class="id">x1</span> = <span class="id">x2</span> /\ <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y2</span> = <span class="id">c</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof144')">Proof.</div>
+<div class="proofscript" id="proof144">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">y1</span> <span class="id">y2</span> <span class="id">c</span> <span class="id">H_12</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H_12</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x2</span>) <span class="id">eqn</span>:<span class="id">H_x</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">split</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H_x</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y2</span>) <span class="id">eqn</span>:<span class="id">H_y</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="transitive_compose">transitive_compose</a></span> {<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} : <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareTransitive">CompareTransitive</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose">compare_compose</a></span> <span class="id">X</span> <span class="id">Y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof145')">Proof.</div>
+<div class="proofscript" id="proof145">
+&nbsp;&nbsp;<span class="tactic">intros</span> (<span class="id">x1</span>, <span class="id">y1</span>) (<span class="id">x2</span>, <span class="id">y2</span>) (<span class="id">x3</span>, <span class="id">y3</span>) <span class="id">comp</span> <span class="id">H12</span> <span class="id">H23</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">comp</span> <span class="id">eqn</span>:<span class="id">H_comp</span>; <span class="tactic">try</span><br/>
+&nbsp;&nbsp;(<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#reflexive_compose">reflexive_compose</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#reflexive_compose">reflexive_compose</a></span> <span class="kwd">in</span> <span class="id">H12</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#reflexive_compose">reflexive_compose</a></span> <span class="kwd">in</span> <span class="id">H23</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">H12</span>; <span class="tactic">inversion</span> <span class="id">H23</span>; <span class="tactic">subst</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> &lt;- <span class="id">H_comp</span> <span class="kwd">in</span> *;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose_lt">compare_compose_lt</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">y1</span> <span class="id">y2</span> <span class="id">comp</span> <span class="id">H12</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span>' := <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose_lt">compare_compose_lt</a></span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">y2</span> <span class="id">y3</span> <span class="id">comp</span> <span class="id">H23</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_useful</span> <span class="kwd">as</span> [<span class="id">left</span> | <span class="id">right</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_useful</span>' <span class="kwd">as</span> [<span class="id">left</span>' | <span class="id">right</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x3</span> = <span class="id">comp</span>) <span class="tactic">by</span> (<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">comp</span> <span class="id">left</span> <span class="id">left</span>'); <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">H1</span>; <span class="tactic">subst</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">right</span>'; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">right</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">left</span>'; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">right</span>; <span class="tactic">destruct</span> <span class="id">right</span>'; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y3</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span>) <span class="tactic">by</span> (<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">y1</span> <span class="id">y2</span> <span class="id">y3</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span>); <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H12</span>; <span class="tactic">rewrite</span> <span class="id">H1</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> &lt;- <span class="id">H_comp</span> <span class="kwd">in</span> *;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose_lt">compare_compose_lt</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">y1</span> <span class="id">y2</span> <span class="id">comp</span> <span class="id">H12</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span>' := <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose_lt">compare_compose_lt</a></span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">y2</span> <span class="id">y3</span> <span class="id">comp</span> <span class="id">H23</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_useful</span> <span class="kwd">as</span> [<span class="id">left</span> | <span class="id">right</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_useful</span>' <span class="kwd">as</span> [<span class="id">left</span>' | <span class="id">right</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">x1</span> <span class="id">x3</span> = <span class="id">comp</span>) <span class="tactic">by</span> (<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">comp</span> <span class="id">left</span> <span class="id">left</span>'); <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">H1</span>; <span class="tactic">subst</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">right</span>'; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">right</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">left</span>'; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">right</span>; <span class="tactic">destruct</span> <span class="id">right</span>'; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> <span class="id">y1</span> <span class="id">y3</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span>) <span class="tactic">by</span> (<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span> <span class="id">y1</span> <span class="id">y2</span> <span class="id">y3</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span>); <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H12</span>; <span class="tactic">rewrite</span> <span class="id">H1</span>; <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="strictorder_compose">strictorder_compose</a></span> {<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} : <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose">compare_compose</a></span> <span class="id">X</span> <span class="id">Y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof146')">Proof.</div>
+<div class="proofscript" id="proof146">
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">exact</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#reflexive_compose">reflexive_compose</a></span> || <span class="tactic">exact</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#transitive_compose">transitive_compose</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="ComposeStrictlyComparable">ComposeStrictlyComparable</a></span> (<span class="id">X</span> <span class="id">Y</span> : <span class="kwd">Type</span>) `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span>) :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited_compose">inhabited_compose</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose">compare_compose</a></span> <span class="id">X</span> <span class="id">Y</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_strictorder">compare_strictorder</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#strictorder_compose">strictorder_compose</a></span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="TripleStrictlyComparable">TripleStrictlyComparable</a></span> (<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span> : <span class="kwd">Type</span>) `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Z</span>} : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>) :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited_compose">inhabited_compose</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_compose">compare_compose</a></span> (<span class="id">X</span> * <span class="id">Y</span>) <span class="id">Z</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_strictorder">compare_strictorder</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#strictorder_compose">strictorder_compose</a></span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj1_inhabited">triple_strictly_comparable_proj1_inhabited</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;: <span class="id">X</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof147')">Proof.</div>
+<div class="proofscript" id="proof147">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span> <span class="kwd">as</span> [((<span class="id">x</span>, <span class="id">y</span>), <span class="id">z</span>) <span class="id">_</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> <span class="id">x</span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj1_compare">triple_strictly_comparable_proj1_compare</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">x1</span> <span class="id">x2</span> : <span class="id">X</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof148')">Proof.</div>
+<div class="proofscript" id="proof148">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span> <span class="kwd">as</span> [((<span class="id">x</span>, <span class="id">y</span>), <span class="id">z</span>) <span class="id">compare</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> (<span class="id">compare</span> (<span class="id">x1</span>, <span class="id">y</span>, <span class="id">z</span>) (<span class="id">x2</span>, <span class="id">y</span>, <span class="id">z</span>)).<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="triple_strictly_comparable_proj1_strictorder">triple_strictly_comparable_proj1_strictorder</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> (@<span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj1_compare">triple_strictly_comparable_proj1_compare</a></span> <span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span> <span class="id">HscXYZ</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof149')">Proof.</div>
+<div class="proofscript" id="proof149">
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj1_compare">triple_strictly_comparable_proj1_compare</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">inhabited0</span> <span class="kwd">as</span> [(<span class="id">x0</span>, <span class="id">y0</span>) <span class="id">z0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intro</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">inversion</span> <span class="id">H</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> . <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">cmp</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj1_compare">triple_strictly_comparable_proj1_compare</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">inhabited0</span> <span class="kwd">as</span> [(<span class="id">x0</span>, <span class="id">y0</span>) <span class="id">z0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj1">triple_strictly_comparable_proj1</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} (<span class="id">HscT</span> :  <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">X</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj1_inhabited">triple_strictly_comparable_proj1_inhabited</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj1_compare">triple_strictly_comparable_proj1_compare</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_strictorder">compare_strictorder</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj1_strictorder">triple_strictly_comparable_proj1_strictorder</a></span>;<br/>
+&nbsp;&nbsp;|}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj2_inhabited">triple_strictly_comparable_proj2_inhabited</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;: <span class="id">Y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof150')">Proof.</div>
+<div class="proofscript" id="proof150">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span> <span class="kwd">as</span> [[(<span class="id">x</span>, <span class="id">y</span>) <span class="id">z</span>] <span class="id">_</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> <span class="id">y</span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj2_compare">triple_strictly_comparable_proj2_compare</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">y1</span> <span class="id">y2</span> : <span class="id">Y</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof151')">Proof.</div>
+<div class="proofscript" id="proof151">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span> <span class="kwd">as</span> [[(<span class="id">x</span>, <span class="id">y</span>) <span class="id">z</span>] <span class="id">compare</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> (<span class="id">compare</span> (<span class="id">x</span>, <span class="id">y1</span>, <span class="id">z</span>) (<span class="id">x</span>, <span class="id">y2</span>, <span class="id">z</span>)).<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="triple_strictly_comparable_proj2_strictorder">triple_strictly_comparable_proj2_strictorder</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> (@<span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj2_compare">triple_strictly_comparable_proj2_compare</a></span> <span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span> <span class="id">HscXYZ</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof152')">Proof.</div>
+<div class="proofscript" id="proof152">
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj2_compare">triple_strictly_comparable_proj2_compare</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">inhabited0</span> <span class="kwd">as</span> [(<span class="id">x0</span>, <span class="id">y0</span>) <span class="id">z0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intro</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">inversion</span> <span class="id">H</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> . <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">cmp</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj2_compare">triple_strictly_comparable_proj2_compare</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">inhabited0</span> <span class="kwd">as</span> [(<span class="id">x0</span>, <span class="id">y0</span>) <span class="id">z0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj2">triple_strictly_comparable_proj2</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} (<span class="id">HscT</span> :  <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Y</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj2_inhabited">triple_strictly_comparable_proj2_inhabited</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj2_compare">triple_strictly_comparable_proj2_compare</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_strictorder">compare_strictorder</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj2_strictorder">triple_strictly_comparable_proj2_strictorder</a></span>;<br/>
+&nbsp;&nbsp;|}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj3_inhabited">triple_strictly_comparable_proj3_inhabited</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;: <span class="id">Z</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof153')">Proof.</div>
+<div class="proofscript" id="proof153">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span> <span class="kwd">as</span> [[(<span class="id">x</span>, <span class="id">y</span>) <span class="id">z</span>] <span class="id">_</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> <span class="id">z</span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj3_compare">triple_strictly_comparable_proj3_compare</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">z1</span> <span class="id">z2</span> : <span class="id">Z</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof154')">Proof.</div>
+<div class="proofscript" id="proof154">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span> <span class="kwd">as</span> [[(<span class="id">x</span>, <span class="id">y</span>) <span class="id">z</span>] <span class="id">compare</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span> (<span class="id">compare</span> (<span class="id">x</span>, <span class="id">y</span>, <span class="id">z1</span>) (<span class="id">x</span>, <span class="id">y</span>, <span class="id">z2</span>)).<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="triple_strictly_comparable_proj3_strictorder">triple_strictly_comparable_proj3_strictorder</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} `{<span class="id">HscXYZ</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>)}<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> (@<span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj3_compare">triple_strictly_comparable_proj3_compare</a></span> <span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span> <span class="id">HscXYZ</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof155')">Proof.</div>
+<div class="proofscript" id="proof155">
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj3_compare">triple_strictly_comparable_proj3_compare</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">inhabited0</span> <span class="kwd">as</span> [(<span class="id">x0</span>, <span class="id">y0</span>) <span class="id">z0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intro</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">inversion</span> <span class="id">H</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> . <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">x3</span> <span class="id">cmp</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj3_compare">triple_strictly_comparable_proj3_compare</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HscXYZ</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">inhabited0</span> <span class="kwd">as</span> [(<span class="id">x0</span>, <span class="id">y0</span>) <span class="id">z0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Transitive">StrictOrder_Transitive</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="triple_strictly_comparable_proj3">triple_strictly_comparable_proj3</a></span><br/>
+&nbsp;&nbsp;{<span class="id">X</span> <span class="id">Y</span> <span class="id">Z</span>} (<span class="id">HscT</span> :  <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> (<span class="id">X</span> * <span class="id">Y</span> * <span class="id">Z</span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictlyComparable">StrictlyComparable</a></span> <span class="id">Z</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.Lib.Preamble.html#inhabited">inhabited</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj3_inhabited">triple_strictly_comparable_proj3_inhabited</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare">compare</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj3_compare">triple_strictly_comparable_proj3_compare</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_strictorder">compare_strictorder</a></span> := <span class="id"><a href="CasperCBC.Lib.Preamble.html#triple_strictly_comparable_proj3_strictorder">triple_strictly_comparable_proj3_strictorder</a></span>;<br/>
+&nbsp;&nbsp;|}.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="bounding">bounding</a></span> (<span class="id">P</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;:=  {<span class="id">n1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> | <span class="kwd">forall</span> (<span class="id">n2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>), <span class="id">n1</span> &lt;= <span class="id">n2</span> -&gt; ~<span class="id">P</span> <span class="id">n2</span>}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="liveness">liveness</a></span> (<span class="id">P</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;:= <span class="kwd">forall</span> (<span class="id">n1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>), { <span class="id">n2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> | <span class="id">n1</span> &lt;= <span class="id">n2</span> /\ <span class="id">P</span> <span class="id">n2</span>}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="liveness_dec">liveness_dec</a></span> (<span class="id">P</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;:= <span class="kwd">forall</span> (<span class="id">n1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>), { <span class="id">n2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> | <span class="id">n1</span> &lt;= <span class="id">n2</span> /\ <span class="id">P</span> <span class="id">n2</span>} + {~<span class="id">exists</span> <span class="id">n2</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>, <span class="id">n1</span> &lt;= <span class="id">n2</span> /\ <span class="id">P</span> <span class="id">n2</span>}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="min_liveness">min_liveness</a></span> (<span class="id">P</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;:= <span class="kwd">forall</span> (<span class="id">n1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>), { <span class="id">n2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> | <span class="id">n1</span> &lt;= <span class="id">n2</span> /\ <span class="id">P</span> <span class="id">n2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\ <span class="kwd">forall</span> (<span class="id">n3</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>), <span class="id">n2</span> &lt;= <span class="id">n3</span> /\ <span class="id">P</span> <span class="id">n3</span> -&gt; <span class="id">n2</span> &lt;= <span class="id">n3</span>}.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_bounding_impl_liveness">not_bounding_impl_liveness</a></span><br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hdec</span> : <span class="id"><a href="CasperCBC.Lib.Preamble.html#liveness_dec">liveness_dec</a></span> <span class="id">P</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hnbound</span> : ~<span class="id">exists</span> <span class="id">n1</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>, <span class="kwd">forall</span> (<span class="id">n2</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>), <span class="id">n1</span> &lt;= <span class="id">n2</span> -&gt; ~<span class="id">P</span> <span class="id">n2</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Preamble.html#liveness">liveness</a></span> <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof156')">Proof.</div>
+<div class="proofscript" id="proof156">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">n1</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hdec</span> <span class="id">n1</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hdec</span> <span class="kwd">as</span> [<span class="id">Hex</span> | <span class="id">Hnex</span>]; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#not_ex_all_not">not_ex_all_not</a></span> <span class="id">_</span> <span class="id">Hnbound</span>); <span class="tactic">simpl</span>; <span class="tactic">clear</span> <span class="id">Hnbound</span>; <span class="tactic">intro</span> <span class="id">Hnbound</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hnbound</span> <span class="id">n1</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">Hnbound</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">n2</span> <span class="id">Hleq</span> <span class="id">HnP</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hnex</span>.<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">n2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="predicate_to_function">predicate_to_function</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>}<br/>
+&nbsp;&nbsp;(<span class="id">decP</span> : <span class="kwd">forall</span> <span class="id">a</span>:<span class="id">A</span>, {<span class="id">P</span> <span class="id">a</span>} + {~<span class="id">P</span> <span class="id">a</span>})<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span><br/>
+&nbsp;&nbsp;:= <span class="kwd">match</span> <span class="id">decP</span> <span class="id">a</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span><br/>
+&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
