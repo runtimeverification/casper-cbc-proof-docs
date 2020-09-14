@@ -1,0 +1,107 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.TraceClassicalProperties</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.TraceClassicalProperties" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.TraceClassicalProperties</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Classical.html">Classical</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ClassicalEpsilon.html">ClassicalEpsilon</a></span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.SsrExport.html">Lib.SsrExport</a></span> <span class="id"><a href="CasperCBC.Lib.Traces.html">Lib.Traces</a></span> <span class="id"><a href="CasperCBC.Lib.TraceProperties.html">Lib.TraceProperties</a></span>.<br/>
+<br/>
+<span class="kwd">Set</span> <span class="kwd">Implicit</span> <span class="id">Arguments</span>.<br/>
+<span class="kwd">Unset</span> <span class="kwd">Strict</span> <span class="kwd">Implicit</span>.<br/>
+<span class="kwd">Import</span> <span class="id">Prenex</span> <span class="id">Implicits</span>.<br/>
+<br/>
+<h1> Properties of possibly-infinite traces requiring classical logic </h1>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="TraceClassicalProperties">TraceClassicalProperties</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span> {<span class="id">A</span> <span class="id">B</span> : <span class="kwd">Type</span>}.<br/>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Notation</span> <span class="id"><a name="trace">trace</a></span> := (@<span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span> <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#TraceClassicalProperties.A">A</a></span> <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#TraceClassicalProperties.B">B</a></span>).<br/>
+<span class="kwd">Local</span> <span class="kwd">Notation</span> <span class="id"><a name="propT">propT</a></span> := (@<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#propT">propT</a></span> <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#TraceClassicalProperties.A">A</a></span> <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#TraceClassicalProperties.B">B</a></span>).<br/>
+<br/>
+<h2> Relating finiteness and infiniteness </h2>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_infiniteT_finiteT">not_infiniteT_finiteT</a></span> : <span class="kwd">forall</span> <span class="id">tr</span> : <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span>,<br/>
+&nbsp;~ <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#infiniteT">infiniteT</a></span> <span class="id">tr</span> -&gt; <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#finiteT">finiteT</a></span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof255')">Proof.</div>
+<div class="proofscript" id="proof255">
+<span class="tactic">move</span> =&gt; <span class="id">tr</span> <span class="id">Hnot</span>.<br/>
+<span class="tactic">case</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Classical_Prop.html#classic">classic</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#finiteT">finiteT</a></span> <span class="id">tr</span>)) =&gt; <span class="id">Hinf</span> //.<br/>
+<span class="tactic">case</span>: <span class="id">Hnot</span>.<br/>
+<span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#not_finiteT_infiniteT">not_finiteT_infiniteT</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finiteT_infiniteT">finiteT_infiniteT</a></span> : <span class="kwd">forall</span> <span class="id">tr</span> : <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#finiteT">finiteT</a></span> <span class="id">tr</span> \/ <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#infiniteT">infiniteT</a></span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof256')">Proof.</div>
+<div class="proofscript" id="proof256">
+<span class="tactic">move</span> =&gt; <span class="id">tr</span>.<br/>
+<span class="tactic">case</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Classical_Prop.html#classic">classic</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#finiteT">finiteT</a></span> <span class="id">tr</span>)) =&gt; <span class="id">Hinf</span>; <span class="id">first</span> <span class="tactic">by</span> <span class="id">left</span>.<br/>
+<span class="id">right</span>.<br/>
+<span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#not_finiteT_infiniteT">not_finiteT_infiniteT</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="finiteT_infiniteT_dec">finiteT_infiniteT_dec</a></span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span>) : { <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#finiteT">finiteT</a></span> <span class="id">tr</span> }+{ <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#infiniteT">infiniteT</a></span> <span class="id">tr</span> } :=<br/>
+<span class="kwd">match</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ClassicalEpsilon.html#excluded_middle_informative">excluded_middle_informative</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#finiteT">finiteT</a></span> <span class="id">tr</span>) <span class="kwd">with</span><br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">Hfin</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">Hfin</span><br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">Hfin</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#not_finiteT_infiniteT">not_finiteT_infiniteT</a></span> <span class="id">Hfin</span>)<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<h2> Using midpoints to show the right associativity of the append property </h2>
+<br/>
+<span class="kwd">CoFixpoint</span> <span class="id"><a name="midp">midp</a></span> (<span class="id">p0</span> <span class="id">p1</span>: <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span> -&gt; <span class="kwd">Prop</span>) <span class="id">tr0</span> <span class="id">tr1</span> (<span class="id">h</span>: <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#followsT">followsT</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#appendT">appendT</a></span> <span class="id">p0</span> <span class="id">p1</span>) <span class="id">tr0</span> <span class="id">tr1</span>) : <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#followsT_dec">followsT_dec</a></span> <span class="id">h</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#inl">inl</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">tr</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">a</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#conj">conj</a></span> <span class="id">_</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#conj">conj</a></span> <span class="id">_</span> <span class="id">H</span>)))) =&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">let</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">x</span> <span class="id">_</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ClassicalEpsilon.html#constructive_indefinite_description">constructive_indefinite_description</a></span> <span class="id">_</span> <span class="id">H</span> <span class="kwd">in</span> <span class="id">x</span><br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#inr">inr</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">tr</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">tr</span>' (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">a</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">b</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#conj">conj</a></span> <span class="id">_</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#conj">conj</a></span> <span class="id">_</span> <span class="id">H</span>)))))) =&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> (@<span class="id">midp</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H</span>)<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="midpointT_midp">midpointT_midp</a></span> : <span class="kwd">forall</span> (<span class="id">p0</span> <span class="id">p1</span>: <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span> -&gt; <span class="kwd">Prop</span>) <span class="id">tr0</span> <span class="id">tr1</span> (<span class="id">h</span> : <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#followsT">followsT</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#appendT">appendT</a></span> <span class="id">p0</span> <span class="id">p1</span>) <span class="id">tr0</span> <span class="id">tr1</span>),<br/>
+&nbsp;<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#midpointT">midpointT</a></span> <span class="id">h</span> (<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midp">midp</a></span> <span class="id">h</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof257')">Proof.</div>
+<div class="proofscript" id="proof257">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">dependent</span> <span class="tactic">inversion</span> <span class="id">h</span>; <span class="tactic">subst</span>.<br/>
+- <span class="tactic">rewrite</span> [<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midp">midp</a></span> <span class="id">_</span>]<span class="id"><a href="CasperCBC.Lib.Traces.html#trace_destr">trace_destr</a></span> /=.<br/>
+&nbsp;&nbsp;<span class="tactic">case</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ClassicalEpsilon.html#constructive_indefinite_description">constructive_indefinite_description</a></span> <span class="id">_</span> <span class="id">_</span>) =&gt; /=.<br/>
+&nbsp;&nbsp;<span class="tactic">move</span> =&gt; <span class="id">x</span> [<span class="id">a1</span> <span class="id">hm</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TraceProperties.html#midpointT_nil">midpointT_nil</a></span> =&gt; //; <span class="tactic">destruct</span> <span class="id">x</span>.<br/>
+- <span class="tactic">rewrite</span> [<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midp">midp</a></span> <span class="id">_</span>]<span class="id"><a href="CasperCBC.Lib.Traces.html#trace_destr">trace_destr</a></span> /=.<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span>: (@<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#midpointT_delay">midpointT_delay</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">p0</span> <span class="id">p1</span> (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>) (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>') (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#followsT_delay">followsT_delay</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">f</span>) <span class="id">tr</span> <span class="id">tr</span>' <span class="id">f</span> <span class="id">a</span> <span class="id">b</span> (<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midp">midp</a></span> <span class="id">f</span>)).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="appendT_assoc_R">appendT_assoc_R</a></span>: <span class="kwd">forall</span> <span class="id">p1</span> <span class="id">p2</span> <span class="id">p3</span>,<br/>
+&nbsp;<span class="kwd">forall</span> <span class="id">tr</span> : <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#trace">trace</a></span>, (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#appendT">appendT</a></span> <span class="id">p1</span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#appendT">appendT</a></span> <span class="id">p2</span> <span class="id">p3</span>)) <span class="id">tr</span> -&gt; (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#appendT">appendT</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#appendT">appendT</a></span> <span class="id">p1</span> <span class="id">p2</span>)  <span class="id">p3</span>) <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof258')">Proof.</div>
+<div class="proofscript" id="proof258">
+<span class="tactic">move</span> =&gt; <span class="id">p1</span> <span class="id">p2</span> <span class="id">p3</span> <span class="id">tr0</span> <span class="id">h1</span>.  <span class="tactic">move</span>: <span class="id">h1</span> =&gt; [<span class="id">tr1</span> [<span class="id">h1</span> <span class="id">h2</span>]].<br/>
+<span class="id">exists</span> (<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midp">midp</a></span> <span class="id">h2</span>). <span class="tactic">split</span>.<br/>
+- <span class="id">exists</span> <span class="id">tr1</span>; <span class="tactic">split</span> =&gt; //.<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span>: (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#midpointT_before">midpointT_before</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midpointT_midp">midpointT_midp</a></span> <span class="id">h2</span>)).<br/>
+- <span class="tactic">exact</span>: (<span class="id"><a href="CasperCBC.Lib.TraceProperties.html#midpointT_after">midpointT_after</a></span> (<span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#midpointT_midp">midpointT_midp</a></span> <span class="id">h2</span>)).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="AppendT_assoc_R">AppendT_assoc_R</a></span>: <span class="kwd">forall</span> (<span class="id">p1</span> <span class="id">p2</span> <span class="id">p3</span> : <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#propT">propT</a></span>), (<span class="id">p1</span> *** <span class="id">p2</span> *** <span class="id">p3</span>) =&gt;&gt; (<span class="id">p1</span> *** <span class="id">p2</span>) *** <span class="id">p3</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof259')">Proof.</div>
+<div class="proofscript" id="proof259">
+<span class="tactic">move</span> =&gt; <span class="id">p1</span> <span class="id">p2</span> <span class="id">p3</span> <span class="id">tr0</span> <span class="id">h1</span>. <span class="tactic">destruct</span> <span class="id">p1</span> <span class="kwd">as</span> [<span class="id">f1</span> <span class="id">hf1</span>]. <span class="tactic">destruct</span> <span class="id">p2</span> <span class="kwd">as</span> [<span class="id">f2</span> <span class="id">hf2</span>].<br/>
+<span class="tactic">destruct</span> <span class="id">p3</span> <span class="kwd">as</span> [<span class="id">f3</span> <span class="id">hf3</span>]. <span class="tactic">simpl</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">h1</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#appendT_assoc_R">appendT_assoc_R</a></span>. <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id">h1</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.Lib.TraceClassicalProperties.html#TraceClassicalProperties">TraceClassicalProperties</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
