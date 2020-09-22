@@ -1,0 +1,146 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.Traces</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.Traces" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.Traces</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">CasperCBC</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.SsrExport.html">Lib.SsrExport</a></span>.<br/>
+<br/>
+<span class="kwd">Set</span> <span class="kwd">Implicit</span> <span class="id">Arguments</span>.<br/>
+<span class="kwd">Unset</span> <span class="kwd">Strict</span> <span class="kwd">Implicit</span>.<br/>
+<span class="kwd">Import</span> <span class="id">Prenex</span> <span class="id">Implicits</span>.<br/>
+<br/>
+<h1> Definition of possibly-infinite traces </h1>
+<br/>
+<span class="kwd">Ltac</span> <span class="id">invs</span> <span class="id">h</span> := <span class="tactic">inversion</span> <span class="id">h</span>; <span class="tactic">subst</span> =&gt; {<span class="id">h</span>}.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="Traces">Traces</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span> {<span class="id">A</span> <span class="id">B</span> : <span class="kwd">Type</span>}.<br/>
+<br/>
+<h2> Core trace definition and decomposition </h2>
+<br/>
+<div class="doc">This definition is similar to that for lazy lists from Chapter 13
+of the <a href="https://github.com/coq-community/coq-art">Coq'Art book</a>.
+However, to support traces following labeled transition relations, constructors
+have additional elements. </div>
+<br/>
+<span class="kwd">CoInductive</span> <span class="id"><a name="trace">trace</a></span> : <span class="kwd">Type</span> :=<br/>
+| <span class="id"><a name="Tnil">Tnil</a></span> : <span class="id"><a href="CasperCBC.Lib.Traces.html#Traces.A">A</a></span> -&gt; <span class="id">trace</span><br/>
+| <span class="id"><a name="Tcons">Tcons</a></span> : <span class="id"><a href="CasperCBC.Lib.Traces.html#Traces.A">A</a></span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#Traces.B">B</a></span> -&gt; <span class="id">trace</span> -&gt; <span class="id">trace</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="hd">hd</a></span> <span class="id">tr</span> :=<br/>
+<span class="kwd">match</span> <span class="id">tr</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span> =&gt; <span class="id">a</span><br/>
+| <span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr0</span> =&gt; <span class="id">a</span><br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="trace_decompose">trace_decompose</a></span> (<span class="id">tr</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span>): <span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">tr</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span><br/>
+| <span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>' =&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>'<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="trace_destr">trace_destr</a></span>: <span class="kwd">forall</span> <span class="id">tr</span>, <span class="id">tr</span> = <span class="id"><a href="CasperCBC.Lib.Traces.html#trace_decompose">trace_decompose</a></span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof372')">Proof.</div>
+<div class="proofscript" id="proof372">
+ <span class="tactic">case</span> =&gt; //=. Qed.</div>
+<br/>
+<h2> Bisimulations between traces </h2>
+<br/>
+<span class="kwd">CoInductive</span> <span class="id"><a name="bisim">bisim</a></span> : <span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+| <span class="id"><a name="bisim_nil">bisim_nil</a></span> : <span class="kwd">forall</span> <span class="id">a</span>,<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">bisim</span> (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span>) (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span>)<br/>
+| <span class="id"><a name="bisim_cons">bisim_cons</a></span> : <span class="kwd">forall</span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span> <span class="id">tr</span>',<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">bisim</span> <span class="id">tr</span> <span class="id">tr</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">bisim</span> (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>) (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>').<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bisim_refl">bisim_refl</a></span> : <span class="kwd">forall</span> <span class="id">tr</span>, <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr</span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof373')">Proof.</div>
+<div class="proofscript" id="proof373">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">case</span> =&gt; [<span class="id">a</span>|<span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>]; <span class="id">first</span> <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_nil">bisim_nil</a></span>.<br/>
+<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_cons">bisim_cons</a></span>.<br/>
+<span class="tactic">exact</span>: <span class="id">CIH</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bisim_sym">bisim_sym</a></span> : <span class="kwd">forall</span> <span class="id">tr1</span> <span class="id">tr2</span>, <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr1</span> <span class="id">tr2</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr2</span> <span class="id">tr1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof374')">Proof.</div>
+<div class="proofscript" id="proof374">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">case</span> =&gt; [<span class="id">a</span>|<span class="id">a</span> <span class="id">b</span> <span class="id">tr1</span>] <span class="id">tr2</span> <span class="id">Hbs</span>; <span class="id">invs</span> <span class="id">Hbs</span>; <span class="id">first</span> <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_nil">bisim_nil</a></span>.<br/>
+<span class="tactic">by</span> <span class="tactic">apply</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_cons">bisim_cons</a></span>; <span class="tactic">apply</span> (<span class="id">CIH</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H3</span>).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bisim_trans">bisim_trans</a></span> : <span class="kwd">forall</span> <span class="id">tr1</span> <span class="id">tr2</span> <span class="id">tr3</span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr1</span> <span class="id">tr2</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr2</span> <span class="id">tr3</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr1</span> <span class="id">tr3</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof375')">Proof.</div>
+<div class="proofscript" id="proof375">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">case</span> =&gt; [<span class="id">a</span>|<span class="id">a</span> <span class="id">b</span> <span class="id">tr1</span>] <span class="id">tr2</span> <span class="id">tr0</span> <span class="id">Hbs</span> <span class="id">Hbs</span>'; <span class="id">invs</span> <span class="id">Hbs</span>; <span class="id">invs</span> <span class="id">Hbs</span>'; <span class="id">first</span> <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_nil">bisim_nil</a></span>.<br/>
+<span class="tactic">apply</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_cons">bisim_cons</a></span>.<br/>
+<span class="tactic">exact</span>: <span class="id">CIH</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H3</span> <span class="id">H4</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bisim_hd">bisim_hd</a></span>: <span class="kwd">forall</span> <span class="id">tr0</span> <span class="id">tr1</span>, <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr0</span> <span class="id">tr1</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#hd">hd</a></span> <span class="id">tr0</span> = <span class="id"><a href="CasperCBC.Lib.Traces.html#hd">hd</a></span> <span class="id">tr1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof376')">Proof.</div>
+<div class="proofscript" id="proof376">
+ <span class="tactic">by</span> <span class="tactic">move</span> =&gt; <span class="id">tr0</span> <span class="id">tr1</span> <span class="id">h0</span>; <span class="id">invs</span> <span class="id">h0</span>. Qed.</div>
+<br/>
+<h2> Appending traces to one another </h2>
+<br/>
+<span class="kwd">CoFixpoint</span> <span class="id"><a name="trace_append">trace_append</a></span> (<span class="id">tr</span> <span class="id">tr</span>': <span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span>): <span class="id"><a href="CasperCBC.Lib.Traces.html#trace">trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">tr</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span> =&gt; <span class="id">tr</span>'<br/>
+| <span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr0</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> (<span class="id">trace_append</span> <span class="id">tr0</span> <span class="id">tr</span>')<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Infix</span> "+++" := <span class="id"><a href="CasperCBC.Lib.Traces.html#trace_append">trace_append</a></span> (<span class="tactic">at</span> <span class="id">level</span> 60, <span class="id">right</span> <span class="id">associativity</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="trace_append_nil">trace_append_nil</a></span> : <span class="kwd">forall</span> <span class="id">a</span> <span class="id">tr</span>, (<span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span>) +++ <span class="id">tr</span> = <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof377')">Proof.</div>
+<div class="proofscript" id="proof377">
+<span class="tactic">move</span> =&gt; <span class="id">a</span> <span class="id">tr</span>.<br/>
+<span class="tactic">rewrite</span> [<span class="id"><a href="CasperCBC.Lib.Traces.html#Tnil">Tnil</a></span> <span class="id">a</span> +++ <span class="id">tr</span>]<span class="id"><a href="CasperCBC.Lib.Traces.html#trace_destr">trace_destr</a></span>.<br/>
+<span class="tactic">by</span> <span class="tactic">case</span> <span class="id">tr</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="trace_append_cons">trace_append_cons</a></span> : <span class="kwd">forall</span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span> <span class="id">tr</span>',<br/>
+&nbsp;(<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span>) +++ <span class="id">tr</span>' = <span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> (<span class="id">tr</span> +++ <span class="id">tr</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof378')">Proof.</div>
+<div class="proofscript" id="proof378">
+<span class="tactic">move</span> =&gt; <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span> <span class="id">tr</span>'.<br/>
+<span class="tactic">rewrite</span> [<span class="id"><a href="CasperCBC.Lib.Traces.html#Tcons">Tcons</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">tr</span> +++ <span class="id">tr</span>']<span class="id"><a href="CasperCBC.Lib.Traces.html#trace_destr">trace_destr</a></span>.<br/>
+<span class="tactic">by</span> <span class="tactic">case</span> <span class="id">tr</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="trace_append_bism">trace_append_bism</a></span> : <span class="kwd">forall</span> <span class="id">tr1</span> <span class="id">tr2</span> <span class="id">tr3</span> <span class="id">tr4</span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr1</span> <span class="id">tr2</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> <span class="id">tr3</span> <span class="id">tr4</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim">bisim</a></span> (<span class="id">tr1</span> +++ <span class="id">tr3</span>) (<span class="id">tr2</span> +++ <span class="id">tr4</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof379')">Proof.</div>
+<div class="proofscript" id="proof379">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">case</span> =&gt; [<span class="id">a</span>|<span class="id">a</span> <span class="id">b</span> <span class="id">tr1</span>] <span class="id">tr2</span> <span class="id">tr3</span> <span class="id">tr4</span> <span class="id">Hbs1</span> <span class="id">Hbs2</span>; <span class="id">invs</span> <span class="id">Hbs1</span>.<br/>
+- <span class="tactic">do</span> 2 <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Traces.html#trace_append_nil">trace_append_nil</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span>: <span class="id">Hbs2</span>.<br/>
+- <span class="tactic">do</span> 2 <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Traces.html#trace_append_cons">trace_append_cons</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span>: <span class="id"><a href="CasperCBC.Lib.Traces.html#bisim_cons">bisim_cons</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span>: <span class="id">CIH</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.Lib.Traces.html#Traces">Traces</a></span>.<br/>
+<br/>
+<span class="kwd">Infix</span> "+++" := <span class="id"><a href="CasperCBC.Lib.Traces.html#trace_append">trace_append</a></span> (<span class="tactic">at</span> <span class="id">level</span> 60, <span class="id">right</span> <span class="id">associativity</span>).<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
