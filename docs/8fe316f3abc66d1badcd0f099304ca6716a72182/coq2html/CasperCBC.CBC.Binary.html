@@ -1,0 +1,533 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.CBC.Binary</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.CBC.Binary" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.CBC.Binary</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Reals</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relations.html">Relations</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Setoids.Setoid.html">Setoid</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Permutation.html">Permutation</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.EqdepFacts.html">EqdepFacts</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Lib.Preamble</span> <span class="id">Lib.ListExtras</span> <span class="id">Lib.ListSetExtras</span> <span class="id">Lib.SortedLists</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html">CBC.Protocol</a></span>.<br/>
+<br/>
+<div class="doc">Building blocks for instancing CBC_protocol_eq with a concrete binary consensus protocol *</div>
+<div class="doc">Set equality on states *</div>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="States">States</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Inductive</span> <span class="id"><a name="C">C</a></span> : <span class="kwd">Type</span> :=<br/>
+&nbsp;&nbsp;| <span class="id"><a name="zero">zero</a></span> : <span class="id">C</span><br/>
+&nbsp;&nbsp;| <span class="id"><a name="one">one</a></span> : <span class="id">C</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="C_inhabited">C_inhabited</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="C_compare">C_compare</a></span> (<span class="id">c1</span> <span class="id">c2</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">c1</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> =&gt; <span class="kwd">match</span> <span class="id">c2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> =&gt; <span class="kwd">match</span> <span class="id">c2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="C_compare_reflexive">C_compare_reflexive</a></span> : <span class="id">CompareReflexive</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare">C_compare</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof1')">Proof.</div>
+<div class="proofscript" id="proof1">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">red</span>. <span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>; <span class="tactic">destruct</span> <span class="id">x</span>; <span class="tactic">destruct</span> <span class="id">y</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="C_compare_transitive">C_compare_transitive</a></span> : <span class="id">CompareTransitive</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare">C_compare</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof2')">Proof.</div>
+<div class="proofscript" id="proof2">
+ <span class="tactic">red</span>; <span class="tactic">intros</span>; <span class="tactic">destruct</span> <span class="id">x</span>; <span class="tactic">destruct</span> <span class="id">y</span>; <span class="tactic">destruct</span> <span class="id">z</span>; <span class="tactic">destruct</span> <span class="id">comp</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span>; <span class="tactic">try</span> <span class="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="C_compare_strictorder">C_compare_strictorder</a></span> : <span class="id">CompareStrictOrder</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare">C_compare</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof3')">Proof.</div>
+<div class="proofscript" id="proof3">
+ <span class="tactic">split</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare_reflexive">C_compare_reflexive</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare_transitive">C_compare_transitive</a></span>. Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Instance</span> <span class="id"><a name="about_C">about_C</a></span> : <span class="id">StrictlyComparable</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id">inhabited</span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#C_inhabited">C_inhabited</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">compare</span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare">C_compare</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">compare_strictorder</span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#C_compare_strictorder">C_compare_strictorder</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Variables</span> <span class="id"><a name="States.V">V</a></span> <span class="id"><a name="States.H">H</a></span> : <span class="kwd">Type</span>.<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span> (<span class="id">about_V</span> : `{<span class="id">StrictlyComparable</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span>})<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">about_H</span> : `{<span class="id">StrictlyComparable</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.H">H</a></span>}).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="posR">posR</a></span> : <span class="kwd">Type</span> := {<span class="id">r</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> | (<span class="id">r</span> &gt; 0)%<span class="id">R</span>}.<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="posR_proj1">posR_proj1</a></span> (<span class="id">r</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#posR">posR</a></span>) := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">r</span>.<br/>
+&nbsp;&nbsp;<span class="kwd">Coercion</span> <span class="id">posR_proj1</span> : <span class="id">posR</span> &gt;-&gt; <span class="id">R</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Parameter</span> <span class="id"><a name="weight">weight</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#posR">posR</a></span>.<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="sum_weights">sum_weights</a></span> (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="kwd">fun</span> <span class="id">v</span> <span class="id">r</span> =&gt; ((<span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> <span class="id">v</span>) + <span class="id">r</span>)%<span class="id">R</span>) 0%<span class="id">R</span> <span class="id">l</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Parameters</span> (<span class="id"><a name="t_full">t_full</a></span> : {<span class="id">r</span> | (<span class="id">r</span> &gt;= 0)%<span class="id">R</span>})<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a name="suff_val_full">suff_val_full</a></span> : <span class="id">exists</span> <span class="id">vs</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span> /\ ((<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="kwd">fun</span> <span class="id">v</span> <span class="id">r</span> =&gt; ((<span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> <span class="id">v</span>) + <span class="id">r</span>)%<span class="id">R</span>) 0%<span class="id">R</span>) <span class="id">vs</span> &gt; (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">t_full</span>))%<span class="id">R</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="justification_type">justification_type</a></span> : <span class="kwd">Type</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.H">H</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="justification_type_inhabited">justification_type_inhabited</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span> := [].<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="justification_compare">justification_compare</a></span> : (<span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) := <span class="id">list_compare</span> <span class="id">compare</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Instance</span> <span class="id"><a name="about_justification_type">about_justification_type</a></span> : <span class="id">StrictlyComparable</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id">inhabited</span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type_inhabited">justification_type_inhabited</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">compare</span> := <span class="id">list_compare</span> <span class="id">compare</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">compare_strictorder</span> := <span class="id">list_compare_strict_order</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="message">message</a></span> : <span class="kwd">Type</span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> * <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> * <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="message_type">message_type</a></span> := <span class="id">TripleStrictlyComparable</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="estimate">estimate</a></span> (<span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">msg</span> <span class="kwd">with</span> (<span class="id">c</span>, <span class="id">_</span>, <span class="id">_</span>) =&gt; <span class="id">c</span> <span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="sender">sender</a></span> (<span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">msg</span> <span class="kwd">with</span> (<span class="id">_</span>, <span class="id">v</span>, <span class="id">_</span>) =&gt; <span class="id">v</span> <span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="justification">justification</a></span> (<span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">msg</span> <span class="kwd">with</span> (<span class="id">_</span>, <span class="id">_</span>, <span class="id">j</span>) =&gt; <span class="id">j</span> <span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="state">state</a></span> := <span class="tactic">set</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="state0">state0</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> := [].<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Parameter</span> <span class="id"><a name="about_state">about_state</a></span> : <span class="id">StrictlyComparable</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="state_eq">state_eq</a></span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) := <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s1</span> <span class="id">s2</span> /\ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s2</span> <span class="id">s1</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="state_union">state_union</a></span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union">set_union</a></span> <span class="id">compare_eq_dec</span> <span class="id">s1</span> <span class="id">s2</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="state_union_comm">state_union_comm</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#state_eq">state_eq</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>) (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s2</span> <span class="id">s1</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof4')">Proof.</div>
+<div class="proofscript" id="proof4">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#state_eq">state_eq</a></span>; <span class="tactic">split</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">H_in</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id">set_union_comm</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="observed">observed</a></span> (<span class="id">sigma</span>:<span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">compare_eq_dec</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#sender">sender</a></span> <span class="id">sigma</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Parameters</span> (<span class="id"><a name="hash">hash</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#States.H">H</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a name="hash_injective">hash_injective</a></span> : <span class="id">Injective</span> <span class="id">hash</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="later">later</a></span> (<span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span>' =&gt; <span class="id">inb</span> <span class="id">compare_eq_dec</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#hash">hash</a></span> <span class="id">msg</span>) (<span class="id"><a href="CasperCBC.CBC.Binary.html#justification">justification</a></span> <span class="id">msg</span>')) <span class="id">sigma</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="from_sender">from_sender</a></span> (<span class="id">v</span>:<span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span>) (<span class="id">sigma</span>:<span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span>' =&gt; <span class="id">compareb</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#sender">sender</a></span> <span class="id">msg</span>') <span class="id">v</span>) <span class="id">sigma</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="later_from">later_from</a></span> (<span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) (<span class="id">v</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span>' =&gt; (<span class="id">inb</span> <span class="id">compare_eq_dec</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#hash">hash</a></span> <span class="id">msg</span>) (<span class="id"><a href="CasperCBC.CBC.Binary.html#justification">justification</a></span> <span class="id">msg</span>')) &amp;&amp; (<span class="id">compareb</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#sender">sender</a></span> <span class="id">msg</span>') <span class="id">v</span>)) <span class="id">sigma</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="is_nil_fn">is_nil_fn</a></span> {<span class="id">A</span>:<span class="kwd">Type</span>} (<span class="id">l</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">l</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="latest_messages">latest_messages</a></span> (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">v</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span> =&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#is_nil_fn">is_nil_fn</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#later_from">later_from</a></span> <span class="id">msg</span> <span class="id">v</span> <span class="id">sigma</span>)) (<span class="id"><a href="CasperCBC.CBC.Binary.html#from_sender">from_sender</a></span> <span class="id">v</span> <span class="id">sigma</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="latest_messages_driven">latest_messages_driven</a></span> (<span class="id">estimator</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> -&gt; <span class="kwd">Prop</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">validator</span> : (<span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> -&gt; <span class="kwd">Prop</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">c</span>, <span class="id">estimator</span> <span class="id">sigma</span> <span class="id">c</span> &lt;-&gt; <span class="id">validator</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#latest_messages">latest_messages</a></span> <span class="id">sigma</span>) <span class="id">c</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="latest_estimates">latest_estimates</a></span> (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">v</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">compare_eq_dec</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#estimate">estimate</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#latest_messages">latest_messages</a></span> <span class="id">sigma</span> <span class="id">v</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="latest_estimates_driven">latest_estimates_driven</a></span> (<span class="id">estimator</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> -&gt; <span class="kwd">Prop</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">validator</span> : (<span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>) -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> -&gt; <span class="kwd">Prop</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">c</span>, <span class="id">estimator</span> <span class="id">sigma</span> <span class="id">c</span> &lt;-&gt; <span class="id">validator</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#latest_estimates">latest_estimates</a></span> <span class="id">sigma</span>) <span class="id">c</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="in_fn">in_fn</a></span> {<span class="id">A</span>:<span class="kwd">Type</span>} (<span class="id">eq_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}) (<span class="id">a</span>:<span class="id">A</span>) (<span class="id">l</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id">eq_dec</span> <span class="id">a</span> <span class="id">l</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="validators_latest_estimates">validators_latest_estimates</a></span> (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">v</span> =&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#in_fn">in_fn</a></span> <span class="id">compare_eq_dec</span> <span class="id">c</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#latest_estimates">latest_estimates</a></span> <span class="id">sigma</span> <span class="id">v</span>)) (<span class="id"><a href="CasperCBC.CBC.Binary.html#observed">observed</a></span> <span class="id">sigma</span>).<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="score">score</a></span> (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.Rplus">Rplus</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R0">R0</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#posR_proj1">posR_proj1</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#validators_latest_estimates">validators_latest_estimates</a></span> <span class="id">c</span> <span class="id">sigma</span>))).<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="reach">reach</a></span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) := <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">s1</span> <span class="id">s2</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="reach_refl">reach_refl</a></span> : <span class="kwd">forall</span> <span class="id">s</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s</span> <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof5')">Proof.</div>
+<div class="proofscript" id="proof5">
+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_refl">incl_refl</a></span>. Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="reach_trans">reach_trans</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">s3</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s2</span> <span class="id">s3</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s1</span> <span class="id">s3</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof6')">Proof.</div>
+<div class="proofscript" id="proof6">
+ <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_tran">incl_tran</a></span>. Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="reach_union">reach_union</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s1</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof7')">Proof.</div>
+<div class="proofscript" id="proof7">
+ <span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">x</span> <span class="id">H_in</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>; <span class="id">left</span>; <span class="tactic">assumption</span>. Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="reach_morphism">reach_morphism</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">s3</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#state_eq">state_eq</a></span> <span class="id">s2</span> <span class="id">s3</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span> <span class="id">s1</span> <span class="id">s3</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof8')">Proof.</div>
+<div class="proofscript" id="proof8">
+ <span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">s3</span> <span class="id">H_reach</span> <span class="id">H_eq</span> <span class="id">x</span> <span class="id">H_in</span>. <span class="id">spec</span> <span class="id">H_reach</span> <span class="id">x</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_eq</span> <span class="kwd">as</span> [<span class="id">H_eq</span> <span class="id">_</span>]. <span class="id">spec</span> <span class="id">H_eq</span> <span class="id">x</span> <span class="id">H_reach</span>; <span class="tactic">assumption</span>. Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Inductive</span> <span class="id"><a name="binEstimator">binEstimator</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;| <span class="id"><a name="estimator_one">estimator_one</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">sigma</span>) &lt; (<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">sigma</span>))%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">binEstimator</span> <span class="id">sigma</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span><br/>
+&nbsp;| <span class="id"><a name="estimator_zero">estimator_zero</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">sigma</span>) &gt; (<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">sigma</span>))%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">binEstimator</span> <span class="id">sigma</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span><br/>
+&nbsp;| <span class="id"><a name="estimator_both_zero">estimator_both_zero</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">sigma</span>) = (<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">sigma</span>))%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">binEstimator</span> <span class="id">sigma</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span><br/>
+&nbsp;| <span class="id"><a name="estimator_both_one">estimator_both_one</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">sigma</span>) = (<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">sigma</span>))%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">binEstimator</span> <span class="id">sigma</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="estimator_total">estimator_total</a></span> : <span class="kwd">forall</span> <span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>, <span class="id">exists</span> <span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#binEstimator">binEstimator</a></span> <span class="id">s</span> <span class="id">c</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof9')">Proof.</div>
+<div class="proofscript" id="proof9">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">sigma</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#total_order_T">total_order_T</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">sigma</span>) (<span class="id"><a href="CasperCBC.CBC.Binary.html#score">score</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">sigma</span>)) <span class="kwd">as</span> [[<span class="id">HLT</span> | <span class="id">HEQ</span>] | <span class="id">HGT</span>].<br/>
+&nbsp;&nbsp;&nbsp;- <span class="id">exists</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#estimator_one">estimator_one</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="id">exists</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#estimator_both_one">estimator_both_one</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="id">exists</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#estimator_zero">estimator_zero</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="equivocating_messages">equivocating_messages</a></span> (<span class="id">msg1</span> <span class="id">msg2</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">compare_eq_dec</span> <span class="id">msg1</span> <span class="id">msg2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span>  =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="kwd">match</span> <span class="id">msg1</span>, <span class="id">msg2</span> <span class="kwd">with</span> (<span class="id">c1</span>,<span class="id">v1</span>,<span class="id">j1</span>), (<span class="id">c2</span>,<span class="id">v2</span>,<span class="id">j2</span>) =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">compare_eq_dec</span> <span class="id">v1</span> <span class="id">v2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span>  =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#negb">negb</a></span> (<span class="id">inb</span> <span class="id">compare_eq_dec</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#hash">hash</a></span> <span class="id">msg1</span>) <span class="id">j2</span>) &amp;&amp; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#negb">negb</a></span> (<span class="id">inb</span> <span class="id">compare_eq_dec</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#hash">hash</a></span> <span class="id">msg2</span>) <span class="id">j1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="equivocating_message_state">equivocating_message_state</a></span> (<span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#existsb">existsb</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_messages">equivocating_messages</a></span> <span class="id">msg</span>).<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="equivocating_message_state_incl">equivocating_message_state_incl</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">msg</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_message_state">equivocating_message_state</a></span> <span class="id">msg</span> <span class="id">sigma</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_message_state">equivocating_message_state</a></span> <span class="id">msg</span> <span class="id">sigma</span>' = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof10')">Proof.</div>
+<div class="proofscript" id="proof10">
+&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_message_state">equivocating_message_state</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#existsb_exists">existsb_exists</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H1</span> <span class="kwd">as</span> [<span class="id">x</span> [<span class="id">Hin</span> <span class="id">Heq</span>]]. <span class="id">exists</span> <span class="id">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H0</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="equivocating_senders">equivocating_senders</a></span> (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="tactic">set</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">compare_eq_dec</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#sender">sender</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span> =&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_message_state">equivocating_message_state</a></span> <span class="id">msg</span> <span class="id">sigma</span>) <span class="id">sigma</span>).<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="equivocating_senders_nodup">equivocating_senders_nodup</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders">equivocating_senders</a></span> <span class="id">sigma</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof11')">Proof.</div>
+<div class="proofscript" id="proof11">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> <span class="id">set_map_nodup</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="equivocating_senders_incl">equivocating_senders_incl</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders">equivocating_senders</a></span> <span class="id">sigma</span>) (<span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders">equivocating_senders</a></span> <span class="id">sigma</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof12')">Proof.</div>
+<div class="proofscript" id="proof12">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">set_map_incl</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl_tran">incl_tran</a></span> <span class="kwd">with</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#message">message</a></span> =&gt; <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_message_state">equivocating_message_state</a></span> <span class="id">msg</span> <span class="id">sigma</span>) <span class="id">sigma</span>').<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">filter_incl</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">filter_incl_fn</span>. <span class="tactic">intro</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_message_state_incl">equivocating_message_state_incl</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="fault_weight_state">fault_weight_state</a></span> (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders">equivocating_senders</a></span> <span class="id">sigma</span>).<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="sum_weights_in">sum_weights_in</a></span> : <span class="kwd">forall</span> <span class="id">v</span> <span class="id">vs</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">v</span> <span class="id">vs</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> <span class="id">vs</span> = (<span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> <span class="id">v</span> + <span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">compare_eq_dec</span> <span class="id">v</span> <span class="id">vs</span>))%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof13')">Proof.</div>
+<div class="proofscript" id="proof13">
+&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">vs</span>; <span class="tactic">intros</span>; <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H1</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H1</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">compare_eq_dec</span> <span class="id">v</span> <span class="id">v</span>). <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">contradiction</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">compare_eq_dec</span> <span class="id">v</span> <span class="id">a</span>). <span class="tactic">subst</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="id">spec</span> <span class="id">IHvs</span> <span class="id">H5</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">IHvs</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_comm">Rplus_comm</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> <span class="id">v</span>) (<span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> <span class="id">a</span>)). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="sum_weights_incl">sum_weights_incl</a></span> : <span class="kwd">forall</span> <span class="id">vs</span> <span class="id">vs</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">vs</span> <span class="id">vs</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> <span class="id">vs</span> &lt;= <span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> <span class="id">vs</span>')%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof14')">Proof.</div>
+<div class="proofscript" id="proof14">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">vs</span> <span class="id">vs</span>'. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">vs</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">vs</span>'; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">incl_empty</span> <span class="kwd">in</span> <span class="id">H2</span>. <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_refl">Rle_refl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H1</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id">compare_eq_dec</span> <span class="id">a</span> <span class="id">vs</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights_in">sum_weights_in</a></span> <span class="kwd">in</span> <span class="id">i</span>. <span class="tactic">rewrite</span> <span class="id">i</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_le_compat_l">Rplus_le_compat_l</a></span>. <span class="tactic">apply</span> <span class="id">IHvs</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span> <span class="id">compare_eq_dec</span> <span class="id">a</span>). <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hrem</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">Hrem</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hrem</span> <span class="kwd">as</span> [<span class="id">Hin</span> <span class="id">Hxa</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H2</span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>; <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id">Hxa</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_trans">Rle_trans</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> <span class="id">vs</span>').<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id">IHvs</span>'; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id">H2</span> <span class="kwd">in</span> <span class="id">Hin</span> <span class="kwd">as</span> <span class="id">Hin</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span>'; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exfalso</span>; <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id">n</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_0_l">Rplus_0_l</a></span> <span class="tactic">at</span> 1. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_le_compat_r">Rplus_le_compat_r</a></span>. <span class="id">left</span>. <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span> <span class="id">a</span>). <span class="tactic">simpl</span>; <span class="tactic">auto</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="fault_weight_state_incl">fault_weight_state_incl</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> <span class="id">sigma</span> &lt;= <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> <span class="id">sigma</span>')%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof15')">Proof.</div>
+<div class="proofscript" id="proof15">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights_incl">sum_weights_incl</a></span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders_nodup">equivocating_senders_nodup</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders_incl">equivocating_senders_incl</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="fault_weight_max">fault_weight_max</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> <span class="id">sigma</span> &lt;= <span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights">sum_weights</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">compare_eq_dec</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#sender">sender</a></span> <span class="id">sigma</span>))%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof16')">Proof.</div>
+<div class="proofscript" id="proof16">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#sum_weights_incl">sum_weights_incl</a></span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id">set_map_nodup</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocating_senders">equivocating_senders</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">set_map_incl</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter_In">filter_In</a></span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="equivocation_weight_compat">equivocation_weight_compat</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, (<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> <span class="id">s1</span> &lt;= <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s2</span> <span class="id">s1</span>))%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof17')">Proof.</div>
+<div class="proofscript" id="proof17">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state_incl">fault_weight_state_incl</a></span> <span class="id">s1</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s2</span> <span class="id">s1</span>)).<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_useful</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">H_in</span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>. <span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="valid_estimate_condition">valid_estimate_condition</a></span> (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#binEstimator">binEstimator</a></span> <span class="id">sigma</span> <span class="id">c</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="fault_tolerance_condition">fault_tolerance_condition</a></span> (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> <span class="id">sigma</span> &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#t_full">t_full</a></span>)%<span class="id">R</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="hash_state">hash_state</a></span> (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>) : <span class="id"><a href="CasperCBC.CBC.Binary.html#justification_type">justification_type</a></span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#hash">hash</a></span> <span class="id">sigma</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Inductive</span> <span class="id"><a name="protocol_state">protocol_state</a></span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;| <span class="id"><a name="protocol_state_nil">protocol_state_nil</a></span> : <span class="id">protocol_state</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#state0">state0</a></span><br/>
+&nbsp;| <span class="id"><a name="protocol_state_cons">protocol_state_cons</a></span> : <span class="kwd">forall</span> <span class="id">c</span> <span class="id">v</span> <span class="id">j</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">protocol_state</span> <span class="id">j</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#valid_estimate_condition">valid_estimate_condition</a></span> <span class="id">c</span> <span class="id">j</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>) <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">protocol_state</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>) <span class="id">sigma</span>') -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition">fault_tolerance_condition</a></span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">protocol_state</span> <span class="id">sigma</span>'.<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="fault_tolerance_condition_subset">fault_tolerance_condition_subset</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition">fault_tolerance_condition</a></span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition">fault_tolerance_condition</a></span> <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof18')">Proof.</div>
+<div class="proofscript" id="proof18">
+&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition">fault_tolerance_condition</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_trans">Rle_trans</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> <span class="id">sigma</span>'); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state_incl">fault_weight_state_incl</a></span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="protocol_state_nodup">protocol_state_nodup</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof19')">Proof.</div>
+<div class="proofscript" id="proof19">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="fault_tolerance_condition_set_eq">fault_tolerance_condition_set_eq</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">set_eq</span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition">fault_tolerance_condition</a></span> <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition">fault_tolerance_condition</a></span> <span class="id">sigma</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof20')">Proof.</div>
+<div class="proofscript" id="proof20">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition_subset">fault_tolerance_condition_subset</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">H2</span> <span class="id">H1</span>).<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_protocol_state">set_eq_protocol_state</a></span> : <span class="kwd">forall</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">sigma</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">set_eq</span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">sigma</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> <span class="id">sigma</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof21')">Proof.</div>
+<div class="proofscript" id="proof21">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">sigma</span> <span class="id">H</span>'.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">H</span>'; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H0</span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#state0">state0</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">incl_empty</span> <span class="kwd">in</span> <span class="id">H2</span>; <span class="tactic">subst</span>. <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> (@<span class="id">set_eq_remove</span> <span class="id">_</span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>)) <span class="kwd">in</span> <span class="id">H4</span> <span class="kwd">as</span> <span class="id">Hset_eq</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHH</span>'2 <span class="kwd">in</span> <span class="id">Hset_eq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state_cons">protocol_state_cons</a></span> <span class="id">c</span> <span class="id">v</span> <span class="id">j</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> <span class="id">H4</span>. <span class="id">now</span> <span class="tactic">apply</span> (<span class="id">H4</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition_set_eq">fault_tolerance_condition_set_eq</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">H4</span> <span class="id">H3</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="about_prot_state">about_prot_state</a></span> :<br/>
+&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#t_full">t_full</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof22')">Proof.</div>
+<div class="proofscript" id="proof22">
+&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">sig1</span> <span class="id">sig2</span> <span class="id">Hps1</span> <span class="id">Hps2</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">Hps2</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="tactic">clear</span> <span class="id">IHHps2_1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">sig1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>) <span class="id">sigma</span>'))).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">apply</span> <span class="id">IHHps2_2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_tolerance_condition_subset">fault_tolerance_condition_subset</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">sig1</span> <span class="id">sigma</span>'); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">msg</span>; <span class="tactic">intro</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_intro">set_union_intro</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="kwd">in</span> <span class="id">Hin</span>; <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_elim">set_union_elim</a></span> <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_1">set_remove_1</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H5</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">clear</span> <span class="id">IHHps2_2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state_nodup">protocol_state_nodup</a></span> <span class="kwd">in</span> <span class="id">Hps1</span> <span class="kwd">as</span> <span class="id">Hnodups1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">HnodupUs1s</span>' := <span class="id">H2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_nodup">set_union_nodup</a></span> <span class="id">compare_eq_dec</span> <span class="id">Hnodups1</span>) <span class="kwd">in</span> <span class="id">HnodupUs1s</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>) <span class="id">sig1</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#set_eq_protocol_state">set_eq_protocol_state</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">sig1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>) <span class="id">sigma</span>'))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">set_eq_remove_union_in</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state_cons">protocol_state_cons</a></span> <span class="id">c</span> <span class="id">v</span> <span class="id">j</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_union_iff">set_union_iff</a></span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>)) <span class="kwd">in</span> <span class="id">HnodupUs1s</span>' <span class="kwd">as</span> <span class="id">Hnoduprem</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#set_eq_protocol_state">set_eq_protocol_state</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span> <span class="id">sig1</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id">compare_eq_dec</span> (<span class="id">c</span>, <span class="id">v</span>, <span class="id"><a href="CasperCBC.CBC.Binary.html#hash_state">hash_state</a></span> <span class="id">j</span>) <span class="id">sigma</span>'))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">set_eq_remove_union_not_in</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+&nbsp;<span class="kwd">Instance</span> <span class="id"><a name="LightNode_seteq">LightNode_seteq</a></span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;{  <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#C">C</a></span>;<br/>
+ <span class="id"><a href="CasperCBC.CBC.Protocol.html#about_consensus_values">about_consensus_values</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#about_C">about_C</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#validators">validators</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#States.V">V</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#about_validators">about_validators</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#States.about_V">about_V</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#weight">weight</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#weight">weight</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#t_full">t_full</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#suff_val">suff_val</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#suff_val_full">suff_val_full</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#state">state</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#about_state">about_state</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#about_state">about_state</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#state0">state0</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_eq">state_eq</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#state_eq">state_eq</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#state_union">state_union</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union_comm">state_union_comm</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#state_union_comm">state_union_comm</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach">reach</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#reach">reach</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_refl">reach_refl</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#reach_refl">reach_refl</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_trans">reach_trans</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#reach_trans">reach_trans</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union">reach_union</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#reach_union">reach_union</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_morphism">reach_morphism</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#reach_morphism">reach_morphism</a></span>;<br/>
+ <span class="id"><a href="CasperCBC.CBC.Protocol.html#E">E</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#binEstimator">binEstimator</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#estimator_total">estimator_total</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#estimator_total">estimator_total</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state">protocol_state</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#about_state0">about_state0</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#protocol_state_nil">protocol_state_nil</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#fault_weight_state">fault_weight_state</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight_compat">equivocation_weight_compat</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#equivocation_weight_compat">equivocation_weight_compat</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#about_prot_state">about_prot_state</a></span> := <span class="id"><a href="CasperCBC.CBC.Binary.html#about_prot_state">about_prot_state</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="bivalent">bivalent</a></span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#not_locked_off">not_locked_off</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">s</span> /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#not_locked_off">not_locked_off</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">s</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="stuck">stuck</a></span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#locked_off">locked_off</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">s</span> /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#locked_off">locked_off</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">s</span>.<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="locked_on_off">locked_on_off</a></span> : <span class="kwd">forall</span> <span class="id">s</span>, <span class="id"><a href="CasperCBC.CBC.Protocol.html#locked_on">locked_on</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span> <span class="id">s</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#locked_off">locked_off</a></span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span> <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof23')">Proof.</div>
+<div class="proofscript" id="proof23">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#locked_on">locked_on</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#locked_off">locked_off</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#not_locked_off">not_locked_off</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#not">not</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s</span> <span class="id">Lon1</span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on">decided_on</a></span> <span class="kwd">as</span> <span class="id">D</span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (<span class="id">D</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#one">one</a></span>) <span class="kwd">as</span> <span class="id">D1</span>. <span class="id">remember</span> (<span class="id">D</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#zero">zero</a></span>) <span class="kwd">as</span> <span class="id">D0</span>. <span class="tactic">rewrite</span> <span class="id">HeqD</span> <span class="kwd">in</span> *. <span class="tactic">clear</span> <span class="id">HeqD</span>; <span class="tactic">clear</span>  <span class="id">D</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">Lon1</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">Loff0</span>; <span class="tactic">induction</span> <span class="id">Loff0</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on">decided_on</a></span> <span class="kwd">in</span> *. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">sigma</span> <span class="id">sigma</span>) <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel_refl">pstate_rel_refl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H0</span> <span class="kwd">in</span> <span class="id">H_s</span> <span class="kwd">as</span> <span class="id">D1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H1</span> <span class="kwd">in</span> <span class="id">H_s</span> <span class="kwd">as</span> <span class="id">D0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on_predicate">decided_on_predicate</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.CBC.Binary.html#estimator_total">estimator_total</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">sigma</span>)) <span class="kwd">as</span> [<span class="id">c</span>' <span class="id">H_c</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">D0</span> <span class="kwd">in</span> <span class="id">H_c</span>' <span class="kwd">as</span> <span class="id">C0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">D1</span> <span class="kwd">in</span> <span class="id">H_c</span>' <span class="kwd">as</span> <span class="id">C1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">inversion</span> <span class="id">C0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on">decided_on</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHLoff0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H1</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">Hrel</span> <span class="id">_</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#forward_consistency">forward_consistency</a></span> <span class="kwd">with</span> <span class="id">sigma</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">Loff0</span>. <span class="tactic">destruct</span> <span class="id">Loff0</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">sigma</span>' <span class="id">H_r</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H2</span> <span class="id">sigma</span>' <span class="id">H_r</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#one_path_holds_now">one_path_holds_now</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on">decided_on</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_r</span>' <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">H_r</span>' <span class="id">_</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#forward_consistency">forward_consistency</a></span> <span class="kwd">with</span> <span class="id">sigma</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">clear</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H2</span> <span class="kwd">with</span> <span class="id">sigma</span>'; <span class="tactic">assumption</span>.<br/>
+&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.CBC.Binary.html#States">States</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
