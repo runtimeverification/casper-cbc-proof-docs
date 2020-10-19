@@ -1,0 +1,386 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.ByzantineTraces</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.ByzantineTraces" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.ByzantineTraces</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html">FinFun</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html">Streams</a></span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Lib.Preamble</span> <span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span> <span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html">VLSM.Validating</a></span>.<br/>
+<br/>
+<h1> Byzantine Traces
+In this section, we introduce two definitions of Byzantine traces,
+then show them equivalent (Lemma <span class="bracket"><span class="id">byzantine_alt_byzantine_iff</span></span>),
+and equivalent with traces on the corresponding pre-loaded VLSM
+(Lemmas <span class="bracket"><span class="id">byzantine_pre_loaded_with_all_messages</span></span> and <span class="bracket"><span class="id">pre_loaded_with_all_messages_alt_eq</span></span>).
+Note that, contrary to what one might think, the <span class="bracket"><span class="id">byzantine_trace_prop</span></span>erty
+does not only capture traces exhibiting byzantine behavior, but also all
+<span class="bracket"><span class="id">protocol_trace</span></span>s (consequence of Lemma <span class="bracket"><span class="id">vlsm_incl_pre_loaded_with_all_messages_vlsm</span></span>).
+Therefore to avoid confusion we will call _proper byzantine traces_,
+or _traces exhibiting byzantine behavior_ the collection of traces with
+the <span class="bracket"><span class="id">byzantine_trace_prop</span></span>erty but without the <span class="bracket"><span class="id">protocol_trace_prop</span></span>erty.
+In the remainder of this section, we fix a (regular) VLSM &lt;&lt;M&gt;&gt; with
+signature &lt;&lt;S&gt;&gt; and of type &lt;&lt;T&gt;&gt;.
+</h1>
+<br/>
+<h2> Definition and basic properties </h2>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="ByzantineTraces">ByzantineTraces</a></span>.<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">M</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="byzantine_trace_prop">byzantine_trace_prop</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vTrace">vTrace</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>) :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id">M</span>' : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Proj</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#binary_free_composition_fst">binary_free_composition_fst</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> <span class="id">M</span>'),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace_prop">protocol_trace_prop</a></span> <span class="id">Proj</span> <span class="id">tr</span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="byzantine_pre_loaded_with_all_messages">byzantine_pre_loaded_with_all_messages</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">PreLoaded</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vTrace">vTrace</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hbyz</span> : <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_trace_prop">byzantine_trace_prop</a></span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace_prop">protocol_trace_prop</a></span> <span class="id">PreLoaded</span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof1')">Proof.</div>
+<div class="proofscript" id="proof1">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hbyz</span> <span class="kwd">as</span> [<span class="id">M</span>' <span class="id">Htr</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#proj_pre_loaded_with_all_messages_incl">proj_pre_loaded_with_all_messages_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#binary_IM">binary_IM</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> <span class="id">M</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html#first">first</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id">_</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html#first">first</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">tr</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Htr</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br/>
+Qed.</div>
+<br/>
+<h2> An alternative definition
+The <span class="bracket"><span class="id">alternate_byzantine_trace_prop</span></span>erty relies on the composition
+of the VLSM with a special VLSM which can produce all messages.
+We will define its type (<span class="bracket"><span class="id">all_messages_type</span></span>),
+signature (<span class="bracket"><span class="id">all_messages_sig</span></span>) and the VLSM itself (<span class="bracket"><span class="id">emit_any_message_vlsm</span></span>) below.
+The type of the <span class="bracket"><span class="id">emit_any_message_vlsm</span></span> sets the <span class="bracket"><span class="id">label</span></span> set to consist of all
+&lt;&lt;message&gt;&gt;s and the <span class="bracket"><span class="id">state</span></span> to consist of a single state (here <span class="bracket"><span class="id">tt</span></span>).
+</h2>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="all_messages_type">all_messages_type</a></span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_type">VLSM_type</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.VLSM.Common.html#label">label</a></span> := <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#unit">unit</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|}.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="all_messages_sig">all_messages_sig</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">inhm</span> : <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_sign">VLSM_sign</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.VLSM.Common.html#initial_state_prop">initial_state_prop</a></span> := <span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a href="CasperCBC.VLSM.Common.html#initial_message_prop">initial_message_prop</a></span> := <span class="kwd">fun</span> <span class="id">m</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#False">False</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a href="CasperCBC.VLSM.Common.html#s0">s0</a></span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> (<span class="kwd">fun</span> <span class="id">s</span>: @<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>) <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#tt">tt</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a href="CasperCBC.VLSM.Common.html#m0">m0</a></span> := <span class="id">inhm</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a href="CasperCBC.VLSM.Common.html#l0">l0</a></span> := <span class="id">inhm</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|}.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="all_messages_transition">all_messages_transition</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">l</span> : @<span class="id"><a href="CasperCBC.VLSM.Common.html#label">label</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">som</span> : @<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: @<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#tt">tt</a></span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">l</span>).<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="all_messages_valid">all_messages_valid</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">l</span> : @<span class="id"><a href="CasperCBC.VLSM.Common.html#label">label</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">som</span> : @<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_type">all_messages_type</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="emit_any_message_vlsm_machine">emit_any_message_vlsm_machine</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">inhm</span> : <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_class">VLSM_class</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_sig">all_messages_sig</a></span> <span class="id">inhm</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.VLSM.Common.html#transition">transition</a></span> := <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_transition">all_messages_transition</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a href="CasperCBC.VLSM.Common.html#valid">valid</a></span> := <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#all_messages_valid">all_messages_valid</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="emit_any_message_vlsm">emit_any_message_vlsm</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">inhm</span> : <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.Common.html#mk_vlsm">mk_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#emit_any_message_vlsm_machine">emit_any_message_vlsm_machine</a></span> <span class="id">inhm</span>).<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="alternate_byzantine_trace_prop">alternate_byzantine_trace_prop</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vTrace">vTrace</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Proj</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#binary_free_composition_fst">binary_free_composition_fst</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#emit_any_message_vlsm">emit_any_message_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vm0">vm0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace_prop">protocol_trace_prop</a></span> <span class="id">Proj</span> <span class="id">tr</span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="byzantine_alt_byzantine">byzantine_alt_byzantine</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vTrace">vTrace</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Halt</span> : <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alternate_byzantine_trace_prop">alternate_byzantine_trace_prop</a></span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_trace_prop">byzantine_trace_prop</a></span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof2')">Proof.</div>
+<div class="proofscript" id="proof2">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#emit_any_message_vlsm">emit_any_message_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vm0">vm0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<h2> Equivalence between the two Byzantine trace definitions
+In this section we prove that the <span class="bracket"><span class="id">alternate_byzantine_trace_prop</span></span>erty is
+equivalent to the <span class="bracket"><span class="id">byzantine_trace_prop</span></span>erty.
+Since we have already proven that the <span class="bracket"><span class="id">alternate_byzantine_trace_prop</span></span>erty
+implies the <span class="bracket"><span class="id">byzantine_trace_prop</span></span>erty (Lemma <span class="bracket"><span class="id">byzantine_alt_byzantine</span></span>),
+and since we know that the traces with the <span class="bracket"><span class="id">byzantine_trace_prop</span></span>erty
+are <span class="bracket"><span class="id">protocol_trace</span></span>s for the <span class="bracket"><span class="id">pre_loaded_with_all_messages_vlsm</span></span>, to prove the
+equivalence it is enough to close the circle by proving the
+<span class="bracket"><span class="id">VLSM_incl</span></span>usion between the <span class="bracket"><span class="id">pre_loaded_with_all_messages_vlsm</span></span> and the projection VLSM used
+in the definition of the <span class="bracket"><span class="id">alternate_byzantine_trace_prop</span></span>erty.
+</h2>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt">pre_loaded_with_all_messages_byzantine_alt</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">PreLoaded</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Alt1</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#binary_free_composition_fst">binary_free_composition_fst</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#emit_any_message_vlsm">emit_any_message_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vm0">vm0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Alt</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#binary_free_composition">binary_free_composition</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#emit_any_message_vlsm">emit_any_message_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vm0">vm0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="alt_pre_loaded_with_all_messages_incl">alt_pre_loaded_with_all_messages_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt1">Alt1</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.PreLoaded">PreLoaded</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof3')">Proof.</div>
+<div class="proofscript" id="proof3">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">t</span> <span class="id">Hpt</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_pre_loaded_with_all_messages">byzantine_pre_loaded_with_all_messages</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_alt_byzantine">byzantine_alt_byzantine</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="alt_option_protocol_message">alt_option_protocol_message</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">om</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#option_protocol_message_prop">option_protocol_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> <span class="id">om</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof4')">Proof.</div>
+<div class="proofscript" id="proof4">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vs0">vs0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">om</span> <span class="kwd">as</span> [<span class="id">m</span>|]; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_initial_state">protocol_initial_state</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vs0">vs0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>)) <span class="kwd">as</span> <span class="id">s</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">replace</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#pair">pair</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#type">type</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>)) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>) <span class="id">s</span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id">m</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">with</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#second">second</a></span> <span class="id">m</span>) (<span class="id">s</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">assert</span> (<span class="id">Hps</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_prop">protocol_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> (<span class="id">s</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> (<span class="tactic">subst</span>; <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_initial_state">protocol_initial_state</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_generated">protocol_generated</a></span> <span class="kwd">with</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span> <span class="id">s</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_id">state_update_id</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="alt_proj_option_protocol_message">alt_proj_option_protocol_message</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">m</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#option_protocol_message_prop">option_protocol_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt1">Alt1</a></span> <span class="id">m</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof5')">Proof.</div>
+<div class="proofscript" id="proof5">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#protocol_message_projection">protocol_message_projection</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alt_option_protocol_message">alt_option_protocol_message</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="lifted_alt_state">lifted_alt_state</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.Composition.html#lift_to_composite_state">lift_to_composite_state</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#binary_IM">binary_IM</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#emit_any_message_vlsm">emit_any_message_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vm0">vm0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>))) <span class="id"><a href="CasperCBC.VLSM.Composition.html#first">first</a></span> <span class="id">s</span>.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="preloaded_alt_protocol_state">preloaded_alt_protocol_state</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">sj</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">om</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hp</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_prop">protocol_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.PreLoaded">PreLoaded</a></span> (<span class="id">sj</span>, <span class="id">om</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">sj</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof6')">Proof.</div>
+<div class="proofscript" id="proof6">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id">sj</span>, <span class="id">om</span>) <span class="kwd">as</span> <span class="id">sjom</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">om</span>. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">sj</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">Hp</span>; <span class="tactic">intros</span>; <span class="tactic">inversion</span> <span class="id">Heqsjom</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">Heqsjom</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">assert</span> (<span class="id">Hinit</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vinitial_state_prop">vinitial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">intros</span> [|]; <span class="tactic">try</span> <span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#lift_to_composite_state">lift_to_composite_state</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_eq">state_update_eq</a></span>. <span class="tactic">unfold</span> <span class="id">s</span>. <span class="tactic">destruct</span> <span class="id">is</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vinitial_state_prop">vinitial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>) (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>) <span class="id">Hinit</span>) <span class="kwd">as</span> <span class="id">six</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">replace</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>) <span class="kwd">with</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">six</span>); <span class="tactic">try</span> (<span class="tactic">subst</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_initial_state">protocol_initial_state</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">assert</span> (<span class="id">Hinit</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vinitial_state_prop">vinitial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">intros</span> [|]; <span class="tactic">try</span> <span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#lift_to_composite_state">lift_to_composite_state</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_eq">state_update_eq</a></span>. <span class="tactic">unfold</span> <span class="id">s</span>. <span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#s0">s0</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vinitial_state_prop">vinitial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>) (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>) <span class="id">Hinit</span>) <span class="kwd">as</span> <span class="id">six</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">replace</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>) <span class="kwd">with</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">six</span>); <span class="tactic">try</span> (<span class="tactic">subst</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_initial_state">protocol_initial_state</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id">IHHp1</span> <span class="id">s</span> <span class="id">_om</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span>). <span class="tactic">clear</span> <span class="id">IHHp2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#first">first</a></span> <span class="id">l</span>) (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>, <span class="id">om</span>)) <span class="kwd">as</span> <span class="id">xsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">xsom</span>' <span class="kwd">as</span> [<span class="id">xs</span>' <span class="id">om</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">IHHp1</span> <span class="kwd">as</span> [<span class="id">_omX</span> <span class="id">Hlift</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">om</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">replace</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">sj</span>) <span class="kwd">with</span> <span class="id">xs</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">replace</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#pair">pair</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#type">type</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>)) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>) <span class="id">xs</span>' <span class="id">om</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#pair">pair</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_type">VLSM_type</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">fun</span> <span class="id">T</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_type">VLSM_type</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#sigT">sigT</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_sign">VLSM_sign</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id">T</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">fun</span> <span class="id">S</span> : @<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_sign">VLSM_sign</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id">T</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_class">VLSM_class</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id">T</span> <span class="id">S</span>)) <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>) <span class="id">xs</span>' <span class="id">om</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Heqxsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alt_option_protocol_message">alt_option_protocol_message</a></span> <span class="id">om</span>) <span class="kwd">as</span> [<span class="id">_sX</span> <span class="id">Hopm</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_generated">protocol_generated</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt">Alt</a></span>) <span class="kwd">with</span> <span class="id">_omX</span> <span class="id">_sX</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="kwd">in</span> <span class="id">Heqxsom</span>'. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Heqxsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="tactic">at</span> 1 <span class="kwd">in</span> <span class="id">Heqxsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#lift_to_composite_state">lift_to_composite_state</a></span> <span class="tactic">at</span> 1 <span class="kwd">in</span> <span class="id">Heqxsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_eq">state_update_eq</a></span> <span class="kwd">in</span> <span class="id">Heqxsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">replace</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span> <span class="id">l</span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#pair">pair</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.message">message</a></span>) <span class="id">s</span> <span class="id">om</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">with</span> (<span class="id">sj</span>, <span class="id">om0</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">in</span> <span class="id">Heqxsom</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Heqxsom</span>'; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_twice">state_update_twice</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_alt_incl">pre_loaded_with_all_messages_alt_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.PreLoaded">PreLoaded</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt1">Alt1</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof7')">Proof.</div>
+<div class="proofscript" id="proof7">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#basic_VLSM_incl">basic_VLSM_incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.PreLoaded">PreLoaded</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt1">Alt1</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span>; <span class="tactic">try</span> (<span class="tactic">assumption</span> || <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alt_proj_option_protocol_message">alt_proj_option_protocol_message</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">exists</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#lifted_alt_state">lifted_alt_state</a></span> <span class="id">s</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [[<span class="id">_om</span> <span class="id">Hps</span>] [<span class="id">Hpm</span> <span class="id">Hv</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">repeat</span> <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#preloaded_alt_protocol_state">preloaded_alt_protocol_state</a></span> <span class="kwd">with</span> <span class="id">_om</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alt_option_protocol_message">alt_option_protocol_message</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_alt_eq">pre_loaded_with_all_messages_alt_eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_eq">VLSM_eq</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.PreLoaded">PreLoaded</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt.Alt1">Alt1</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof8')">Proof.</div>
+<div class="proofscript" id="proof8">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#pre_loaded_with_all_messages_alt_incl">pre_loaded_with_all_messages_alt_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alt_pre_loaded_with_all_messages_incl">alt_pre_loaded_with_all_messages_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.pre_loaded_with_all_messages_byzantine_alt">pre_loaded_with_all_messages_byzantine_alt</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="byzantine_alt_byzantine_iff">byzantine_alt_byzantine_iff</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vTrace">vTrace</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces.M">M</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alternate_byzantine_trace_prop">alternate_byzantine_trace_prop</a></span> <span class="id">tr</span> &lt;-&gt; <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_trace_prop">byzantine_trace_prop</a></span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof9')">Proof.</div>
+<div class="proofscript" id="proof9">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_alt_byzantine">byzantine_alt_byzantine</a></span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#pre_loaded_with_all_messages_alt_incl">pre_loaded_with_all_messages_alt_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_pre_loaded_with_all_messages">byzantine_pre_loaded_with_all_messages</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#ByzantineTraces">ByzantineTraces</a></span>.<br/>
+<br/>
+<h2> Composite-validating Byzantine traces are free
+In this section we show that if all components of a composite VLSM &lt;&lt;X&gt;&gt; have
+the <span class="bracket"><span class="id">validating_projection_prop</span></span>erty, then its byzantine traces
+are included into the free composition of the components of &lt;&lt;X&gt;&gt;.
+</h2>
+<span class="kwd">Section</span> <span class="id"><a name="composite_validating_byzantine_traces">composite_validating_byzantine_traces</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Context</span> {<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">IndEqDec</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i0</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span>  * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">i0</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">PreLoadedX</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id">X</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">FreeX</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#free_composite_vlsm">free_composite_vlsm</a></span> <span class="id">IM</span> <span class="id">i0</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hvalidating</span>: <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span> <span class="id">IM</span> <span class="id">i0</span> <span class="id">constraint</span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_composite_free_protocol_message">pre_loaded_with_all_messages_composite_free_protocol_message</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#label">label</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">om</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hv</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.PreLoadedX">PreLoadedX</a></span> <span class="id">l</span> (<span class="id">s</span>, <span class="id">om</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#option_protocol_message_prop">option_protocol_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.FreeX">FreeX</a></span> <span class="id">om</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof10')">Proof.</div>
+<div class="proofscript" id="proof10">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> (<span class="id">i</span>, <span class="id">li</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hv</span> <span class="kwd">as</span> [<span class="id">Hv</span> <span class="id">Hconstraint</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.Hvalidating">Hvalidating</a></span> <span class="id">i</span> <span class="id">li</span> (<span class="id">s</span> <span class="id">i</span>, <span class="id">om</span>) <span class="id">Hv</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption_protocol_prop">constraint_subsumption_protocol_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.i0">i0</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.constraint">constraint</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intro</span> <span class="id">Hprotocol</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hsubsum</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption">constraint_subsumption</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.constraint">constraint</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> (<span class="tactic">intro</span>; <span class="tactic">intros</span>; <span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hprotocol</span> <span class="id">Hsubsum</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.Hvalidating">Hvalidating</a></span> <span class="kwd">as</span> [<span class="id">sX</span> [<span class="id">Hsi</span> [<span class="id">Hps</span> [[<span class="id">_s</span> <span class="id">HpmX</span>] <span class="id">H0</span>]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hprotocol</span> <span class="kwd">in</span> <span class="id">HpmX</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">_s</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_composite_free_incl">pre_loaded_with_all_messages_composite_free_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.PreLoadedX">PreLoadedX</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.FreeX">FreeX</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof11')">Proof.</div>
+<div class="proofscript" id="proof11">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#basic_VLSM_incl">basic_VLSM_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span>; <span class="tactic">try</span> (<span class="tactic">assumption</span> || <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#pre_loaded_with_all_messages_composite_free_protocol_message">pre_loaded_with_all_messages_composite_free_protocol_message</a></span> <span class="kwd">with</span> <span class="id">l</span> <span class="id">s</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">_</span> <span class="id">Hv</span>]]. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">_</span> [<span class="id">Hv</span> <span class="id">Hc</span>]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="composite_validating_byzantine_traces_are_free">composite_validating_byzantine_traces_are_free</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vTrace">vTrace</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hbyz</span> : <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_trace_prop">byzantine_trace_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.X">X</a></span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace_prop">protocol_trace_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces.FreeX">FreeX</a></span> <span class="id">tr</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof12')">Proof.</div>
+<div class="proofscript" id="proof12">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#pre_loaded_with_all_messages_composite_free_incl">pre_loaded_with_all_messages_composite_free_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#alt_pre_loaded_with_all_messages_incl">alt_pre_loaded_with_all_messages_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#byzantine_alt_byzantine_iff">byzantine_alt_byzantine_iff</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.ByzantineTraces.html#composite_validating_byzantine_traces">composite_validating_byzantine_traces</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
