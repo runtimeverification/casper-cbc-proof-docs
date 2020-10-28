@@ -1,0 +1,99 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.RealsExtras</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.RealsExtras" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.RealsExtras</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Coq.Reals.Reals</a></span>.<br/>
+<br/>
+<div class="doc">This lemma is needed in fault_weight_state_backwards *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rplusminus_assoc">Rplusminus_assoc</a></span> : <span class="kwd">forall</span> <span class="id">r1</span> <span class="id">r2</span> <span class="id">r3</span>,<br/>
+&nbsp;&nbsp;(<span class="id">r1</span> + <span class="id">r2</span> - <span class="id">r3</span>)%<span class="id">R</span> = (<span class="id">r1</span> + (<span class="id">r2</span> - <span class="id">r3</span>))%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof227')">Proof.</div>
+<div class="proofscript" id="proof227">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#Rminus">Rminus</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">This lemma is needed in fault_weight_state_sorted_subset *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rplusminus_assoc_r">Rplusminus_assoc_r</a></span> : <span class="kwd">forall</span> <span class="id">r1</span> <span class="id">r2</span> <span class="id">r3</span>,<br/>
+&nbsp;&nbsp;(<span class="id">r1</span> - <span class="id">r2</span> + <span class="id">r3</span>)%<span class="id">R</span> = (<span class="id">r1</span> + (- <span class="id">r2</span> + <span class="id">r3</span>))%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof228')">Proof.</div>
+<div class="proofscript" id="proof228">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#Rminus">Rminus</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">This lemma is needed in fault_weight_state_sorted_subset *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rplus_opp_l">Rplus_opp_l</a></span> : <span class="kwd">forall</span> <span class="id">r</span>, (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.Ropp">Ropp</a></span> <span class="id">r</span> + <span class="id">r</span>)%<span class="id">R</span> = 0%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof229')">Proof.</div>
+<div class="proofscript" id="proof229">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_comm">Rplus_comm</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_opp_r">Rplus_opp_r</a></span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">This lemma is needed in fault_weight_state_sorted_subset *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rplus_ge_reg_neg_r">Rplus_ge_reg_neg_r</a></span> : <span class="kwd">forall</span> <span class="id">r1</span> <span class="id">r2</span> <span class="id">r3</span>,<br/>
+&nbsp;&nbsp;(<span class="id">r2</span> &lt;= 0)%<span class="id">R</span> -&gt; (<span class="id">r3</span> &lt;= <span class="id">r1</span> + <span class="id">r2</span>)%<span class="id">R</span> -&gt; (<span class="id">r3</span> &lt;= <span class="id">r1</span>)%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof230')">Proof.</div>
+<div class="proofscript" id="proof230">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rge_le">Rge_le</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_ge">Rle_ge</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_ge">Rle_ge</a></span> <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_ge_reg_neg_r">Rplus_ge_reg_neg_r</a></span> <span class="id">r1</span> <span class="id">r2</span> <span class="id">r3</span> <span class="id">H</span> <span class="id">H0</span>).<br/>
+Qed.</div>
+<br/>
+<div class="doc">This lemma is needed in fault_weight_state_sorted_subset *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rminus_lt_r">Rminus_lt_r</a></span> : <span class="kwd">forall</span> <span class="id">r1</span> <span class="id">r2</span>,<br/>
+&nbsp;&nbsp;(0 &lt;= <span class="id">r2</span>)%<span class="id">R</span> -&gt; (<span class="id">r1</span> - <span class="id">r2</span> &lt;= <span class="id">r1</span>)%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof231')">Proof.</div>
+<div class="proofscript" id="proof231">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_0_r">Rplus_0_r</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#Rminus">Rminus</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_le_compat_l">Rplus_le_compat_l</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rge_le">Rge_le</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Ropp_0_le_ge_contravar">Ropp_0_le_ge_contravar</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rminus_lt_r_strict">Rminus_lt_r_strict</a></span> : <span class="kwd">forall</span> <span class="id">r1</span> <span class="id">r2</span>,<br/>
+&nbsp;&nbsp;(0 &lt; <span class="id">r2</span>)%<span class="id">R</span> -&gt; (<span class="id">r1</span> - <span class="id">r2</span> &lt;= <span class="id">r1</span>)%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof232')">Proof.</div>
+<div class="proofscript" id="proof232">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_0_r">Rplus_0_r</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#Rminus">Rminus</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_le_compat_l">Rplus_le_compat_l</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rge_le">Rge_le</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Ropp_0_le_ge_contravar">Ropp_0_le_ge_contravar</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rlt_le">Rlt_le</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Rtotal_le_gt">Rtotal_le_gt</a></span> : <span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span>,<br/>
+&nbsp;&nbsp;(<span class="id">x</span> &lt;= <span class="id">y</span>)%<span class="id">R</span> \/ (<span class="id">x</span> &gt; <span class="id">y</span>)%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof233')">Proof.</div>
+<div class="proofscript" id="proof233">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rtotal_order">Rtotal_order</a></span> <span class="id">x</span> <span class="id">y</span>) <span class="kwd">as</span> [<span class="id">Hlt</span> | [<span class="id">Heq</span> | <span class="id">Hgt</span>]].<br/>
+&nbsp;&nbsp;- <span class="id">left</span>. <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#Rle">Rle</a></span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">left</span>. <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#Rle">Rle</a></span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
