@@ -1,0 +1,104 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.CommonFutures</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.CommonFutures" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.CommonFutures</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Lib.Preamble</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span> <span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html">VLSM.Decisions</a></span> <span class="id"><a href="CasperCBC.VLSM.ProjectionTraces.html">VLSM.ProjectionTraces</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">CBC.Common</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<h1> Common Futures and Decision Consistency </h1>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="CommonFutures">CommonFutures</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id">IndEqDec</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;(<span class="id">i0</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">i0</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;{<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;(<span class="id">ID</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> (<span class="id">IM</span> <span class="id">i</span>))<br/>
+&nbsp;&nbsp;(<span class="id">IE</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id">Estimator</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id">IM</span> <span class="id">i</span>)) <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">DE</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_projection_decision_estimator_property">composite_projection_decision_estimator_property</a></span> <span class="id">IM</span> <span class="id">i0</span> <span class="id">constraint</span> <span class="id">ID</span> <span class="id">IE</span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<h2> Common futures estimates definition </h2>
+<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="HasCommonFutureEstimates">HasCommonFutureEstimates</a></span> :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a name="union">union</a></span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span><br/>
+&nbsp;&nbsp;; <span class="id"><a name="union_is_reachable">union_is_reachable</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hps</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span> <span class="id">s</span> (<span class="id">union</span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;; <span class="id"><a name="union_has_consistent_estimators">union_has_consistent_estimators</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hps</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i</span> <span class="id">j</span> : <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.index">index</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">estimator</span> (<span class="id">union</span> <span class="id">s</span> <span class="id">i</span>) <span class="id">c</span> &lt;-&gt; <span class="id">estimator</span> (<span class="id">union</span> <span class="id">s</span> <span class="id">j</span>) <span class="id">c</span><br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<h2> Final and consistent decisions
+If a <span class="bracket"><span class="id">VLSM</span></span> composition &lt;&lt;X&gt;&gt; <span class="bracket"><span class="id">HasCommonFuturesEstimates</span></span> and its component
+decisions are linked with the corresponding estimators through the
+<span class="bracket"><span class="id">decision_estimator_property</span></span>, then &lt;&lt;X&gt;&gt; has <span class="bracket"><span class="id">final_and_consistent</span></span>
+decisions.
+</h2>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="consistent_estimator_decisions">consistent_estimator_decisions</a></span><br/>
+&nbsp;&nbsp;(<span class="id">HCFE</span> : <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#HasCommonFutureEstimates">HasCommonFutureEstimates</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final_and_consistent">final_and_consistent</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.i0">i0</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.constraint">constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.ID">ID</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof96')">Proof.</div>
+<div class="proofscript" id="proof96">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final_and_consistent">final_and_consistent</a></span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_protocol_snd">in_futures_protocol_snd</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">Hfuture</span>); <span class="tactic">intros</span> <span class="id">Hps2</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union_is_reachable">union_is_reachable</a></span> <span class="id">s2</span> <span class="id">Hps2</span>); <span class="tactic">intro</span> <span class="id">HcmnFuture</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union_has_consistent_estimators">union_has_consistent_estimators</a></span> <span class="id">s2</span> <span class="id">Hps2</span> <span class="id">j</span> <span class="id">k</span>)<br/>
+&nbsp;&nbsp;; <span class="tactic">intros</span> <span class="id">HconsEst</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_trans">in_futures_trans</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union">union</a></span> <span class="id">s2</span>) <span class="id">Hfuture</span> <span class="id">HcmnFuture</span>)<br/>
+&nbsp;&nbsp;; <span class="tactic">intro</span> <span class="id">HcmnFuture1</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.ProjectionTraces.html#in_futures_projection">in_futures_projection</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.i0">i0</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.constraint">constraint</a></span> <span class="id">j</span> <span class="id">s1</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union">union</a></span> <span class="id">s2</span>) <span class="id">HcmnFuture1</span>)<br/>
+&nbsp;&nbsp;; <span class="tactic">intros</span> <span class="id">HFuture1</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Dej</span> := <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.DE">DE</a></span> <span class="id">j</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Dej</span> (<span class="id">s1</span> <span class="id">j</span>) <span class="id">c1</span> <span class="id">HDecided1</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union">union</a></span> <span class="id">s2</span> <span class="id">j</span>) <span class="id">HFuture1</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.ProjectionTraces.html#in_futures_projection">in_futures_projection</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.i0">i0</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.constraint">constraint</a></span> <span class="id">k</span> <span class="id">s2</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union">union</a></span> <span class="id">s2</span>) <span class="id">HcmnFuture</span>)<br/>
+&nbsp;&nbsp;; <span class="tactic">intros</span> <span class="id">HFuture2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Dek</span> := <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures.DE">DE</a></span> <span class="id">k</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Dek</span> (<span class="id">s2</span> <span class="id">k</span>) <span class="id">c2</span> <span class="id">HDecided2</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union">union</a></span> <span class="id">s2</span> <span class="id">k</span>) <span class="id">HFuture2</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">estimator_total</span> (<span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#union">union</a></span> <span class="id">s2</span> <span class="id">j</span>)); <span class="tactic">intros</span> [<span class="id">c</span> <span class="id">Hc</span>].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">HconsEst</span> <span class="id">c</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Dej</span> <span class="id">c</span> <span class="id">Hc</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">HconsEst</span> <span class="kwd">in</span> <span class="id">Hc</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Dek</span> <span class="id">c</span> <span class="id">Hc</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.CommonFutures.html#CommonFutures">CommonFutures</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
