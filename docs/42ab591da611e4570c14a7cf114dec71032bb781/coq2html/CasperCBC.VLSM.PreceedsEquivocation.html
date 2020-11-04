@@ -1,0 +1,400 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.PreceedsEquivocation</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.PreceedsEquivocation" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.PreceedsEquivocation</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Reals</a></span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">Coq.Classes.RelationClasses</a></span><br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Preamble</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Lib.ListExtras</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Lib.ListSetExtras</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">CBC.Common</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">CBC.Equivocation</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Equivocation.html">VLSM.Equivocation</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.ObservableEquivocation.html">VLSM.ObservableEquivocation</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<h2> Message-based equivocation
+This definition relates a set of &lt;&lt;validator&gt;&gt;s and one of &lt;&lt;messages&gt;&gt;,
+where messages are mapped to validators through the <span class="bracket"><span class="id">sender</span></span> function,
+and there is a function <span class="bracket"><span class="id">message_preceeds_fn</span></span> which can decide whether
+two messages having the same sender were seen one before another.
+This allows to define that a message is <span class="bracket"><span class="id">equivocating_with</span></span> another
+if they have the same <span class="bracket"><span class="id">sender</span></span> and are not comparable through
+the <span class="bracket"><span class="id">message_preceeds_fn</span></span>.
+Then, we can say that a message is <span class="bracket"><span class="id">equivocating_in_set</span></span>
+if it is <span class="bracket"><span class="id">equivocating_with</span></span> any of the messages in that set.
+_Note_: Ideally <span class="bracket"><span class="id">message_preceeds_fn</span></span> should determine a strict partial order;
+however this might not happen for the whole set of messages, but only
+for a restricted set, e.g., <span class="bracket"><span class="id">protocol_messsage</span></span>s
+(please see class <span class="bracket"><span class="id">HasPreceedsEquivocation</span></span> for more details).
+</h2>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="message_equivocation_evidence">message_equivocation_evidence</a></span><br/>
+&nbsp;&nbsp;(<span class="id">message</span> <span class="id">validator</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;`{<span class="id">EqDecision</span> <span class="id">message</span>}<br/>
+&nbsp;&nbsp;`{<span class="id">EqDecision</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;(<span class="id">message_preceeds</span> : <span class="id">message</span> -&gt; <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">message_preceeds_dec</span> : <span class="id">RelDecision</span> <span class="id">message_preceeds</span>}<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{ <span class="id"><a name="sender">sender</a></span> : <span class="id">message</span> -&gt; <span class="id">validator</span><br/>
+&nbsp;&nbsp;; <span class="id">equivocating_with</span> (<span class="id">msg1</span> <span class="id">msg2</span> : <span class="id">message</span>)  : <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">sender</span> <span class="id">msg1</span> = <span class="id">sender</span> <span class="id">msg2</span> /\ ~<span class="id">comparable</span> <span class="id">message_preceeds</span> <span class="id">msg1</span> <span class="id">msg2</span><br/>
+&nbsp;&nbsp;; <span class="id">equivocating_in_set</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">msg</span> : <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">msgs</span> : <span class="tactic">set</span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">m</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">m</span> <span class="id">msgs</span> /\ <span class="id">equivocating_with</span> <span class="id">msg</span> <span class="id">m</span><br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="equivocating_with_dec">equivocating_with_dec</a></span> `{<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span>}:<br/>
+&nbsp;&nbsp;<span class="id">RelDecision</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_with">equivocating_with</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof187')">Proof.</div>
+<div class="proofscript" id="proof187">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">msg1</span> <span class="id">msg2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_with">equivocating_with</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Decision_and</span>;[<span class="id">solve</span>[<span class="tactic">apply</span> <span class="id">EqDecision1</span>]|].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Decision_not</span>.<br/>
+&nbsp;&nbsp;<span class="id">typeclasses</span> <span class="tactic">eauto</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="equivocating_in_set_dec">equivocating_in_set_dec</a></span> `{<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span>} :<br/>
+&nbsp;&nbsp;<span class="id">Decision</span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_in_set">equivocating_in_set</a></span> <span class="id">msg</span> <span class="id">msgs</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof188')">Proof.</div>
+<div class="proofscript" id="proof188">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">msg</span> <span class="id">msgs</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id">Decision_iff</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span> <span class="id">_</span> <span class="id">_</span>)).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> @<span class="id">Exists_dec</span>.<br/>
+&nbsp;&nbsp;<span class="id">typeclasses</span> <span class="tactic">eauto</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<h2> Equivocation for states encapsulating messages
+The definition below assumes that one can <span class="bracket"><span class="id">get_messages</span></span> associated to
+states, and these messages are equipped with <span class="bracket"><span class="id">message_equivocation_evidence</span></span>.
+For the purpose of the definition, what are the messages associated to the
+state can remain an abstract notion; however, one could imagine these messages
+as being those the state has memory of (sent, received, or otherwise observed).
+We can use this to instantiate <span class="bracket"><span class="id">basic_equivocation</span></span>, by saying that a
+validator is equivocating in a state iff there exists at least one message
+in that state with it as a sender which is <span class="bracket"><span class="id">equivocating_in_set</span></span> for
+the messages of the state.
+</h2>
+<span class="kwd">Class</span> <span class="id"><a name="state_encapsulating_messages">state_encapsulating_messages</a></span><br/>
+&nbsp;&nbsp;(<span class="id">state</span> <span class="id">message</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{ <span class="id"><a name="get_messages">get_messages</a></span> : <span class="id">state</span> -&gt; <span class="tactic">set</span> <span class="id">message</span> }.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="state_encapsulating_messages_equivocation">state_encapsulating_messages_equivocation</a></span><br/>
+&nbsp;&nbsp;(<span class="id">state</span> <span class="id">message</span> <span class="id">validator</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;`{<span class="id">Hstate</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#state_encapsulating_messages">state_encapsulating_messages</a></span> <span class="id">state</span> <span class="id">message</span>}<br/>
+&nbsp;&nbsp;`{<span class="id">Hmessage</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span> <span class="id">message</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;{<span class="id">measurable_V</span> : <span class="id">Measurable</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;{<span class="id">reachable_threshold</span> : <span class="id">ReachableThreshold</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;: <span class="id">basic_equivocation</span> <span class="id">state</span> <span class="id">validator</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{|  <span class="id">state_validators</span> := <span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">decide_eq</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;&nbsp;;  <span class="id">state_validators_nodup</span> := <span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id">set_map_nodup</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;&nbsp;;  <span class="id">is_equivocating_fn</span> := <span class="kwd">fun</span> <span class="id">s</span> <span class="id">v</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">msgs</span> := <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">inb</span> <span class="id">decide_eq</span> <span class="id">v</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">msg</span> =&gt; <span class="id">bool_decide</span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_in_set">equivocating_in_set</a></span> <span class="id">msg</span> <span class="id">msgs</span>)) <span class="id">msgs</span>))<br/>
+&nbsp;&nbsp;|}.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="equivocation_properties">equivocation_properties</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="equivocating_in_set_incl">equivocating_in_set_incl</a></span><br/>
+&nbsp;&nbsp;{<span class="id">message</span> <span class="id">validator</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;`{<span class="id">Heqv</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span> <span class="id">message</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;(<span class="id">sigma</span> <span class="id">sigma</span>' : <span class="tactic">set</span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hincl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">sigma</span> <span class="id">sigma</span>')<br/>
+&nbsp;&nbsp;(<span class="id">msg</span> : <span class="id">message</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hmsg</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_in_set">equivocating_in_set</a></span> <span class="id">msg</span> <span class="id">sigma</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_in_set">equivocating_in_set</a></span> <span class="id">msg</span> <span class="id">sigma</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof189')">Proof.</div>
+<div class="proofscript" id="proof189">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">state</span> <span class="id">message</span> <span class="id">validator</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;`{<span class="id">Hstate</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#state_encapsulating_messages">state_encapsulating_messages</a></span> <span class="id">state</span> <span class="id">message</span>}<br/>
+&nbsp;&nbsp;`{<span class="id">Hmessage</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span> <span class="id">message</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;{<span class="id">measurable_V</span> : <span class="id">Measurable</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;{<span class="id">reachable_threshold</span> : <span class="id">ReachableThreshold</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;(<span class="id">Hbasic</span> := <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#state_encapsulating_messages_equivocation">state_encapsulating_messages_equivocation</a></span> <span class="id">state</span> <span class="id">message</span> <span class="id">validator</span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="id">Existing</span> <span class="kwd">Instance</span> <span class="id">Hbasic</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="state_validators_incl">state_validators_incl</a></span><br/>
+&nbsp;&nbsp;(<span class="id">sigma</span> <span class="id">sigma</span>' : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hincl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>) (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>'))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id">state_validators</span> <span class="id">sigma</span>) (<span class="id">state_validators</span> <span class="id">sigma</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof190')">Proof.</div>
+<div class="proofscript" id="proof190">
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id">set_map_incl</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="is_equivocating">is_equivocating</a></span> <span class="id">s</span> <span class="id">v</span> : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">msgs</span> := <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">m</span>, <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> <span class="id">m</span> = <span class="id">v</span> /\ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">m</span> <span class="id">msgs</span> /\ <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_in_set">equivocating_in_set</a></span> <span class="id">m</span> <span class="id">msgs</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="is_equivocating_reflect">is_equivocating_reflect</a></span> <span class="id">s</span> <span class="id">v</span>:<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#is_equivocating">is_equivocating</a></span> <span class="id">s</span> <span class="id">v</span> &lt;-&gt; <span class="id">is_equivocating_fn</span> <span class="id">s</span> <span class="id">v</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof191')">Proof.</div>
+<div class="proofscript" id="proof191">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#is_equivocating">is_equivocating</a></span>;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- (<span class="id">in_function</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties.EqDecision1">EqDecision1</a></span> <span class="id">v</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_map_iff">in_map_iff</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">setoid_rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter_In">filter_In</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">setoid_rewrite</span> <span class="id">bool_decide_eq_true</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="equivocating_validators_incl">equivocating_validators_incl</a></span><br/>
+&nbsp;&nbsp;(<span class="id">sigma</span> <span class="id">sigma</span>' : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hincl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>) (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>'))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id">equivocating_validators</span> <span class="id">sigma</span>) (<span class="id">equivocating_validators</span> <span class="id">sigma</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof192')">Proof.</div>
+<div class="proofscript" id="proof192">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">equivocating_validators</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">v</span>. <span class="tactic">rewrite</span> !<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter_In">filter_In</a></span>, &lt;- !<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#is_equivocating_reflect">is_equivocating_reflect</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">pose</span> <span class="id">proof</span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#state_validators_incl">state_validators_incl</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hincl</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">firstorder</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="equivocation_fault_incl">equivocation_fault_incl</a></span><br/>
+&nbsp;&nbsp;(<span class="id">sigma</span> <span class="id">sigma</span>' : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hincl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>) (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>'))<br/>
+&nbsp;&nbsp;: (<span class="id">equivocation_fault</span> <span class="id">sigma</span> &lt;= <span class="id">equivocation_fault</span> <span class="id">sigma</span>')%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof193')">Proof.</div>
+<div class="proofscript" id="proof193">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">sum_weights_incl</span><br/>
+&nbsp;&nbsp;; [<span class="id">solve</span>[<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup_filter">NoDup_filter</a></span>; <span class="tactic">apply</span> <span class="id">state_validators_nodup</span>]..|].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_validators_incl">equivocating_validators_incl</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_heavy_incl">not_heavy_incl</a></span><br/>
+&nbsp;&nbsp;(<span class="id">sigma</span> <span class="id">sigma</span>' : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hincl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>) (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">sigma</span>'))<br/>
+&nbsp;&nbsp;(<span class="id">Hsigma</span>' : <span class="id">not_heavy</span> <span class="id">sigma</span>')<br/>
+&nbsp;&nbsp;: <span class="id">not_heavy</span> <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof194')">Proof.</div>
+<div class="proofscript" id="proof194">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_trans">Rle_trans</a></span> <span class="kwd">with</span> (<span class="id">equivocation_fault</span> <span class="id">sigma</span>'); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_fault_incl">equivocation_fault_incl</a></span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="empty_not_heavy">empty_not_heavy</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hempty</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nil">nil</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id">not_heavy</span> <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof195')">Proof.</div>
+<div class="proofscript" id="proof195">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">not_heavy</span>. <span class="tactic">unfold</span> <span class="id">equivocation_fault</span>. <span class="tactic">unfold</span> <span class="id">equivocating_validators</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id">Hempty</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">threshold</span>;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rge_le">Rge_le</a></span>;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocation_properties">equivocation_properties</a></span>.<br/>
+<br/>
+<h1> VLSM equivocation based-on full-node-like  <span class="bracket"><span class="id">message_equivocation_evidence</span></span>
+Given a <span class="bracket"><span class="id">VLSM</span></span> X over a type of messages which <span class="bracket"><span class="id">message_equivocation_evidence</span></span>, we say
+that @X@ has <span class="bracket"><span class="id">vlsm_message_equivocation_evidence</span></span> if <span class="bracket"><span class="id">message_preceeds_fn</span></span>
+determines a <span class="bracket"><span class="id">StrictOrder</span></span> on the <span class="bracket"><span class="id">protocol_message</span></span>s of @X@.
+</h1>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="vlsm_message_equivocation_evidence">vlsm_message_equivocation_evidence</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">validator</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;`{<span class="id">Eqv</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span> <span class="id">message</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Class</span> <span class="id"><a name="vlsm_message_equivocation_evidence">vlsm_message_equivocation_evidence</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id">protocol_message_preceeds</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">pm1</span> <span class="id">pm2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#byzantine_message">byzantine_message</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.message_preceeds">message_preceeds</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">pm1</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">pm2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a name="protocol_message_preceeds_strict_order">protocol_message_preceeds_strict_order</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> <span class="id">protocol_message_preceeds</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a name="evidence_of_equivocation">evidence_of_equivocation</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">pm1</span> <span class="id">pm2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#byzantine_message">byzantine_message</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">m1</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">pm1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">m2</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">pm2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Heqv</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_with">equivocating_with</a></span> <span class="id">m1</span> <span class="id">m2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition_item">transition_item</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Htr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace">finite_protocol_trace</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span>) <span class="id">s</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hm1</span> : <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#trace_has_message">trace_has_message</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> <span class="id">m1</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hm2</span> : <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#trace_has_message">trace_has_message</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> <span class="id">m2</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#equivocation_in_trace">equivocation_in_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span> <span class="id">m1</span> <span class="id">tr</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\/ <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#equivocation_in_trace">equivocation_in_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence.X">X</a></span> <span class="id">m2</span> <span class="id">tr</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence">vlsm_message_equivocation_evidence</a></span>.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="composite_preceeds_equivocation">composite_preceeds_equivocation</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> <span class="id">validator</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;`{<span class="id">Eqv</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span> <span class="id">message</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;`{<span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i0</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint1</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint2</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hsubsumption</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption">constraint_subsumption</a></span> <span class="id">IM</span> <span class="id">constraint1</span> <span class="id">constraint2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X1</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">i0</span> <span class="id">constraint1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X2</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">i0</span> <span class="id">constraint2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="preceeds_equivocation_constrained">preceeds_equivocation_constrained</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Heqv</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence">vlsm_message_equivocation_evidence</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.validator">validator</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.X2">X2</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#vlsm_message_equivocation_evidence">vlsm_message_equivocation_evidence</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.validator">validator</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.X1">X1</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof196')">Proof.</div>
+<div class="proofscript" id="proof196">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Heqv</span> <span class="kwd">as</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <span class="id">protocol_message_preceeds2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <span class="id">protocol_message_preceeds2_irreflexive</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">protocol_message_preceeds2_transitive</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Heqv</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption_byzantine_message_prop">constraint_subsumption_byzantine_message_prop</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.i0">i0</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.constraint1">constraint1</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.constraint2">constraint2</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.Hsubsumption">Hsubsumption</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;); <span class="tactic">intro</span> <span class="id">Hem</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">repeat</span> <span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">intros</span> [<span class="id">m1</span> <span class="id">Hem1</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#complement">complement</a></span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hem</span> <span class="kwd">in</span> <span class="id">Hem1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">protocol_message_preceeds2_irreflexive</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">m1</span> <span class="id">Hem1</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#complement">complement</a></span> <span class="kwd">in</span> <span class="id">protocol_message_preceeds2_irreflexive</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">intros</span> [<span class="id">m1</span> <span class="id">Hem1</span>] [<span class="id">m2</span> <span class="id">Hem2</span>] [<span class="id">m3</span> <span class="id">Hem3</span>]<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">H12</span> <span class="id">H23</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hem</span> <span class="kwd">in</span> <span class="id">Hem1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hem</span> <span class="kwd">in</span> <span class="id">Hem2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hem</span> <span class="kwd">in</span> <span class="id">Hem3</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">protocol_message_preceeds2_transitive</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">m1</span> <span class="id">Hem1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">m2</span> <span class="id">Hem2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">m3</span> <span class="id">Hem3</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">H12</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">H23</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">intros</span> [<span class="id">m1</span> <span class="id">Hm1</span>] [<span class="id">m2</span> <span class="id">Hm2</span>]. <span class="tactic">simpl</span>. <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hm1</span>': <span class="id"><a href="CasperCBC.VLSM.Common.html#byzantine_message_prop">byzantine_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.X2">X2</a></span> <span class="id">m1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> (<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption_byzantine_message_prop">constraint_subsumption_byzantine_message_prop</a></span> <span class="kwd">with</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.constraint1">constraint1</a></span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hm2</span>': <span class="id"><a href="CasperCBC.VLSM.Common.html#byzantine_message_prop">byzantine_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.X2">X2</a></span> <span class="id">m2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> (<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption_byzantine_message_prop">constraint_subsumption_byzantine_message_prop</a></span> <span class="kwd">with</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.constraint1">constraint1</a></span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption_pre_loaded_with_all_messages_incl">constraint_subsumption_pre_loaded_with_all_messages_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.i0">i0</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.constraint1">constraint1</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.constraint2">constraint2</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.Hsubsumption">Hsubsumption</a></span> (@<span class="id"><a href="CasperCBC.VLSM.Common.html#Finite">Finite</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#type">type</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation.X1">X1</a></span>) <span class="id">s</span> <span class="id">tr</span>) <span class="id">Htr</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">as</span> <span class="id">Htrace</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Htrace</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Heqv</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hm1</span>') (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hm2</span>')). <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Heqv</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Heqv</span> <span class="id">Heqv0</span> <span class="id">s</span> <span class="id">tr</span> <span class="id">Htrace</span>' <span class="id">Hm0</span> <span class="id">Hm3</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#composite_preceeds_equivocation">composite_preceeds_equivocation</a></span>.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="message_observable_equivocation_equivalent_defnitions">message_observable_equivocation_equivalent_defnitions</a></span>.<br/>
+<br/>
+<h2> Deriving observable equivocation evidence from message-based equivocation evidence
+In this section we show that given the <span class="bracket"><span class="id">basic_equivocation</span></span> instance
+obtained through <span class="bracket"><span class="id">state_encapsulating_messages_equivocation</span></span>, we can turn
+it into a <span class="bracket"><span class="id">basic_observable_equivocation</span></span>.
+</h2>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">state</span> <span class="id">message</span> <span class="id">validator</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;`{<span class="id">Hmsgeqv</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_equivocation_evidence">message_equivocation_evidence</a></span> <span class="id">message</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;{<span class="id">Hstate</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#state_encapsulating_messages">state_encapsulating_messages</a></span> <span class="id">state</span> <span class="id">message</span>}<br/>
+&nbsp;&nbsp;{<span class="id">measurable_V</span> : <span class="id">Measurable</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;{<span class="id">reachable_threshold</span> : <span class="id">ReachableThreshold</span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;(<span class="id">message_based_equivocation</span> := <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#state_encapsulating_messages_equivocation">state_encapsulating_messages_equivocation</a></span> <span class="id">state</span> <span class="id">message</span> <span class="id">validator</span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="observable_messages">observable_messages</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">v</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.validator">validator</a></span>)<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">m</span> =&gt; <span class="kwd">if</span> <span class="id">decide</span> ((<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> <span class="id">m</span>) = <span class="id">v</span>) <span class="kwd">then</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> <span class="kwd">else</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>) (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="in_observable_messages_iff">in_observable_messages_iff</a></span> <span class="id">m</span> <span class="id">s</span> <span class="id">v</span>:<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">m</span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#observable_messages">observable_messages</a></span> <span class="id">s</span> <span class="id">v</span>) &lt;-&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">m</span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>) /\ <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> <span class="id">m</span> = <span class="id">v</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof197')">Proof.</div>
+<div class="proofscript" id="proof197">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#observable_messages">observable_messages</a></span>. <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter_In">filter_In</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">bool_decide_decide</span>, <span class="id">bool_decide_eq_true</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="message_observation_based_equivocation_evidence">message_observation_based_equivocation_evidence</a></span><br/>
+&nbsp;&nbsp;: @<span class="id"><a href="CasperCBC.VLSM.ObservableEquivocation.html#observation_based_equivocation_evidence">observation_based_equivocation_evidence</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.validator">validator</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.message">message</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.message_preceeds_dec">message_preceeds_dec</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.VLSM.ObservableEquivocation.html#observable_events">observable_events</a></span> := <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#observable_messages">observable_messages</a></span> |}.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="message_basic_observable_equivocation">message_basic_observable_equivocation</a></span><br/>
+&nbsp;&nbsp;(<span class="id">Hevidence</span> := <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observation_based_equivocation_evidence">message_observation_based_equivocation_evidence</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">validators</span> := <span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_map">set_map</a></span> <span class="id">decide_eq</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>))<br/>
+&nbsp;&nbsp;(<span class="id">validators_nodup</span> := <span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id">set_map_nodup</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>))<br/>
+&nbsp;&nbsp;: <span class="id">basic_equivocation</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.validator">validator</a></span><br/>
+&nbsp;&nbsp;:= @<span class="id"><a href="CasperCBC.VLSM.ObservableEquivocation.html#basic_observable_equivocation">basic_observable_equivocation</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.validator">validator</a></span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.message">message</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hevidence</span> <span class="id">_</span> <span class="id">_</span> <span class="id">validators</span> <span class="id">validators_nodup</span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="message_basic_observable_equivocation_iff">message_basic_observable_equivocation_iff</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">v</span> : <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.validator">validator</a></span>)<br/>
+&nbsp;&nbsp;: @<span class="id">is_equivocating_fn</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_basic_observable_equivocation">message_basic_observable_equivocation</a></span> <span class="id">s</span> <span class="id">v</span><br/>
+&nbsp;&nbsp;= @<span class="id">is_equivocating_fn</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.message_based_equivocation">message_based_equivocation</a></span> <span class="id">s</span> <span class="id">v</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof198')">Proof.</div>
+<div class="proofscript" id="proof198">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#eq_true_iff_eq">eq_true_iff_eq</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="id">is_equivocating_fn</span> <span class="tactic">at</span> 1; <span class="tactic">rewrite</span> <span class="id">bool_decide_eq_true</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">progress</span> <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_based_equivocation">message_based_equivocation</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#is_equivocating_reflect">is_equivocating_reflect</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.ObservableEquivocation.html#equivocation_evidence">equivocation_evidence</a></span>, <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#is_equivocating">is_equivocating</a></span>;<span class="tactic">simpl</span> <span class="id">observable_events</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">setoid_rewrite</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#in_observable_messages_iff">in_observable_messages_iff</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_in_set">equivocating_in_set</a></span>,<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#equivocating_with">equivocating_with</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> (<span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#get_messages">get_messages</a></span> <span class="id">s</span>), <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#sender">sender</a></span>, (<span class="id">comparable</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions.message_preceeds">message_preceeds</a></span>).<br/>
+&nbsp;&nbsp;<span class="tactic">clear</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">firstorder</span> <span class="tactic">congruence</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.PreceedsEquivocation.html#message_observable_equivocation_equivalent_defnitions">message_observable_equivocation_equivalent_defnitions</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
