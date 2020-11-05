@@ -1,0 +1,218 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.CommonTraces</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.CommonTraces" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.CommonTraces</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html">Streams</a></span>.<br/>
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Program.Equality.html">Program.Equality</a></span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Lib.SsrExport</span> <span class="id">Lib.Traces</span> <span class="id">Lib.TraceProperties</span> <span class="id">Lib.TraceClassicalProperties</span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Lib.StreamExtras</span> <span class="id">Lib.Preamble</span> <span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<br/>
+<h1> Protocols described by possibly-infinite traces </h1>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="VLSM">VLSM</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span> `{<span class="id">M</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_class">VLSM_class</a></span>} (<span class="id">vlsm</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#mk_vlsm">mk_vlsm</a></span> <span class="id">M</span>).<br/>
+<br/>
+<h2> Core protocol definitions </h2>
+<br/>
+<span class="kwd">Record</span> <span class="id"><a name="tr_data">tr_data</a></span> := <span class="id"><a name="mkTrData">mkTrData</a></span> {<br/>
+&nbsp;<span class="id"><a name="tr_label">tr_label</a></span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#label">label</a></span>;<br/>
+&nbsp;<span class="id"><a name="tr_input">tr_input</a></span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.message">message</a></span>;<br/>
+&nbsp;<span class="id"><a name="tr_output">tr_output</a></span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.message">message</a></span><br/>
+}.<br/>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Notation</span> <span class="id"><a name="trace">trace</a></span> := (@<span class="id">trace</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_data">tr_data</a></span>).<br/>
+<br/>
+<span class="kwd">CoInductive</span> <span class="id"><a name="protocol_trace">protocol_trace</a></span> : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+| <span class="id"><a name="protocol_trace_nil">protocol_trace_nil</a></span> : <span class="kwd">forall</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> <span class="id">s</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">protocol_trace</span> (<span class="id">Tnil</span> <span class="id">s</span>)<br/>
+| <span class="id"><a name="protocol_trace_delay">protocol_trace_delay</a></span> : <span class="kwd">forall</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>) (<span class="id">d</span> : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_data">tr_data</a></span>) (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">protocol_trace</span> <span class="id">tr</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_transition">protocol_transition</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_label">tr_label</a></span> <span class="id">d</span>) (<span class="id">s</span>, <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_input">tr_input</a></span> <span class="id">d</span>) (<span class="id">hd</span> <span class="id">tr</span>, <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_output">tr_output</a></span> <span class="id">d</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;<span class="id">protocol_trace</span> (<span class="id">Tcons</span> <span class="id">s</span> <span class="id">d</span> <span class="id">tr</span>).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="protocol_ptrace">protocol_ptrace</a></span> <span class="id">tr</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> <span class="id">tr</span> /\ <span class="id"><a href="CasperCBC.VLSM.Common.html#initial_state_prop">initial_state_prop</a></span> (<span class="id">hd</span> <span class="id">tr</span>).<br/>
+<br/>
+<h2> Mappings between finite traces and lists of transition items </h2>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="protocol_trace_finite_transition_items">protocol_trace_finite_transition_items</a></span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span>) (<span class="id">h</span>: <span class="id">finiteT</span> <span class="id">tr</span>) {<span class="kwd">struct</span> <span class="id">h</span>} : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition_item">transition_item</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">tr</span> <span class="kwd">as</span> <span class="id">tr</span>' <span class="kwd">return</span> (<span class="id">finiteT</span> <span class="id">tr</span>' -&gt; <span class="id">_</span>) <span class="kwd">with</span><br/>
+| <span class="id">Tnil</span> <span class="id">s</span> =&gt; <span class="kwd">fun</span> <span class="id">_</span> =&gt; []<br/>
+| <span class="id">Tcons</span> <span class="id">s</span> <span class="id">d</span> <span class="id">tr</span> =&gt; <span class="kwd">fun</span> <span class="id">h</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;{| <span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> := <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_label">tr_label</a></span> <span class="id">d</span>; <span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> := <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_input">tr_input</a></span> <span class="id">d</span>; <span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> := <span class="id">hd</span> <span class="id">tr</span>; <span class="id"><a href="CasperCBC.VLSM.Common.html#output">output</a></span> := <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_output">tr_output</a></span> <span class="id">d</span> |} ::<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">protocol_trace_finite_transition_items</span> <span class="id">tr</span> (<span class="id">invert_finiteT_delay</span> <span class="id">h</span>)<br/>
+<span class="kwd">end</span> <span class="id">h</span>.<br/>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="transition_items_list_protocol_trace">transition_items_list_protocol_trace</a></span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>) (<span class="id">ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition_item">transition_item</a></span>) : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">ls</span> <span class="kwd">with</span><br/>
+| [] =&gt; <span class="id">Tnil</span> <span class="id">s</span><br/>
+| <span class="id">ti</span> :: <span class="id">ls</span>' =&gt;<br/>
+&nbsp;&nbsp;<span class="id">Tcons</span> <span class="id">s</span> {| <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_label">tr_label</a></span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">ti</span>; <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_input">tr_input</a></span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> <span class="id">ti</span>; <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_output">tr_output</a></span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#output">output</a></span> <span class="id">ti</span> |}<br/>
+&nbsp;&nbsp;&nbsp;(<span class="id">transition_items_list_protocol_trace</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> <span class="id">ti</span>) <span class="id">ls</span>')<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="protocol_trace_finite_finite_protocol_trace_from">protocol_trace_finite_finite_protocol_trace_from</a></span> : <span class="kwd">forall</span> <span class="id">tr</span> (<span class="id">h</span>:<span class="id">finiteT</span> <span class="id">tr</span>),<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> <span class="id">tr</span> -&gt;<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> (<span class="id">hd</span> <span class="id">tr</span>) (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_finite_transition_items">protocol_trace_finite_transition_items</a></span> <span class="id">tr</span> <span class="id">h</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof97')">Proof.</div>
+<div class="proofscript" id="proof97">
+<span class="tactic">refine</span> (<span class="id">fix</span> <span class="id">IH</span> <span class="id">tr</span> <span class="id">h</span> {<span class="kwd">struct</span> <span class="id">h</span>} := <span class="id">_</span>).<br/>
+<span class="tactic">case</span>: <span class="id">tr</span> <span class="id">h</span> =&gt; [<span class="id">s</span>|<span class="id">s</span> <span class="id">d</span> <span class="id">tr</span>] <span class="id">h</span> <span class="id">Htr</span> /=.<br/>
+- <span class="tactic">dependent</span> <span class="tactic">inversion</span> <span class="id">h</span>; <span class="tactic">subst</span> =&gt; /=.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Htr</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_ptrace_empty">finite_ptrace_empty</a></span>.<br/>
+- <span class="tactic">dependent</span> <span class="tactic">inversion</span> <span class="id">h</span>; <span class="tactic">subst</span> =&gt; /=.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Htr</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_ptrace_extend">finite_ptrace_extend</a></span> =&gt; //.<br/>
+&nbsp;&nbsp;<span class="tactic">by</span> <span class="tactic">apply</span> <span class="id">IH</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="transition_items_list_protocol_trace_hd_nil">transition_items_list_protocol_trace_hd_nil</a></span> : <span class="kwd">forall</span> <span class="id">l</span> <span class="id">s0</span> <span class="id">s1</span>,<br/>
+&nbsp;<span class="id">Tnil</span> <span class="id">s0</span> = <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_list_protocol_trace">transition_items_list_protocol_trace</a></span> <span class="id">s1</span> <span class="id">l</span> -&gt;<br/>
+&nbsp;<span class="id">s0</span> = <span class="id">s1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof98')">Proof.</div>
+<div class="proofscript" id="proof98">
+<span class="tactic">case</span> =&gt; //=.<br/>
+<span class="tactic">move</span> =&gt; <span class="id">s0</span> <span class="id">s1</span> <span class="id">Hs</span>.<br/>
+<span class="tactic">by</span> <span class="tactic">inversion</span> <span class="id">Hs</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="transition_items_list_protocol_trace_hd_cons">transition_items_list_protocol_trace_hd_cons</a></span> : <span class="kwd">forall</span> <span class="id">l</span> <span class="id">s0</span> <span class="id">s1</span> <span class="id">d</span> <span class="id">tr</span>,<br/>
+&nbsp;<span class="id">Tcons</span> <span class="id">s0</span> <span class="id">d</span> <span class="id">tr</span> = <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_list_protocol_trace">transition_items_list_protocol_trace</a></span> <span class="id">s1</span> <span class="id">l</span> -&gt;<br/>
+&nbsp;<span class="id">s0</span> = <span class="id">s1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof99')">Proof.</div>
+<div class="proofscript" id="proof99">
+<span class="tactic">case</span> =&gt; //=.<br/>
+<span class="tactic">move</span> =&gt; <span class="id">a</span> <span class="id">l</span> <span class="id">s0</span> <span class="id">s1</span> <span class="id">d</span> <span class="id">tr</span> <span class="id">Hs</span>.<br/>
+<span class="tactic">by</span> <span class="tactic">inversion</span> <span class="id">Hs</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_protocol_trace_from_protocol_trace">finite_protocol_trace_from_protocol_trace</a></span> : <span class="kwd">forall</span> <span class="id">ls</span> <span class="id">s</span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> <span class="id">s</span> <span class="id">ls</span> -&gt;<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_list_protocol_trace">transition_items_list_protocol_trace</a></span> <span class="id">s</span> <span class="id">ls</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof100')">Proof.</div>
+<div class="proofscript" id="proof100">
+<span class="tactic">elim</span> =&gt; //=.<br/>
+- <span class="tactic">move</span> =&gt; <span class="id">s</span> <span class="id">Hf</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Hf</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">by</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_nil">protocol_trace_nil</a></span>.<br/>
+- <span class="tactic">move</span> =&gt; <span class="id">a</span> <span class="id">l</span> <span class="id">IH</span> <span class="id">s</span> <span class="id">Hf</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Hf</span>; <span class="tactic">subst</span> =&gt; /=.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_delay">protocol_trace_delay</a></span> =&gt; /=; <span class="id">first</span> <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id">IH</span>.<br/>
+&nbsp;&nbsp;<span class="id">have</span> <span class="id">IH</span>' := <span class="id">IH</span> <span class="id">_</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">IH</span>'; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;* <span class="tactic">by</span> <span class="tactic">rewrite</span> /= (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_list_protocol_trace_hd_nil">transition_items_list_protocol_trace_hd_nil</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H</span>).<br/>
+&nbsp;&nbsp;* <span class="tactic">by</span> <span class="tactic">rewrite</span> /= (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_list_protocol_trace_hd_cons">transition_items_list_protocol_trace_hd_cons</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H</span>).<br/>
+Qed.</div>
+<br/>
+<h2> Mappings between infinite traces and streams of transition items </h2>
+<br/>
+<span class="kwd">Program</span> <span class="kwd">CoFixpoint</span> <span class="id"><a name="protocol_trace_infinite_transition_items">protocol_trace_infinite_transition_items</a></span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span>) (<span class="id">h</span>: <span class="id">infiniteT</span> <span class="id">tr</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html#Stream">Stream</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition_item">transition_item</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">tr</span> <span class="kwd">with</span><br/>
+| <span class="id">Tnil</span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#False_rect">False_rect</a></span> <span class="id">_</span> <span class="id">_</span><br/>
+| <span class="id">Tcons</span> <span class="id">s</span> <span class="id">d</span> <span class="id">tr</span> =&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html#Cons">Cons</a></span> {| <span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> := <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_label">tr_label</a></span> <span class="id">d</span>; <span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> := <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_input">tr_input</a></span> <span class="id">d</span>; <span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> := <span class="id">hd</span> <span class="id">tr</span>; <span class="id"><a href="CasperCBC.VLSM.Common.html#output">output</a></span> := <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_output">tr_output</a></span> <span class="id">d</span> |}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">protocol_trace_infinite_transition_items</span> <span class="id">tr</span> <span class="id">_</span>)<br/>
+<span class="kwd">end</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof101')">Next Obligation.</div>
+<div class="proofscript" id="proof101">
+<span class="tactic">by</span> <span class="tactic">inversion</span> <span class="id">h</span>.<br/>
+Defined.</div>
+<div class="toggleproof" onclick="toggleDisplay('proof102')">Next Obligation.</div>
+<div class="proofscript" id="proof102">
+<span class="tactic">by</span> <span class="tactic">inversion</span> <span class="id">h</span>; <span class="tactic">subst</span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">CoFixpoint</span> <span class="id"><a name="transition_items_stream_protocol_trace">transition_items_stream_protocol_trace</a></span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>) (<span class="id">st</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html#Stream">Stream</a></span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition_item">transition_item</a></span>) : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">st</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html#Cons">Cons</a></span> <span class="id">ti</span> <span class="id">st</span>' =&gt;<br/>
+&nbsp;&nbsp;<span class="id">Tcons</span> <span class="id">s</span> {| <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_label">tr_label</a></span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">ti</span>; <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_input">tr_input</a></span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> <span class="id">ti</span>; <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#tr_output">tr_output</a></span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#output">output</a></span> <span class="id">ti</span> |}<br/>
+&nbsp;&nbsp;&nbsp;(<span class="id">transition_items_stream_protocol_trace</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> <span class="id">ti</span>) <span class="id">st</span>')<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="protocol_trace_infinite_infinite_protocol_trace_from">protocol_trace_infinite_infinite_protocol_trace_from</a></span> : <span class="kwd">forall</span> <span class="id">tr</span> (<span class="id">h</span>:<span class="id">infiniteT</span> <span class="id">tr</span>),<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> <span class="id">tr</span> -&gt;<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#infinite_protocol_trace_from">infinite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> (<span class="id">hd</span> <span class="id">tr</span>) (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_infinite_transition_items">protocol_trace_infinite_transition_items</a></span> <span class="id">tr</span> <span class="id">h</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof103')">Proof.</div>
+<div class="proofscript" id="proof103">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">destruct</span> <span class="id">tr</span>; <span class="id">first</span> <span class="tactic">by</span> <span class="tactic">move</span> =&gt; <span class="id">h</span>; <span class="tactic">inversion</span> <span class="id">h</span>.<br/>
+<span class="tactic">move</span> =&gt; <span class="id">h</span> <span class="id">Htr</span> /=.<br/>
+<span class="tactic">inversion</span> <span class="id">Htr</span>; <span class="tactic">subst</span>.<br/>
+<span class="tactic">dependent</span> <span class="tactic">inversion</span> <span class="id">h</span>; <span class="tactic">subst</span>.<br/>
+<span class="tactic">rewrite</span> -(<span class="id">recons</span> (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_infinite_transition_items">protocol_trace_infinite_transition_items</a></span> <span class="id">_</span> <span class="id">_</span>)).<br/>
+<span class="tactic">simpl</span>.<br/>
+<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#infinite_ptrace_extend">infinite_ptrace_extend</a></span> =&gt; //.<br/>
+<span class="tactic">by</span> <span class="tactic">apply</span> <span class="id">CIH</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="infinite_protocol_trace_from_protocol_trace">infinite_protocol_trace_from_protocol_trace</a></span> : <span class="kwd">forall</span> <span class="id">st</span> <span class="id">s</span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#infinite_protocol_trace_from">infinite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> <span class="id">s</span> <span class="id">st</span> -&gt;<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_stream_protocol_trace">transition_items_stream_protocol_trace</a></span> <span class="id">s</span> <span class="id">st</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof104')">Proof.</div>
+<div class="proofscript" id="proof104">
+<span class="id">cofix</span> <span class="id">CIH</span>.<br/>
+<span class="tactic">case</span> =&gt; <span class="id">ti</span> <span class="id">st</span>' <span class="id">s</span> <span class="id">Hif</span>.<br/>
+<span class="tactic">inversion</span> <span class="id">Hif</span>; <span class="tactic">subst</span>.<br/>
+<span class="tactic">rewrite</span> [<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_stream_protocol_trace">transition_items_stream_protocol_trace</a></span> <span class="id">_</span> <span class="id">_</span>]<span class="id">trace_destr</span> /=.<br/>
+<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_delay">protocol_trace_delay</a></span>.<br/>
+- <span class="tactic">by</span> <span class="tactic">apply</span> <span class="id">CIH</span>.<br/>
+- <span class="tactic">by</span> <span class="tactic">inversion</span> <span class="id">H2</span>; <span class="tactic">subst</span>.<br/>
+Qed.</div>
+<br/>
+<h2> Mappings between Trace containers and possibly-infinite traces </h2>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="Trace_from_trace">Trace_from_trace</a></span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span>) : <span class="id"><a href="CasperCBC.VLSM.Common.html#Trace">Trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">finiteT_infiniteT_dec</span> <span class="id">tr</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">Hfin</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#Finite">Finite</a></span> (<span class="id">hd</span> <span class="id">tr</span>) (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_finite_transition_items">protocol_trace_finite_transition_items</a></span> <span class="id">tr</span> <span class="id">Hfin</span>)<br/>
+| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">Hinf</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#Infinite">Infinite</a></span> (<span class="id">hd</span> <span class="id">tr</span>) (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_infinite_transition_items">protocol_trace_infinite_transition_items</a></span> <span class="id">tr</span> <span class="id">Hinf</span>)<br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="trace_from_Trace">trace_from_Trace</a></span> (<span class="id">Tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#Trace">Trace</a></span>) : <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace">trace</a></span> :=<br/>
+<span class="kwd">match</span> <span class="id">Tr</span> <span class="kwd">with</span><br/>
+| <span class="id"><a href="CasperCBC.VLSM.Common.html#Finite">Finite</a></span> <span class="id">s</span> <span class="id">ls</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_list_protocol_trace">transition_items_list_protocol_trace</a></span> <span class="id">s</span> <span class="id">ls</span><br/>
+| <span class="id"><a href="CasperCBC.VLSM.Common.html#Infinite">Infinite</a></span> <span class="id">s</span> <span class="id">sm</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#transition_items_stream_protocol_trace">transition_items_stream_protocol_trace</a></span> <span class="id">s</span> <span class="id">sm</span><br/>
+<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Trace_from_trace_ptrace_from_prop">Trace_from_trace_ptrace_from_prop</a></span> : <span class="kwd">forall</span> <span class="id">tr</span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> <span class="id">tr</span> -&gt;<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_from_prop">ptrace_from_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#Trace_from_trace">Trace_from_trace</a></span> <span class="id">tr</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof105')">Proof.</div>
+<div class="proofscript" id="proof105">
+<span class="tactic">move</span> =&gt; <span class="id">tr</span> <span class="id">Hptr</span>.<br/>
+<span class="tactic">rewrite</span> /<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#Trace_from_trace">Trace_from_trace</a></span>.<br/>
+<span class="tactic">case</span> (<span class="id">finiteT_infiniteT_dec</span> <span class="id">_</span>) =&gt; [<span class="id">Hfin</span>|<span class="id">Hinf</span>] /=.<br/>
+- <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_finite_finite_protocol_trace_from">protocol_trace_finite_finite_protocol_trace_from</a></span>.<br/>
+- <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace_infinite_infinite_protocol_trace_from">protocol_trace_infinite_infinite_protocol_trace_from</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="trace_from_Trace_ptrace_from_prop">trace_from_Trace_ptrace_from_prop</a></span> : <span class="kwd">forall</span> <span class="id">Tr</span>,<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_from_prop">ptrace_from_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM.vlsm">vlsm</a></span> <span class="id">Tr</span> -&gt;<br/>
+&nbsp;<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#protocol_trace">protocol_trace</a></span> (<span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#trace_from_Trace">trace_from_Trace</a></span> <span class="id">Tr</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof106')">Proof.</div>
+<div class="proofscript" id="proof106">
+<span class="tactic">case</span> =&gt; [<span class="id">s</span> <span class="id">ls</span>|<span class="id">s</span> <span class="id">sm</span>] /=.<br/>
+- <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#finite_protocol_trace_from_protocol_trace">finite_protocol_trace_from_protocol_trace</a></span>.<br/>
+- <span class="tactic">exact</span>: <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#infinite_protocol_trace_from_protocol_trace">infinite_protocol_trace_from_protocol_trace</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.CommonTraces.html#VLSM">VLSM</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
