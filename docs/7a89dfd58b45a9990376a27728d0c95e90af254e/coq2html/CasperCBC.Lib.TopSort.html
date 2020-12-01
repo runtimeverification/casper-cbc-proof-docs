@@ -1,0 +1,664 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.TopSort</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.TopSort" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.TopSort</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html">Compare_dec</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.micromega.Lia.html">Lia</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html">Preamble</a></span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html">ListExtras</a></span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html">ListSetExtras</a></span>.<br/>
+<br/>
+<h1> Topological sorting algorithm </h1>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="min_predecessors">min_predecessors</a></span>.<br/>
+<h2> Finding an element with a minimal number of predecessors </h2>
+<br/>
+<div class="doc">For this section we will fix a list &lt;&lt;l&gt;&gt; and count the predecessors
+occurring in that list. </div>
+<br/>
+<span class="kwd">Context</span> {<span class="id">A</span>} (<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) {<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>} (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="count_predecessors">count_predecessors</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">b</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">b</span> <span class="id">a</span>)) <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="zero_predecessors">zero_predecessors</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Ha</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">a</span> = 0)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> (<span class="kwd">fun</span> <span class="id">b</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">b</span> <span class="id">a</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>) <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof314')">Proof.</div>
+<div class="proofscript" id="proof314">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html#filter_nil">filter_nil</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#length_zero_iff_nil">length_zero_iff_nil</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="min_predecessors">min_predecessors</a></span><br/>
+&nbsp;&nbsp;(<span class="id">remainder</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">min</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">remainder</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; <span class="id">min</span><br/>
+&nbsp;&nbsp;| <span class="id">h</span>::<span class="id">t</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">if</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html#lt_dec">lt_dec</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">h</span>) (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">min</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">then</span> <span class="id">min_predecessors</span> <span class="id">t</span> <span class="id">h</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">else</span> <span class="id">min_predecessors</span> <span class="id">t</span> <span class="id">min</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="min_predecessors_in">min_predecessors_in</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">min</span> := <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id">l</span>' <span class="id">a</span>)<br/>
+&nbsp;&nbsp;: <span class="id">min</span> = <span class="id">a</span> \/ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">min</span> <span class="id">l</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof315')">Proof.</div>
+<div class="proofscript" id="proof315">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Nat.html#min">min</a></span>; <span class="tactic">clear</span> <span class="id">min</span>. <span class="id">revert</span> <span class="id">a</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span>';<span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">a0</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html#lt_dec">lt_dec</a></span> <span class="id">_</span> <span class="id">_</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a</span>)|<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a0</span>)];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">IHl</span>';<span class="tactic">intuition</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="min_predecessors_correct">min_predecessors_correct</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">min</span> := <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id">l</span>' <span class="id">a</span>)<br/>
+&nbsp;&nbsp;(<span class="id">mins</span> := <span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">min</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> (<span class="kwd">fun</span> <span class="id">b</span> =&gt; <span class="id">mins</span> &lt;= <span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">b</span>) (<span class="id">a</span> :: <span class="id">l</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof316')">Proof.</div>
+<div class="proofscript" id="proof316">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">mins</span>; <span class="tactic">clear</span> <span class="id">mins</span>. <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Nat.html#min">min</a></span>; <span class="tactic">clear</span> <span class="id">min</span>. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">a</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span>'; <span class="tactic">intros</span>; <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">try</span> <span class="id">contradiction</span>. <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="id">lia</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_inv">in_inv</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span>. <span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html#lt_dec">lt_dec</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">a</span>) (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">x</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a</span>). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">IHl</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Ha</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> (<span class="id">a</span> :: <span class="id">l</span>')) <span class="tactic">by</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a</span> <span class="id">Ha</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">lia</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">x</span>). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">IHl</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> (<span class="id">x</span> :: <span class="id">l</span>')) <span class="tactic">by</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">x</span> <span class="id">Hx</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span>. <span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html#lt_dec">lt_dec</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">a</span>) (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">a0</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a</span>). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">IHl</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">x</span> <span class="id">Hin</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html#not_lt">not_lt</a></span> <span class="kwd">in</span> <span class="id">n</span>. <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Peano.html#ge">ge</a></span> <span class="kwd">in</span> <span class="id">n</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a0</span>). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">IHl</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Ha0</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a0</span> (<span class="id">a0</span> :: <span class="id">l</span>')) <span class="tactic">by</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a0</span> <span class="id">Ha0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">lia</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">a0</span>). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">IHl</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> (<span class="id">a0</span> :: <span class="id">l</span>')) <span class="tactic">by</span> (<span class="id">right</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHl</span>' <span class="id">x</span> <span class="id">Hx</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+Qed.</div>
+<br/>
+<div class="doc">Given &lt;&lt;P&gt;&gt; a property on &lt;&lt;A&gt;&gt;, <span class="bracket"><span class="id">preceeds_P</span></span> is the relation
+induced by &lt;&lt;preceeds&gt;&gt; on the subset of &lt;&lt;A&gt;&gt; determined by &lt;&lt;P&gt;&gt;. </div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="preceeds_P">preceeds_P</a></span><br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">x</span> <span class="id">y</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#sig">sig</a></span> <span class="id">P</span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">x</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">y</span>).<br/>
+<br/>
+<div class="doc">In what follows, let us fix a property &lt;&lt;P&gt;&gt; satisfied by all elements
+of &lt;&lt;l&gt;&gt;, such that <span class="bracket"><span class="id">preceeds_P</span></span> &lt;&lt;P&gt;&gt; is a <span class="bracket"><span class="id">StrictOrder</span></span>.
+Consequently, this means that &lt;&lt;preceeds&gt;&gt; is a <span class="bracket"><span class="id">StrictOrder</span></span> on the
+elements of &lt;&lt;l&gt;&gt;.
+</div>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">HPl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id">P</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span>)<br/>
+&nbsp;&nbsp;{<span class="id">Hso</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_P">preceeds_P</a></span> <span class="id">P</span>)}<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<div class="doc">Next we derive easier to work with formulations for the <span class="bracket"><span class="id">StrictOrder</span></span>
+properties associated with <span class="bracket"><span class="id">preceeds_P</span></span>. </div>
+<span class="kwd">Lemma</span> <span class="id"><a name="preceeds_irreflexive">preceeds_irreflexive</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Ha</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">a</span>)<br/>
+&nbsp;&nbsp;: ~ <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">a</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof317')">Proof.</div>
+<div class="proofscript" id="proof317">
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Irreflexive">StrictOrder_Irreflexive</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">a</span> <span class="id">Ha</span>)).<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#complement">complement</a></span>; <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_P">preceeds_P</a></span>; <span class="tactic">simpl</span>; <span class="tactic">intro</span> <span class="id">Hirr</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">a</span>)); <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="preceeds_asymmetric">preceeds_asymmetric</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Ha</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">a</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hb</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hab</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;: ~ <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">b</span> <span class="id">a</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof318')">Proof.</div>
+<div class="proofscript" id="proof318">
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">Hba</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">exact</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Asymmetric">StrictOrder_Asymmetric</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.Hso">Hso</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">a</span> <span class="id">Ha</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">b</span> <span class="id">Hb</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Hab</span> <span class="id">Hba</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;).<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="preceeds_transitive">preceeds_transitive</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> <span class="id">c</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Ha</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">a</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hb</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hc</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">c</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hab</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hbc</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">b</span> <span class="id">c</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">c</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof319')">Proof.</div>
+<div class="proofscript" id="proof319">
+&nbsp;&nbsp;<span class="tactic">exact</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Transitive">RelationClasses.StrictOrder_Transitive</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">a</span> <span class="id">Ha</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">b</span> <span class="id">Hb</span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">c</span> <span class="id">Hc</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Hab</span> <span class="id">Hbc</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;).<br/>
+Qed.</div>
+<br/>
+<div class="doc">If &lt;&lt;preceeds&gt;&gt; is a <span class="bracket"><span class="id">StrictOrder</span></span> on &lt;&lt;l&gt;&gt;, then there must exist an
+element of &lt;&lt;l&gt;&gt; with no predecessors in &lt;&lt;l&gt;&gt;.
+</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="count_predecessors_zero">count_predecessors_zero</a></span><br/>
+&nbsp;&nbsp;(<span class="id">Hl</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span> &lt;&gt; [])<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists">Exists</a></span> (<span class="kwd">fun</span> <span class="id">a</span> =&gt; <span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">a</span> = 0) <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof320')">Proof.</div>
+<div class="proofscript" id="proof320">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">elim</span> <span class="id">Hl</span>;<span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion_clear</span> <span class="id">HPl</span> <span class="kwd">as</span> [|? ? <span class="id">HPa</span> <span class="id">HPl0</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHl0</span> <span class="id">HPl0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_cons">Exists_cons</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_false_2">bool_decide_eq_false_2</a></span> <span class="tactic">by</span> (<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_irreflexive">preceeds_irreflexive</a></span>;<span class="tactic">assumption</span>).<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> ({<span class="id">l0</span>=[]}+{<span class="id">l0</span>&lt;&gt;[]}) <span class="tactic">by</span> (<span class="tactic">destruct</span> <span class="id">l0</span>;<span class="tactic">clear</span>;[<span class="id">left</span>|<span class="id">right</span>];<span class="tactic">congruence</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [?|<span class="id">Hl0</span>];[<span class="tactic">subst</span> <span class="id">l0</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">specialize</span> (<span class="id">IHl0</span> <span class="id">Hl0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span> <span class="kwd">in</span> <span class="id">IHl0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">IHl0</span> <span class="kwd">as</span> [<span class="id">x</span> [<span class="id">Hin</span> <span class="id">Hlen</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">x</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">left</span>. <span class="comment">(*&nbsp;inversion&nbsp;H2;&nbsp;subst.&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.P">P</a></span> <span class="id">l0</span>); <span class="tactic">intros</span> [<span class="id">Hall</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hall</span> <span class="id">HPl0</span> <span class="id">x</span> <span class="id">Hin</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span> |- ?<span class="id">X</span> = 0  =&gt; <span class="tactic">cut</span> (<span class="id">X</span> &lt;= 0) <span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">lia</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Hlen</span>;<span class="tactic">clear</span> <span class="id">Hlen</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html#filter_length_fn">filter_length_fn</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">revert</span> <span class="id">HPl0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_impl">Forall_impl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">setoid_rewrite</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true">bool_decide_eq_true</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_transitive">preceeds_transitive</a></span> <span class="kwd">with</span> <span class="id">a</span>;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span>. <span class="id">exists</span> <span class="id">x</span>. <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_false_2">bool_decide_eq_false_2</a></span>;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="min_predecessors_zero">min_predecessors_zero</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hl</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span> = <span class="id">a</span> :: <span class="id">l</span>')<br/>
+&nbsp;&nbsp;(<span class="id">min</span> := <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id">l</span>' <span class="id">a</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors">count_predecessors</a></span> <span class="id">min</span> = 0.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof321')">Proof.</div>
+<div class="proofscript" id="proof321">
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hl</span>' : <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors.l">l</a></span> &lt;&gt; []) <span class="tactic">by</span> (<span class="tactic">intro</span> <span class="id">H</span>; <span class="tactic">rewrite</span> <span class="id">Hl</span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">inversion</span> <span class="id">H</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#count_predecessors_zero">count_predecessors_zero</a></span> <span class="id">Hl</span>'); <span class="tactic">intro</span> <span class="id">Hx</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span> <span class="kwd">in</span> <span class="id">Hx</span>. <span class="tactic">destruct</span> <span class="id">Hx</span> <span class="kwd">as</span> [<span class="id">x</span> [<span class="id">Hinx</span> <span class="id">Hcountx</span>]].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors_correct">min_predecessors_correct</a></span> <span class="id">l</span>' <span class="id">a</span>); <span class="tactic">simpl</span>; <span class="tactic">intro</span> <span class="id">Hall</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">Hall</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hl</span> <span class="kwd">in</span> <span class="id">Hinx</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hall</span> <span class="id">x</span> <span class="id">Hinx</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Nat.html#min">min</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">lia</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span>.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="topologically_sorted">topologically_sorted</a></span>.<br/>
+<br/>
+<h2> Topologically sorted lists. Definition and properties. </h2>
+<br/>
+<span class="kwd">Context</span> {<span class="id">A</span>} (<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) {<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>} (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="topologically_sorted">topologically_sorted</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hab</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">l1</span> <span class="id">l2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Heq</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span> = <span class="id">l1</span> ++ [<span class="id">b</span>] ++ <span class="id">l2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;, ~<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id">l2</span>.<br/>
+<br/>
+<div class="doc">The following properties assume that &lt;&lt;preceeds&gt;&gt; determines a <span class="bracket"><span class="id">StrictOrder</span></span>
+on the list
+</div>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">Hso</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_P">preceeds_P</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.preceeds">preceeds</a></span> <span class="id">P</span>)}<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="topologically_sorted.topologically_sorted_fixed_list">topologically_sorted_fixed_list</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">Hl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.P">P</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hts</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<div class="doc">If &lt;&lt;l&gt;&gt; is <span class="bracket"><span class="id">topologically_sorted</span></span>, then for any occurences
+of &lt;&lt;a&gt;&gt; and &lt;&lt;b&gt;&gt; in &lt;&lt;l&gt;&gt; such that &lt;&lt;a preceeds b&gt;&gt; it must be that
+the occurrence of &lt;&lt;a&gt;&gt; is before that of &lt;&lt;b&gt;&gt;.
+Hence all occurrences of &lt;&lt;a&gt;&gt; must be before all occurrences of &lt;&lt;b&gt;&gt; in
+a <span class="bracket"><span class="id">topologically_sorted</span></span> list.
+</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="topologically_sorted_occurrences_ordering">topologically_sorted_occurrences_ordering</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hab</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;(<span class="id">la1</span> <span class="id">la2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Heqa</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span> = <span class="id">la1</span> ++ [<span class="id">a</span>] ++ <span class="id">la2</span>)<br/>
+&nbsp;&nbsp;(<span class="id">lb1</span> <span class="id">lb2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Heqb</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span> = <span class="id">lb1</span> ++ [<span class="id">b</span>] ++ <span class="id">lb2</span>)<br/>
+&nbsp;&nbsp;: <span class="id">exists</span> (<span class="id">lab</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>), <span class="id">lb1</span> = <span class="id">la1</span> ++ <span class="id">a</span> :: <span class="id">lab</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof322')">Proof.</div>
+<div class="proofscript" id="proof322">
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hpa</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.P">P</a></span> <span class="id">a</span>).<br/>
+&nbsp;&nbsp;{ <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">Hl</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.topologically_sorted_fixed_list.Hl">Hl</a></span>. <span class="tactic">rewrite</span> <span class="id">Heqa</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_elt">in_elt</a></span>. }<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.topologically_sorted_fixed_list.Hts">Hts</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span> <span class="id">lb1</span> <span class="id">lb2</span> <span class="id">Heqb</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Heqa</span> <span class="kwd">in</span> <span class="id">Heqb</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Ha</span> : ~<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> (<span class="id">b</span> :: <span class="id">lb2</span>)).<br/>
+&nbsp;&nbsp;{ <span class="tactic">intro</span> <span class="id">Ha</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.topologically_sorted_fixed_list.Hts">Hts</a></span>. <span class="tactic">destruct</span> <span class="id">Ha</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_irreflexive">preceeds_irreflexive</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.preceeds">preceeds</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.P">P</a></span> <span class="id">a</span> <span class="id">Hpa</span>) <span class="kwd">in</span> <span class="id">Hab</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">contradict</span> <span class="id">Hab</span>.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.ListExtras.html#occurrences_ordering">occurrences_ordering</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">la1</span> <span class="id">la2</span> <span class="id">lb1</span> <span class="id">lb2</span> <span class="id">Heqb</span> <span class="id">Ha</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Corollary</span> <span class="id"><a name="top_sort_before">top_sort_before</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hab</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Ha</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">l1</span> <span class="id">l2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Heq</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span> = <span class="id">l1</span> ++ [<span class="id">b</span>] ++ <span class="id">l2</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id">l1</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof323')">Proof.</div>
+<div class="proofscript" id="proof323">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">Ha</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Ha</span> <span class="kwd">as</span> [<span class="id">la1</span> [<span class="id">la2</span> <span class="id">Ha</span>]].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted_occurrences_ordering">topologically_sorted_occurrences_ordering</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span> <span class="id">la1</span> <span class="id">la2</span> <span class="id">Ha</span> <span class="id">l1</span> <span class="id">l2</span> <span class="id">Heq</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">lab</span> <span class="id">Hlab</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_elt">in_elt</a></span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">As a corollary of the above, if &lt;&lt;a preceeds b&gt;&gt; then &lt;&lt;a&gt;&gt; can be found before
+&lt;&lt;b&gt;&gt; in l.
+</div>
+<span class="kwd">Corollary</span> <span class="id"><a name="top_sort_preceeds">top_sort_preceeds</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> <span class="id">b</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hab</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.preceeds">preceeds</a></span> <span class="id">a</span> <span class="id">b</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Ha</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hb</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">b</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id">exists</span> <span class="id">l1</span> <span class="id">l2</span> <span class="id">l3</span>, <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.l">l</a></span> = <span class="id">l1</span> ++ [<span class="id">a</span>] ++ <span class="id">l2</span> ++ [<span class="id">b</span>] ++ <span class="id">l3</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof324')">Proof.</div>
+<div class="proofscript" id="proof324">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">Hb</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hb</span> <span class="kwd">as</span> [<span class="id">l12</span> [<span class="id">l3</span> <span class="id">Hb</span>']].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_before">top_sort_before</a></span> <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span> <span class="id">Ha</span> <span class="id">l12</span> <span class="id">l3</span> <span class="id">Hb</span>').<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">Ha12</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">Ha12</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Ha12</span> <span class="kwd">as</span> [<span class="id">l1</span> [<span class="id">l2</span> <span class="id">Ha12</span>]].<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">l12</span>.<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">l1</span>. <span class="id">exists</span> <span class="id">l2</span>. <span class="id">exists</span> <span class="id">l3</span>. <span class="tactic">rewrite</span> <span class="id">Hb</span>'. <span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_assoc">app_assoc</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted.topologically_sorted_fixed_list">topologically_sorted_fixed_list</a></span>.<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="toplogically_sorted_remove_last">toplogically_sorted_remove_last</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>}<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hts</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span> <span class="id">preceeds</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">init</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">final</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hinit</span> : <span class="id">l</span> = <span class="id">init</span> ++ [<span class="id">final</span>])<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span> <span class="id">preceeds</span> <span class="id">init</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof325')">Proof.</div>
+<div class="proofscript" id="proof325">
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span> <span class="id">l1</span> <span class="id">l2</span> <span class="id">Hinit</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hts</span> <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span> <span class="id">l1</span> (<span class="id">l2</span> ++ [<span class="id">final</span>])).<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hinit</span> <span class="kwd">in</span> <span class="id">Hts</span>. <span class="tactic">repeat</span> <span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_assoc">app_assoc</a></span> <span class="kwd">in</span> <span class="id">Hts</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hts</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span>). <span class="tactic">intro</span> <span class="id">Hnin</span>. <span class="tactic">apply</span> <span class="id">Hts</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="preceeds_closed">preceeds_closed</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>}<br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="tactic">set</span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> (<span class="kwd">fun</span> (<span class="id">b</span> : <span class="id">A</span>) =&gt; <span class="kwd">forall</span> (<span class="id">a</span> : <span class="id">A</span>) (<span class="id">Hmj</span> : <span class="id">preceeds</span> <span class="id">a</span> <span class="id">b</span>), <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id">s</span>) <span class="id">s</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="preceeds_closed_set_eq">preceeds_closed_set_eq</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>}<br/>
+&nbsp;&nbsp;(<span class="id">s1</span> <span class="id">s2</span> : <span class="tactic">set</span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Heq</span> : <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_closed">preceeds_closed</a></span> <span class="id">preceeds</span> <span class="id">s1</span> &lt;-&gt; <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_closed">preceeds_closed</a></span> <span class="id">preceeds</span> <span class="id">s2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof326')">Proof.</div>
+<div class="proofscript" id="proof326">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_closed">preceeds_closed</a></span>. <span class="tactic">repeat</span> <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">Hpc</span> <span class="id">b</span> <span class="id">Hb</span> <span class="id">a</span> <span class="id">Hab</span><br/>
+&nbsp;&nbsp;; <span class="tactic">apply</span> <span class="id">Heq</span>; <span class="tactic">apply</span> <span class="id">Heq</span> <span class="kwd">in</span> <span class="id">Hb</span>; <span class="tactic">apply</span> (<span class="id">Hpc</span> <span class="id">b</span> <span class="id">Hb</span>)<br/>
+&nbsp;&nbsp;; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="topologically_sorted_preceeds_closed_remove_last">topologically_sorted_preceeds_closed_remove_last</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>}<br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">Hso</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_P">preceeds_P</a></span> <span class="id">preceeds</span> <span class="id">P</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id">P</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hts</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span> <span class="id">preceeds</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">init</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">final</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hinit</span> : <span class="id">l</span> = <span class="id">init</span> ++ [<span class="id">final</span>])<br/>
+&nbsp;&nbsp;(<span class="id">Hpc</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_closed">preceeds_closed</a></span> <span class="id">preceeds</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_closed">preceeds_closed</a></span> <span class="id">preceeds</span> <span class="id">init</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof327')">Proof.</div>
+<div class="proofscript" id="proof327">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_closed">preceeds_closed</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">Hpc</span>. <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">b</span> <span class="id">Hb</span> <span class="id">a</span> <span class="id">Hab</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hb</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">b</span> (<span class="id">init</span> ++ [<span class="id">final</span>])) <span class="tactic">by</span> (<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span>; <span class="id">left</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hpc</span> <span class="id">b</span> <span class="id">Hb</span>' <span class="id">a</span> <span class="id">Hab</span>). <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span> <span class="kwd">in</span> <span class="id">Hpc</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hpc</span> <span class="kwd">as</span> [<span class="id">Ha</span> | <span class="id">Ha</span>]; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Ha</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hn</span>]; <span class="tactic">try</span> <span class="tactic">inversion</span> <span class="id">Hn</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">final</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">Hb</span>'.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hb</span>' <span class="kwd">as</span> [<span class="id">l1</span> [<span class="id">l2</span> <span class="id">Heq</span>]].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted_occurrences_ordering">topologically_sorted_occurrences_ordering</a></span> <span class="id">preceeds</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">init</span> ++ [<span class="id">a</span>]) <span class="id">P</span> <span class="id">Hl</span> <span class="id">Hts</span> <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span> <span class="id">init</span> [] <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span> <span class="id">l1</span> <span class="id">l2</span> <span class="id">Heq</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;).<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">lab</span> <span class="id">Hlab</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hlab</span> <span class="kwd">in</span> <span class="id">Heq</span>. <span class="id">exfalso</span>. <span class="tactic">clear</span> -<span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Heq</span>. <span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_assoc">app_assoc</a></span> <span class="kwd">in</span> <span class="id">Heq</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_inv_head">app_inv_head</a></span> <span class="kwd">in</span> <span class="id">Heq</span>. <span class="tactic">inversion</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_eq_nil">app_eq_nil</a></span> <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">_</span> <span class="id">H</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="top_sort">top_sort</a></span>.<br/>
+<h2> The topological sorting algorithm </h2>
+<br/>
+<span class="kwd">Context</span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">A</span>} (<span class="id">preceeds</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) {<span class="id">rd</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> <span class="id">preceeds</span>}.<br/>
+<br/>
+<div class="doc">Iteratively extracts &lt;&lt;n&gt;&gt; elements with minimal number of precessors
+from a given list.
+ </div>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="top_sort_n">top_sort_n</a></span><br/>
+&nbsp;&nbsp;(<span class="id">n</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">n</span>,<span class="id">l</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| 0, <span class="id">_</span> =&gt; []<br/>
+&nbsp;&nbsp;| <span class="id">_</span>, [] =&gt; []<br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#S">S</a></span> <span class="id">n</span>', <span class="id">a</span> :: <span class="id">l</span>' =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">min</span> := <span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> <span class="id">l</span> <span class="id">l</span>' <span class="id">a</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">l</span>'' := <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">min</span> <span class="id">l</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">min</span> :: <span class="id">top_sort_n</span> <span class="id">n</span>' <span class="id">l</span>''<br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<div class="doc">Repeats the procedure above to order all elements from the input list.
+</div>
+<span class="kwd">Definition</span> <span class="id"><a name="top_sort">top_sort</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_n">top_sort_n</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id">l</span>) <span class="id">l</span>.<br/>
+<br/>
+<div class="doc">The result of <span class="bracket"><span class="id">top_sort</span></span> and its input are equal as sets.
+</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="top_sort_set_eq">top_sort_set_eq</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">l</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span> <span class="id">l</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof328')">Proof.</div>
+<div class="proofscript" id="proof328">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id">l</span>) <span class="kwd">as</span> <span class="id">n</span>. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">n</span>; <span class="tactic">intros</span>; <span class="tactic">destruct</span> <span class="id">l</span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_refl">set_eq_refl</a></span><br/>
+&nbsp;&nbsp;; <span class="tactic">inversion</span> <span class="id">Heqn</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>) <span class="kwd">as</span> <span class="id">min</span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">min</span> <span class="id">l</span>) <span class="kwd">as</span> <span class="id">l</span>'.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">min</span> = <span class="id">a</span>)); <span class="tactic">try</span> <span class="tactic">rewrite</span> <span class="id">e</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq_cons">set_eq_cons</a></span>. <span class="id">specialize</span> (<span class="id">IHn</span> <span class="id">l</span> <span class="id">H0</span>). <span class="tactic">subst</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors_in">min_predecessors_in</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Heqmin</span>. <span class="tactic">simpl</span>. <span class="tactic">intros</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">try</span> (<span class="tactic">elim</span> <span class="id">n0</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHn</span> (<span class="id">a</span> :: <span class="id">l</span>')).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_remove_length">set_remove_length</a></span> <span class="id">min</span> <span class="id">l</span> <span class="id">Hin</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Heql</span>'. <span class="tactic">rewrite</span> &lt;- <span class="id">H0</span>. <span class="tactic">intro</span> <span class="id">Hlen</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHn</span> <span class="id">Hlen</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">intros</span> <span class="id">x</span> [<span class="id">Heq</span> | <span class="id">Hinx</span>]; <span class="tactic">try</span> (<span class="tactic">subst</span> <span class="id">x</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHn</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">x</span> = <span class="id">min</span>)); <span class="tactic">try</span> <span class="tactic">subst</span> <span class="id">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">specialize</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_3">set_remove_3</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">l</span> <span class="id">Hinx</span> <span class="id">n1</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Heql</span>'. <span class="tactic">intro</span> <span class="id">Hinx</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHn</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHn</span> <span class="kwd">in</span> <span class="id">Hinx</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hinx</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hinx</span>]; <span class="tactic">try</span> (<span class="tactic">subst</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_1">set_remove_1</a></span> <span class="kwd">in</span> <span class="id">Hinx</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="top_sort_nodup">top_sort_nodup</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span> <span class="id">l</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof329')">Proof.</div>
+<div class="proofscript" id="proof329">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id">l</span>) <span class="kwd">as</span> <span class="id">len</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">len</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">Heqlen</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#length_zero_iff_nil">length_zero_iff_nil</a></span> <span class="kwd">in</span> <span class="id">Heqlen</span>. <span class="tactic">subst</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> [| <span class="id">a</span> <span class="id">l</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hl</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">l</span>) <span class="tactic">by</span> (<span class="tactic">inversion</span> <span class="id">Hl</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hlen</span> : <span class="id">len</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id">l</span>) <span class="tactic">by</span> (<span class="tactic">inversion</span> <span class="id">Heqlen</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hl</span>'' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>) <span class="id">l</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> (<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span> = <span class="id">a</span>)); <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">specialize</span> (<span class="id">IHlen</span> <span class="id">l</span> <span class="id">Hl</span>'  <span class="id">Hlen</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">e</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Hl</span>; <span class="tactic">subst</span> <span class="id">x</span> <span class="id">l0</span>. <span class="tactic">intro</span> <span class="id">Ha</span>. <span class="tactic">elim</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_set_eq">top_sort_set_eq</a></span>. <span class="tactic">subst</span> <span class="id">len</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id">IHlen</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">intro</span> <span class="id">Hmin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hlen</span>' : <span class="id">len</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> (<span class="id">a</span> :: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>) <span class="id">l</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_remove_length">set_remove_length</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">pose</span> (@<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors_in">min_predecessors_in</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> <span class="id">_</span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>) <span class="kwd">as</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">n</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hlen</span>' <span class="kwd">in</span> <span class="id">Hmin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#proj2">proj2</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_set_eq">top_sort_set_eq</a></span> (<span class="id">a</span> :: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>) <span class="id">l</span>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">in</span> <span class="id">Hmin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hmin</span>; <span class="tactic">try</span> (<span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">elim</span> <span class="id">n</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_2">set_remove_2</a></span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">H</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* { <span class="tactic">apply</span> <span class="id">IHlen</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">constructor</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">Ha</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span> <span class="kwd">in</span> <span class="id">Ha</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Ha</span> <span class="kwd">as</span> [<span class="id">Ha</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Hl</span>. <span class="tactic">elim</span> <span class="id">H1</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_remove_length">set_remove_length</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">pose</span> (@<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors_in">min_predecessors_in</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> <span class="id">_</span> (<span class="id">a</span> :: <span class="id">l</span>) <span class="id">l</span> <span class="id">a</span>) <span class="kwd">as</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">n</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">P</span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;{<span class="id">Hso</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#preceeds_P">preceeds_P</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> <span class="id">P</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hl</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id">P</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<div class="doc">Under the assumption that &lt;&lt;preceeds&gt;&gt; induces a <span class="bracket"><span class="id">StrictOrder</span></span> on the elements of
+&lt;&lt;l&gt;&gt;, <span class="bracket"><span class="id">top_sort</span></span> &lt;&lt;l&gt;&gt; is <span class="bracket"><span class="id">topologically_sorted</span></span>.
+</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="top_sort_sorted">top_sort_sorted</a></span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof330')">Proof.</div>
+<div class="proofscript" id="proof330">
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">a</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">Ha2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Ha</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span>).<br/>
+&nbsp;&nbsp;{ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_set_eq">top_sort_set_eq</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Heq</span>. <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span>. <span class="id">right</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span> <span class="kwd">in</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span>) <span class="kwd">as</span> <span class="id">n</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">l2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">l1</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">Ha</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">Hab</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">b</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">a</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span>. <span class="tactic">clear</span> <span class="id">Hl</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">n</span>; <span class="tactic">intros</span><br/>
+&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">Heqn</span>;  <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#length_zero_iff_nil">length_zero_iff_nil</a></span> <span class="kwd">in</span> <span class="id">Heqn</span>; <span class="tactic">subst</span> <span class="id">l</span>; <span class="tactic">inversion</span> <span class="id">Ha</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span> <span class="kwd">as</span> [| <span class="id">a0</span> <span class="id">l0</span>]; <span class="tactic">inversion</span> <span class="id">Hl</span>; <span class="tactic">subst</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;+ <span class="tactic">inversion</span> <span class="id">Ha</span>.<br/>
+&nbsp;&nbsp;+ <span class="id">remember</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors">min_predecessors</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a0</span> :: <span class="id">l0</span>) <span class="id">l0</span> <span class="id">a0</span>) <span class="kwd">as</span> <span class="id">min</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">match</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">min</span> = <span class="id">a0</span>) <span class="kwd">return</span> (<span class="tactic">set</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>) <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span> =&gt; <span class="id">l0</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">_</span> =&gt; @<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#cons">cons</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span> <span class="id">a0</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">min</span> <span class="id">l0</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>) <span class="kwd">as</span> <span class="id">l</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Heqn</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hall</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.P">P</a></span> <span class="id">l</span>').<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>. <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hx</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">min</span> = <span class="id">a0</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span> <span class="id">a0</span> <span class="id">l</span>'. <span class="tactic">apply</span> <span class="id">H2</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span> <span class="id">l</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hx</span> <span class="kwd">as</span> [<span class="id">Heqx</span> | <span class="id">Hx</span>]; <span class="tactic">try</span> (<span class="tactic">subst</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_1">set_remove_1</a></span> <span class="kwd">in</span> <span class="id">Hx</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H2</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hlenl</span>' : <span class="id">n</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#length">length</a></span> <span class="id">l</span>').<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">min</span> = <span class="id">a0</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span> <span class="id">a0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">l</span>'. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span> <span class="id">l</span>'. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_remove_length">set_remove_length</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors_in">min_predecessors_in</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a0</span> :: <span class="id">l0</span>) <span class="id">l0</span> <span class="id">a0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Heqmin</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">Heq</span>' | <span class="id">Hin</span>]; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">n0</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHn</span> <span class="id">l</span>' <span class="id">Hall</span>' <span class="id">Hlenl</span>' <span class="id">a</span> <span class="id">b</span> <span class="id">Hab</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hminb</span> : <span class="id">b</span> &lt;&gt; <span class="id">min</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">b</span> = <span class="id">min</span>)); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">b</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#min_predecessors_zero">min_predecessors_zero</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> (<span class="id">a0</span> :: <span class="id">l0</span>) <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.P">P</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.Hl">Hl</a></span> <span class="id">l0</span> <span class="id">a0</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Heqmin</span>. <span class="tactic">simpl</span>. <span class="tactic">intro</span> <span class="id">Hmin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#zero_predecessors">zero_predecessors</a></span> <span class="kwd">in</span> <span class="id">Hmin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">Hmin</span>. <span class="tactic">apply</span> <span class="id">Hmin</span> <span class="kwd">in</span> <span class="id">Ha</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_false">bool_decide_eq_false</a></span> <span class="kwd">in</span> <span class="id">Ha</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">congruence</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">l1</span> <span class="kwd">as</span> [| <span class="id">_min</span> <span class="id">l1</span>]; <span class="tactic">inversion</span> <span class="id">Heq</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">subst</span> <span class="id">b</span>; <span class="tactic">elim</span> <span class="id">Hminb</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">_min</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">a</span> <span class="id">l</span>').<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> (<span class="id">IHn</span> <span class="id">i</span> <span class="id">l1</span> <span class="id">l2</span> <span class="id">Ha2</span> <span class="id">H4</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">assert</span> (<span class="id">Hmina</span> : <span class="id">min</span> = <span class="id">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">min</span> = <span class="id">a0</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span> <span class="id">a0</span> <span class="id">l</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Ha</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">n0</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span> <span class="id">l</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Ha</span> <span class="kwd">as</span> [<span class="id">Heqa</span> | <span class="id">Ha</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span> <span class="id">a0</span>. <span class="tactic">elim</span> <span class="id">n0</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">a</span> = <span class="id">min</span>)); <span class="tactic">try</span> (<span class="tactic">symmetry</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_3">set_remove_3</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">_</span> <span class="id">Ha</span>') <span class="kwd">in</span> <span class="id">n2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">elim</span> <span class="id">n0</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">a</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">n0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_set_eq">top_sort_set_eq</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span>. <span class="tactic">rewrite</span> &lt;- <span class="id">Hlenl</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">H4</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">&lt;&lt;lts&gt;&gt; is a <span class="bracket"><span class="id">topological_sorting</span></span> of &lt;&lt;l&gt;&gt; if it has the same elements as &lt;&lt;l&gt;&gt;
+and is <span class="bracket"><span class="id">toplogically_sorted</span></span>.
+</div>
+<span class="kwd">Definition</span> <span class="id"><a name="topological_sorting">topological_sorting</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span> <span class="id">lts</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.A">A</a></span>)<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">l</span> <span class="id">lts</span> /\ <span class="id"><a href="CasperCBC.Lib.TopSort.html#topologically_sorted">topologically_sorted</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.preceeds">preceeds</a></span> <span class="id">lts</span>.<br/>
+<br/>
+<span class="kwd">Corollary</span> <span class="id"><a name="top_sort_correct">top_sort_correct</a></span> : <span class="id"><a href="CasperCBC.Lib.TopSort.html#topological_sorting">topological_sorting</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span> (<span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort.l">l</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof331')">Proof.</div>
+<div class="proofscript" id="proof331">
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_set_eq">top_sort_set_eq</a></span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort_sorted">top_sort_sorted</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.Lib.TopSort.html#top_sort">top_sort</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
