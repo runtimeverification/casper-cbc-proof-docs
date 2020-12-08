@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#"><span class="id" title="library">ListSet</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Logic.FinFun.html#"><span class="id" title="library">FinFun</span></a><br/>
+&nbsp;&nbsp;.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">ListNotations</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Lib.Preamble</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Common.html#"><span class="id" title="library">CBC.Common</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Equivocation.html#"><span class="id" title="library">CBC.Equivocation</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#"><span class="id" title="library">VLSM.Common</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.ListValidator.ListValidator.html#"><span class="id" title="library">VLSM.ListValidator.ListValidator</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.ListValidator.Equivocation.html#"><span class="id" title="library">VLSM.ListValidator.Equivocation</span></a><br/>
+&nbsp;&nbsp;.<br/>
+<span class="comment">(*&nbsp;<br/>
+Section&nbsp;EquivocationAwareValidator.<br/>
+<br/>
+&nbsp;&nbsp;Context<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{index&nbsp;:&nbsp;Type}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{index_self&nbsp;:&nbsp;index}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{index_listing&nbsp;:&nbsp;list&nbsp;index}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{Hfinite&nbsp;:&nbsp;Listing&nbsp;index_listing}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{idec&nbsp;:&nbsp;EqDecision&nbsp;index}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(X&nbsp;:=&nbsp;@VLSM_list&nbsp;_&nbsp;index_self&nbsp;index_listing&nbsp;idec)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{Mindex&nbsp;:&nbsp;Measurable&nbsp;index}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{Rindex&nbsp;:&nbsp;ReachableThreshold&nbsp;index}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(eqv&nbsp;:=&nbsp;@lv_basic_equivocation&nbsp;index&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;Mindex&nbsp;Rindex)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+&nbsp;&nbsp;Existing&nbsp;Instance&nbsp;eqv.<br/>
+<br/>
+&nbsp;&nbsp;Definition&nbsp;get_no_equivocating_states<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(s&nbsp;:&nbsp;@state&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(eqv_validators&nbsp;:&nbsp;list&nbsp;index)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;list&nbsp;state<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;(fun&nbsp;i:&nbsp;index&nbsp;=&gt;&nbsp;project&nbsp;s&nbsp;i)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(set_diff&nbsp;decide_eq&nbsp;index_listing&nbsp;eqv_validators).<br/>
+<br/>
+&nbsp;&nbsp;Definition&nbsp;no_equivocating_decisions<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(s&nbsp;:&nbsp;@state&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(eqv_validators&nbsp;:&nbsp;list&nbsp;index)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;list&nbsp;(option&nbsp;bool)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;s&nbsp;with<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Bottom&nbsp;=&gt;&nbsp;<span class="inlinecode"></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;_&nbsp;=&gt;&nbsp;List.map&nbsp;decision&nbsp;(get_no_equivocating_states&nbsp;s&nbsp;eqv_validators)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;end.<br/>
+<br/>
+&nbsp;&nbsp;Definition&nbsp;equivocation_aware_estimator&nbsp;(s&nbsp;:&nbsp;state)&nbsp;(b&nbsp;:&nbsp;bool)&nbsp;:&nbsp;Prop&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;eqv_validators&nbsp;:=&nbsp;equivocating_validators&nbsp;s&nbsp;in<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;decisions&nbsp;:=&nbsp;no_equivocating_decisions&nbsp;s&nbsp;eqv_validators&nbsp;in<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;none_count&nbsp;:=&nbsp;List.count_occ&nbsp;decide_eq&nbsp;decisions&nbsp;None&nbsp;in<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;our_count&nbsp;:=&nbsp;List.count_occ&nbsp;decide_eq&nbsp;decisions&nbsp;(Some&nbsp;b)&nbsp;in<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;other_count&nbsp;:=&nbsp;List.count_occ&nbsp;decide_eq&nbsp;decisions&nbsp;(Some&nbsp;(negb&nbsp;b))&nbsp;in<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;s&nbsp;with<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Bottom&nbsp;=&gt;&nbsp;True<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Something&nbsp;c&nbsp;some&nbsp;=&gt;&nbsp;(none_count&nbsp;&gt;=&nbsp;our_count&nbsp;/\&nbsp;none_count&nbsp;&gt;=&nbsp;other_count)&nbsp;\/&nbsp;our_count&nbsp;&gt;=&nbsp;other_count<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;end.<br/>
+<br/>
+&nbsp;&nbsp;Definition&nbsp;VLSM_equivocation_aware_list&nbsp;:&nbsp;VLSM&nbsp;message<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;@VLSM_list&nbsp;index&nbsp;index_self&nbsp;index_listing&nbsp;idec&nbsp;equivocation_aware_estimator.<br/>
+<br/>
+End&nbsp;EquivocationAwareValidator.&nbsp;*)</span><br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
