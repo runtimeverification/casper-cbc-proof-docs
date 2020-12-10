@@ -1,0 +1,510 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Bool.Bool.html#"><span class="id" title="library">Bool</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Lists.ListSet.html#"><span class="id" title="library">ListSet</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Reals.Reals.html#"><span class="id" title="library">Reals</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Logic.FinFun.html#"><span class="id" title="library">FinFun</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Classes.RelationClasses.html#"><span class="id" title="library">RelationClasses</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Relations.Relations.html#"><span class="id" title="library">Relations</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Sets.Relations_1.html#"><span class="id" title="library">Relations_1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Sorting.Sorting.html#"><span class="id" title="library">Sorting</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.micromega.Lia.html#"><span class="id" title="library">Lia</span></a>.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">ListNotations</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Lib.Preamble</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.ListExtras.html#"><span class="id" title="library">Lib.ListExtras</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.ListSetExtras.html#"><span class="id" title="library">Lib.ListSetExtras</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.SortedLists.html#"><span class="id" title="library">Lib.SortedLists</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#"><span class="id" title="library">VLSM.Common</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Composition.html#"><span class="id" title="library">VLSM.Composition</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.ProjectionTraces.html#"><span class="id" title="library">VLSM.ProjectionTraces</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#"><span class="id" title="library">VLSM.Equivocation</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.ListValidator.ListValidator.html#"><span class="id" title="library">VLSM.ListValidator.ListValidator</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.ListValidator.Equivocation.html#"><span class="id" title="library">VLSM.ListValidator.Equivocation</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.ObservableEquivocation.html#"><span class="id" title="library">VLSM.ObservableEquivocation</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Common.html#"><span class="id" title="library">CBC.Common</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Equivocation.html#"><span class="id" title="library">CBC.Equivocation</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <a id="Composition" class="idref" href="#Composition"><span class="id" title="section">Composition</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;{<a id="index:1" class="idref" href="#index:1"><span class="id" title="binder">index</span></a> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;{<a id="i0:2" class="idref" href="#i0:2"><span class="id" title="binder">i0</span></a> : <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;{<a id="index_listing:3" class="idref" href="#index_listing:3"><span class="id" title="binder">index_listing</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;{<a id="Hfinite:4" class="idref" href="#Hfinite:4"><span class="id" title="binder">Hfinite</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Logic.FinFun.html#Listing"><span class="id" title="definition">Listing</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index_listing:3"><span class="id" title="variable">index_listing</span></a>}<br/>
+&nbsp;&nbsp;{<a id="idec:5" class="idref" href="#idec:5"><span class="id" title="binder">idec</span></a> : <a class="idref" href="CasperCBC.Lib.Classes.html#EqDecision"><span class="id" title="abbreviation">EqDecision</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;(<a id="message:6" class="idref" href="#message:6"><span class="id" title="binder">message</span></a> := @<a class="idref" href="CasperCBC.VLSM.ListValidator.ListValidator.html#message"><span class="id" title="definition">ListValidator.message</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index_listing:3"><span class="id" title="variable">index_listing</span></a>)<br/>
+&nbsp;&nbsp;(<a id="state:7" class="idref" href="#state:7"><span class="id" title="binder">state</span></a> := @<a class="idref" href="CasperCBC.VLSM.ListValidator.ListValidator.html#state"><span class="id" title="inductive">ListValidator.state</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index_listing:3"><span class="id" title="variable">index_listing</span></a>)<br/>
+&nbsp;&nbsp;(<a id="est:8" class="idref" href="#est:8"><span class="id" title="binder">est</span></a> : <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#state:7"><span class="id" title="variable">state</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;(<a id="IM_index:10" class="idref" href="#IM_index:10"><span class="id" title="binder">IM_index</span></a> := <span class="id" title="keyword">fun</span> (<a id="i:9" class="idref" href="#i:9"><span class="id" title="binder">i</span></a> : <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a>) =&gt; @<a class="idref" href="CasperCBC.VLSM.ListValidator.ListValidator.html#VLSM_list"><span class="id" title="definition">VLSM_list</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#i:9"><span class="id" title="variable">i</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index_listing:3"><span class="id" title="variable">index_listing</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#idec:5"><span class="id" title="variable">idec</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#est:8"><span class="id" title="variable">est</span></a>)<br/>
+&nbsp;&nbsp;{<a id="constraint:11" class="idref" href="#constraint:11"><span class="id" title="binder">constraint</span></a> : <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#IM_index:10"><span class="id" title="variable">IM_index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#IM_index:10"><span class="id" title="variable">IM_index</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#message:6"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>}<br/>
+&nbsp;&nbsp;(<a id="X:12" class="idref" href="#X:12"><span class="id" title="binder">X</span></a> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm"><span class="id" title="definition">composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#IM_index:10"><span class="id" title="variable">IM_index</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#i0:2"><span class="id" title="variable">i0</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#constraint:11"><span class="id" title="variable">constraint</span></a>)<br/>
+&nbsp;&nbsp;(<a id="preX:13" class="idref" href="#preX:13"><span class="id" title="binder">preX</span></a> := <a class="idref" href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm"><span class="id" title="definition">pre_loaded_with_all_messages_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#X:12"><span class="id" title="variable">X</span></a>)<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;(Hevidence&nbsp;:=&nbsp;fun&nbsp;(i&nbsp;:&nbsp;index)&nbsp;=&gt;&nbsp;@observable_full&nbsp;index&nbsp;index_listing&nbsp;Hfinite&nbsp;idec)&nbsp;*)</span><br/>
+&nbsp;&nbsp;{<a id="Mindex:14" class="idref" href="#Mindex:14"><span class="id" title="binder">Mindex</span></a> : <a class="idref" href="CasperCBC.CBC.Common.html#Measurable"><span class="id" title="class">Measurable</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;{<a id="Rindex:15" class="idref" href="#Rindex:15"><span class="id" title="binder">Rindex</span></a> : <a class="idref" href="CasperCBC.CBC.Common.html#ReachableThreshold"><span class="id" title="class">ReachableThreshold</span></a> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#index:1"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;.<br/>
+&nbsp;<span class="comment">(*<br/>
+<br/>
+&nbsp;&nbsp;Definition&nbsp;composed_eqv_evidence<br/>
+&nbsp;&nbsp;:&nbsp;observation_based_equivocation_evidence&nbsp;(vstate&nbsp;X)&nbsp;index&nbsp;state&nbsp;state_eq_dec&nbsp;state_lt&nbsp;state_lt_dec<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;(@composed_observation_based_equivocation_evidence<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;index&nbsp;state<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;state_eq_dec&nbsp;state_lt&nbsp;state_lt_dec<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;index_listing&nbsp;IM_index&nbsp;Hevidence<br/>
+&nbsp;&nbsp;).<br/>
+<br/>
+&nbsp;&nbsp;Existing&nbsp;Instance&nbsp;composed_eqv_evidence.<br/>
+<br/>
+&nbsp;&nbsp;Definition&nbsp;message_observable_events_lv&nbsp;(m&nbsp;:&nbsp;message)&nbsp;(target&nbsp;:&nbsp;index)&nbsp;:&nbsp;set&nbsp;state&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;obs&nbsp;:=&nbsp;@full_observations&nbsp;index&nbsp;index_listing&nbsp;idec&nbsp;(snd&nbsp;m)&nbsp;target&nbsp;in<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(decide&nbsp;(fst&nbsp;m&nbsp;=&nbsp;target))&nbsp;then&nbsp;set_add&nbsp;decide_eq&nbsp;(snd&nbsp;m)&nbsp;obs&nbsp;else&nbsp;obs.<br/>
+<br/>
+&nbsp;&nbsp;Lemma&nbsp;message_observable_consistency_lv<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(m&nbsp;:&nbsp;message)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(i&nbsp;:&nbsp;index)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(som&nbsp;:&nbsp;(vstate&nbsp;X)&nbsp;*&nbsp;option&nbsp;message)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(l&nbsp;:&nbsp;label)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dest&nbsp;:&nbsp;vstate&nbsp;X)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Ht&nbsp;:&nbsp;protocol_transition&nbsp;X&nbsp;l&nbsp;som&nbsp;(dest,&nbsp;Some&nbsp;m))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;incl&nbsp;(message_observable_events_lv&nbsp;m&nbsp;i)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@observable_events&nbsp;_&nbsp;_&nbsp;_&nbsp;_&nbsp;_&nbsp;_&nbsp;(Hevidence&nbsp;i)&nbsp;(dest&nbsp;(projT1&nbsp;l))&nbsp;i).<br/>
+&nbsp;&nbsp;&nbsp;Proof.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;message_observable_events_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_events.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;Hevidence.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_full.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Ht&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hv</span></span> <span class="inlinecode"><span class="id" title="var">Ht</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;Ht.&nbsp;unfold&nbsp;composite_transition&nbsp;in&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;som&nbsp;as&nbsp;(s,&nbsp;om).&nbsp;destruct&nbsp;l&nbsp;as&nbsp;(il,&nbsp;l).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;*.&nbsp;&nbsp;unfold&nbsp;vtransition&nbsp;in&nbsp;Ht.&nbsp;simpl&nbsp;in&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;l&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">c</span>|</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;assert&nbsp;((s&nbsp;i)&nbsp;&lt;&gt;&nbsp;Bottom).&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@protocol_prop_no_bottom&nbsp;index&nbsp;i&nbsp;_&nbsp;_&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hv&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hv</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(protocol_state_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;i)&nbsp;in&nbsp;Hv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hv&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_oms</span></span> <span class="inlinecode"><span class="id" title="var">Hv</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;proj_pre_loaded_with_all_messages_protocol_prop&nbsp;in&nbsp;Hv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;protocol_state_prop.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;_oms.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assert&nbsp;((s&nbsp;il)&nbsp;&lt;&gt;&nbsp;Bottom).&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@protocol_prop_no_bottom&nbsp;index&nbsp;il&nbsp;_&nbsp;_&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hv&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hv</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(protocol_state_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;il)&nbsp;in&nbsp;Hv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hv&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_oms</span></span> <span class="inlinecode"><span class="id" title="var">Hv</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;proj_pre_loaded_with_all_messages_protocol_prop&nbsp;in&nbsp;Hv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;protocol_state_prop.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;_oms.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inversion&nbsp;Ht.&nbsp;subst&nbsp;m.&nbsp;simpl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;state_update_eq.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;(@observations_disregards_cv&nbsp;index&nbsp;i&nbsp;index_listing&nbsp;idec&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;(decide&nbsp;(il&nbsp;=&nbsp;i)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;subst&nbsp;il.&nbsp;intros&nbsp;ob&nbsp;Hob.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@observations_update_eq&nbsp;index&nbsp;i&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_add_iff.&nbsp;apply&nbsp;set_add_iff&nbsp;in&nbsp;Hob.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hob&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hob</span></span> <span class="inlinecode">|</span> <span class="inlinecode"><span class="id" title="var">Hob</span></span>;&nbsp;try&nbsp;(left;&nbsp;assumption).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right.&nbsp;apply&nbsp;set_union_iff.&nbsp;left.&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;intros&nbsp;ob&nbsp;Hob.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@observations_update_neq&nbsp;index&nbsp;i&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est);&nbsp;try&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_iff.&nbsp;left.&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;destruct&nbsp;om&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">im</span>|</span>;&nbsp;inversion&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;Qed.<br/>
+<br/>
+&nbsp;&nbsp;Program&nbsp;Instance&nbsp;Hcomposite<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;composite_vlsm_observable_messages&nbsp;index_listing&nbsp;IM_index&nbsp;Hevidence&nbsp;i0&nbsp;constraint<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;message_observable_events&nbsp;:=&nbsp;message_observable_events_lv;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_observable_consistency&nbsp;:=&nbsp;message_observable_consistency_lv;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+&nbsp;&nbsp;Next&nbsp;Obligation.<br/>
+&nbsp;&nbsp;unfold&nbsp;composed_observable_events.<br/>
+&nbsp;&nbsp;unfold&nbsp;vinitial_state_prop&nbsp;in&nbsp;His.<br/>
+&nbsp;&nbsp;simpl&nbsp;in&nbsp;His.<br/>
+&nbsp;&nbsp;unfold&nbsp;composite_initial_state_prop&nbsp;in&nbsp;His.<br/>
+&nbsp;&nbsp;unfold&nbsp;vinitial_state_prop&nbsp;in&nbsp;His.<br/>
+&nbsp;&nbsp;simpl&nbsp;in&nbsp;His.<br/>
+&nbsp;&nbsp;unfold&nbsp;initial_state_prop&nbsp;in&nbsp;His.<br/>
+&nbsp;&nbsp;apply&nbsp;set_union_iterated_empty.<br/>
+&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;rewrite&nbsp;in_map_iff&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;destruct&nbsp;H.<br/>
+&nbsp;&nbsp;unfold&nbsp;observable_events&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;unfold&nbsp;Hevidence&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;unfold&nbsp;observable_full&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;specialize&nbsp;(His&nbsp;x).<br/>
+&nbsp;&nbsp;destruct&nbsp;His&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">cv</span></span> <span class="inlinecode"><span class="id" title="var">Heq</span></span>.<br/>
+&nbsp;&nbsp;rewrite&nbsp;Heq&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;destruct&nbsp;H&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">H</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;unfold&nbsp;full_observations&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;destruct&nbsp;s0.<br/>
+&nbsp;&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;assert&nbsp;(In&nbsp;s0&nbsp;(get_observations&nbsp;v&nbsp;(@depth&nbsp;index&nbsp;index_listing&nbsp;(Something&nbsp;cv&nbsp;all_bottom))&nbsp;(Something&nbsp;cv&nbsp;all_bottom))).&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;H.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;assert&nbsp;(s0&nbsp;&lt;&gt;&nbsp;Bottom).&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@no_bottom_in_observations&nbsp;index&nbsp;index_listing&nbsp;Hfinite)&nbsp;in&nbsp;H0.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;apply&nbsp;(@unfold_full_observations&nbsp;index&nbsp;index_listing&nbsp;Hfinite)&nbsp;in&nbsp;H0.<br/>
+&nbsp;&nbsp;destruct&nbsp;H0.<br/>
+&nbsp;&nbsp;simpl&nbsp;in&nbsp;H0.<br/>
+&nbsp;&nbsp;rewrite&nbsp;project_all_bottom&nbsp;in&nbsp;H0.<br/>
+&nbsp;&nbsp;elim&nbsp;H1.<br/>
+&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;destruct&nbsp;H0&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">i</span></span> <span class="inlinecode"><span class="id" title="var">Hin</span></span>.<br/>
+&nbsp;&nbsp;simpl&nbsp;in&nbsp;Hin.<br/>
+&nbsp;&nbsp;rewrite&nbsp;project_all_bottom&nbsp;in&nbsp;Hin.<br/>
+&nbsp;&nbsp;simpl&nbsp;in&nbsp;Hin.<br/>
+&nbsp;&nbsp;exfalso.<br/>
+&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;intros&nbsp;contra.<br/>
+&nbsp;&nbsp;discriminate&nbsp;contra.<br/>
+&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;Qed.<br/>
+<br/>
+&nbsp;&nbsp;Program&nbsp;Instance&nbsp;Hunforgeable<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;unforgeable_messages&nbsp;index_listing&nbsp;IM_index&nbsp;Hevidence&nbsp;i0&nbsp;constraint&nbsp;(fun&nbsp;i:index&nbsp;=&gt;&nbsp;i)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=&nbsp;{}.<br/>
+&nbsp;&nbsp;Next&nbsp;Obligation.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;message_observable_events_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_events.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;Hevidence.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_full.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Ht&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hvalid</span></span> <span class="inlinecode"><span class="id" title="var">Ht</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;Ht.&nbsp;unfold&nbsp;composite_transition&nbsp;in&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;l&nbsp;as&nbsp;(il,&nbsp;l).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;*.&nbsp;&nbsp;unfold&nbsp;vtransition&nbsp;in&nbsp;Ht.&nbsp;simpl&nbsp;in&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assert&nbsp;(Hnb&nbsp;:&nbsp;(s&nbsp;il)&nbsp;&lt;&gt;&nbsp;Bottom).&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@protocol_prop_no_bottom&nbsp;index&nbsp;il&nbsp;_&nbsp;_&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hvalid&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hvalid</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(protocol_state_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;il)&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hvalid&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_oms</span></span> <span class="inlinecode"><span class="id" title="var">Hvalid</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;proj_pre_loaded_with_all_messages_protocol_prop&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;protocol_state_prop.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;_oms.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;l&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">c</span>|</span>&nbsp;eqn&nbsp;:&nbsp;eq_l.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;inversion&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;incl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;om&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">m</span>|</span>&nbsp;eqn&nbsp;:&nbsp;eq_om.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;destruct&nbsp;Hvalid&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode">[<span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">Hcvalid</span>]</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;constrained_composite_valid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;free_composite_valid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;vvalid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;valid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;machine&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">contra</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;discriminate&nbsp;contra.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;rewrite&nbsp;state_update_eq&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;(@observations_disregards_cv&nbsp;index&nbsp;il&nbsp;index_listing&nbsp;idec&nbsp;est)&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(@observations_update_neq&nbsp;index&nbsp;il&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;(s&nbsp;il)&nbsp;(s&nbsp;il)&nbsp;Hnb&nbsp;Hnb&nbsp;v&nbsp;il&nbsp;eq_refl).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spec&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;set_eq&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">H2</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;incl&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;a&nbsp;H).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_elim&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2;&nbsp;intuition.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;destruct&nbsp;om&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">m</span>|</span>&nbsp;eqn&nbsp;:&nbsp;eq_om.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;inversion&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hvalid&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode">[<span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">Hcvalid</span>]</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;constrained_composite_valid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;free_composite_valid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;vvalid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;valid&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;machine&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;Hcvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hcvalid&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hcvalid</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hcvalid&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Hproject</span></span> <span class="inlinecode">[<span class="id" title="var">Hnb2</span></span> <span class="inlinecode"><span class="id" title="var">Hother</span>]</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;(decide&nbsp;(fst&nbsp;m&nbsp;=&nbsp;v)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;rewrite&nbsp;state_update_eq.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;incl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(@observations_update_eq&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est&nbsp;(s&nbsp;il)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;(snd&nbsp;m)&nbsp;Hnb).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;e&nbsp;in&nbsp;Hproject.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;symmetry&nbsp;in&nbsp;Hproject.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;Hnb2&nbsp;v&nbsp;Hproject).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;set_eq&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">H2</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;incl&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;e&nbsp;in&nbsp;H.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;a&nbsp;H).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_add_elim&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_intro.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;message_observable_events_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;decide_True.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_add_intro2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;message_observable_events_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;decide_True.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_intro.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_elim&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left.&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right.&nbsp;apply&nbsp;set_add_intro1.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;rewrite&nbsp;state_update_eq.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;incl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(@observations_update_neq&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est&nbsp;(s&nbsp;il)&nbsp;(snd&nbsp;m)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intros.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;symmetry&nbsp;in&nbsp;Hproject.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;Hnb&nbsp;Hnb2&nbsp;v&nbsp;(fst&nbsp;m)&nbsp;Hproject&nbsp;n).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;set_eq&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;H2&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">H2</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;incl&nbsp;in&nbsp;H2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(H2&nbsp;a&nbsp;H).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;message_observable_events_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;decide_False.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;unfold&nbsp;constrained_composite_valid&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;free_composite_valid&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;vvalid&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;valid&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;machine&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl&nbsp;in&nbsp;Hvalid.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;Qed.<br/>
+<br/>
+&nbsp;&nbsp;Let&nbsp;id&nbsp;:=&nbsp;fun&nbsp;i&nbsp;:&nbsp;index&nbsp;=&gt;&nbsp;i.<br/>
+&nbsp;&nbsp;Let&nbsp;trace_generated_event_lv&nbsp;:=&nbsp;trace_generated_event&nbsp;index_listing&nbsp;IM_index&nbsp;Hevidence&nbsp;i0&nbsp;constraint.<br/>
+&nbsp;&nbsp;Let&nbsp;trace_generated_index_lv&nbsp;:=&nbsp;trace_generated_index&nbsp;index_listing&nbsp;IM_index&nbsp;Hevidence&nbsp;i0&nbsp;constraint&nbsp;(fun&nbsp;i:index&nbsp;=&gt;&nbsp;i).<br/>
+<br/>
+&nbsp;&nbsp;Lemma&nbsp;generated_events_lv_sent<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(is&nbsp;:&nbsp;vstate&nbsp;X)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(tr&nbsp;:&nbsp;list&nbsp;transition_item)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(Htr&nbsp;:&nbsp;finite_protocol_trace&nbsp;X&nbsp;is&nbsp;tr)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(v&nbsp;:&nbsp;index)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(e&nbsp;:&nbsp;state)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(He&nbsp;:&nbsp;trace_generated_event_lv&nbsp;is&nbsp;tr&nbsp;v&nbsp;e)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;exists<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(prefix&nbsp;suffix&nbsp;:&nbsp;list&nbsp;(transition_item))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Heq&nbsp;:&nbsp;tr&nbsp;=&nbsp;prefix&nbsp;++&nbsp;suffix),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e&nbsp;=&nbsp;last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is&nbsp;v.<br/>
+&nbsp;&nbsp;Proof.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;He&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">prefix</span></span> <span class="inlinecode">[<span class="id" title="var">suffix</span></span> <span class="inlinecode">[<span class="id" title="var">item</span></span> <span class="inlinecode">[<span class="id" title="var">Heq</span></span> <span class="inlinecode"><span class="id" title="var">He</span>]]]</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;prefix.&nbsp;exists&nbsp;(<span class="inlinecode"><span class="id" title="var">item</span></span>&nbsp;++&nbsp;suffix).&nbsp;exists&nbsp;Heq.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(trace_generated_index_lv&nbsp;is&nbsp;tr&nbsp;Htr&nbsp;v&nbsp;e&nbsp;prefix&nbsp;suffix&nbsp;item&nbsp;Heq&nbsp;He).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;id&nbsp;in&nbsp;trace_generated_index_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;&lt;-&nbsp;trace_generated_index_lv&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_diff_iff&nbsp;in&nbsp;He.&nbsp;destruct&nbsp;He&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">He</span></span> <span class="inlinecode"><span class="id" title="var">Hne</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;specialize&nbsp;(protocol_transition_to&nbsp;X&nbsp;is&nbsp;item&nbsp;tr&nbsp;prefix&nbsp;suffix&nbsp;Heq&nbsp;(proj1&nbsp;Htr))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Ht&nbsp;as&nbsp;<span class="inlinecode">[<span class="id" title="var">Ha</span></span> <span class="inlinecode">[<span class="id" title="var">_</span></span> <span class="inlinecode">[<span class="id" title="var">Hv</span></span> <span class="inlinecode"><span class="id" title="var">_</span>]]]</span> <span class="inlinecode"><span class="id" title="var">Ht</span></span>.&nbsp;simpl&nbsp;in&nbsp;Ht.&nbsp;simpl&nbsp;in&nbsp;Hv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;assert&nbsp;(Hnb&nbsp;:&nbsp;last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is&nbsp;v&nbsp;&lt;&gt;&nbsp;Bottom).&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@protocol_prop_no_bottom&nbsp;index&nbsp;v&nbsp;_&nbsp;_&nbsp;est).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(protocol_state_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v)&nbsp;in&nbsp;Ha.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Ha&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_oms</span></span> <span class="inlinecode"><span class="id" title="var">Ha</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;proj_pre_loaded_with_all_messages_protocol_prop&nbsp;in&nbsp;Ha.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;protocol_state_prop.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;_oms.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;@l&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@composite_type&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;IM_index)&nbsp;item)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;(i,&nbsp;li)&nbsp;eqn:Hl.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;replace&nbsp;(l&nbsp;item)&nbsp;with&nbsp;(existT&nbsp;(fun&nbsp;n&nbsp;:&nbsp;index&nbsp;=&gt;&nbsp;vlabel&nbsp;(IM_index&nbsp;n))&nbsp;i&nbsp;li)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;trace_generated_index_lv.&nbsp;simpl&nbsp;in&nbsp;trace_generated_index_lv.&nbsp;subst&nbsp;i.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;vtransition&nbsp;in&nbsp;Ht.&nbsp;simpl&nbsp;in&nbsp;Ht.&nbsp;unfold&nbsp;vvalid&nbsp;in&nbsp;Hv.&nbsp;simpl&nbsp;in&nbsp;Hv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;li&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">c</span>|</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;inversion&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;replace<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@destination&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@type&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@composite_vlsm&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;idec&nbsp;IM_index&nbsp;i0&nbsp;constraint))&nbsp;item)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(state_update&nbsp;IM_index&nbsp;(last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is)&nbsp;v<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(update_consensus<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(update_state&nbsp;(last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is&nbsp;v)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is&nbsp;v)&nbsp;v)&nbsp;c))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;state_update_eq&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_events&nbsp;in&nbsp;He.&nbsp;simpl&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_events&nbsp;in&nbsp;Hne.&nbsp;simpl&nbsp;in&nbsp;Hne.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;(@observations_disregards_cv&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;idec&nbsp;est)&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(@observations_update_eq&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est)&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_add_iff&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;He&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">He</span></span> <span class="inlinecode">|</span> <span class="inlinecode"><span class="id" title="var">He</span></span>;&nbsp;try&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elim&nbsp;Hne.&nbsp;apply&nbsp;set_union_iff.&nbsp;left.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_iff&nbsp;in&nbsp;He.&nbsp;destruct&nbsp;He;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;elim&nbsp;Hne.&nbsp;apply&nbsp;set_union_iff.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@input&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@composite_type&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;IM_index)&nbsp;item)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">m</span>|</span>&nbsp;eqn:Hinput;&nbsp;inversion&nbsp;Ht.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;replace<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@destination&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@type&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@composite_vlsm&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;idec&nbsp;IM_index&nbsp;i0&nbsp;constraint))&nbsp;item)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(state_update&nbsp;IM_index&nbsp;(last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is)&nbsp;v<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(update_state&nbsp;(last&nbsp;(map&nbsp;destination&nbsp;prefix)&nbsp;is&nbsp;v)&nbsp;(snd&nbsp;m)&nbsp;(fst&nbsp;m)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;state_update_eq&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;observable_events&nbsp;in&nbsp;He.&nbsp;simpl&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;replace<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((@input&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@type&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@composite_vlsm&nbsp;(@ListValidator.message&nbsp;index&nbsp;index_listing)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;idec&nbsp;IM_index&nbsp;i0&nbsp;constraint))&nbsp;item))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;(Some&nbsp;m).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;option_message_observable_events.&nbsp;unfold&nbsp;message_observable_events.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpl.&nbsp;unfold&nbsp;message_observable_events_lv.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;(decide&nbsp;(fst&nbsp;m&nbsp;=&nbsp;v)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;subst&nbsp;v.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;apply&nbsp;(@observations_update_neq&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est)&nbsp;in&nbsp;He;&nbsp;try&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;set_union_iff&nbsp;in&nbsp;He.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intuition.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;inversion&nbsp;Hv.<br/>
+&nbsp;&nbsp;Qed.<br/>
+<br/>
+&nbsp;&nbsp;Lemma&nbsp;comparable_generated_events_lv<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(is&nbsp;:&nbsp;vstate&nbsp;X)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(tr&nbsp;:&nbsp;list&nbsp;transition_item)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(Htr&nbsp;:&nbsp;finite_protocol_trace&nbsp;X&nbsp;is&nbsp;tr)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(v&nbsp;:&nbsp;index)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(e1&nbsp;e2&nbsp;:&nbsp;state)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(He1&nbsp;:&nbsp;trace_generated_event_lv&nbsp;is&nbsp;tr&nbsp;v&nbsp;e1)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(He2&nbsp;:&nbsp;trace_generated_event_lv&nbsp;is&nbsp;tr&nbsp;v&nbsp;e2)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;comparable&nbsp;state_lt&nbsp;e1&nbsp;e2.<br/>
+&nbsp;&nbsp;Proof.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;generated_events_lv_sent&nbsp;in&nbsp;He1;&nbsp;try&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;generated_events_lv_sent&nbsp;in&nbsp;He2;&nbsp;try&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;He1&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">pre1</span></span> <span class="inlinecode">[<span class="id" title="var">suf1</span></span> <span class="inlinecode">[<span class="id" title="var">Heq1</span></span> <span class="inlinecode"><span class="id" title="var">He1</span>]]</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;He2&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">pre2</span></span> <span class="inlinecode">[<span class="id" title="var">suf2</span></span> <span class="inlinecode">[<span class="id" title="var">Heq2</span></span> <span class="inlinecode"><span class="id" title="var">He2</span>]]</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;assert&nbsp;(Heq&nbsp;:=&nbsp;Heq2).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;rewrite&nbsp;Heq1&nbsp;in&nbsp;Heq.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;order_decompositions&nbsp;in&nbsp;Heq.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;unfold&nbsp;comparable.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;(decide&nbsp;(e1&nbsp;=&nbsp;e2))&nbsp;as&nbsp;<span class="inlinecode">?|<span class="id" title="var">n</span></span>;<span class="inlinecode"><span class="id" title="tactic">left</span>;<span class="id" title="tactic">assumption</span>|</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Heq&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Heq</span></span> <span class="inlinecode">|</span> <span class="inlinecode"><span class="id" title="var">Hord</span></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="inlinecode"><span class="id" title="tactic">left</span>;<span class="id" title="tactic">congruence</span>|<span class="id" title="tactic">right</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hord&nbsp;as&nbsp;&nbsp;<span class="inlinecode"><span class="id" title="var">Hgt</span></span> <span class="inlinecode">|</span> <span class="inlinecode"><span class="id" title="var">Hlt</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;right.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@state_lt_in_futures&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est&nbsp;e2&nbsp;e1)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;<span class="inlinecode">|</span> <span class="inlinecode"><span class="id" title="tactic">intro</span></span> <span class="inlinecode"><span class="id" title="var">contra</span>;</span> <span class="inlinecode"><span class="id" title="tactic">elim</span></span> <span class="inlinecode"><span class="id" title="var">n</span>;</span> <span class="inlinecode"><span class="id" title="tactic">symmetry</span>;</span> <span class="inlinecode"><span class="id" title="tactic">assumption</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remember&nbsp;(composite_vlsm_constrained_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v)&nbsp;as&nbsp;Xj.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(VLSM_incl_in_futures<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(composite_vlsm_constrained_projection_machine&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(pre_loaded_with_all_messages_vlsm_machine&nbsp;(@VLSM_list&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;idec&nbsp;est))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="inlinecode"><span class="id" title="tactic">solve</span>[<span class="id" title="tactic">apply</span></span> <span class="inlinecode">(<span class="id" title="var">proj_pre_loaded_with_all_messages_incl</span></span> <span class="inlinecode"><span class="id" title="var">IM_index</span></span> <span class="inlinecode"><span class="id" title="var">i0</span></span> <span class="inlinecode"><span class="id" title="var">constraint</span></span> <span class="inlinecode"><span class="id" title="var">v</span>)]|</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subst&nbsp;e1&nbsp;e2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(in_futures_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hgt&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">suf1'</span></span> <span class="inlinecode"><span class="id" title="var">Hgt</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;suf1'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;split.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;clear&nbsp;Heq2.&nbsp;subst&nbsp;tr.&nbsp;subst&nbsp;pre1.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Htr&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Htr</span></span> <span class="inlinecode"><span class="id" title="var">Hinit</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(finite_protocol_trace_from_app_iff&nbsp;X)&nbsp;in&nbsp;Htr.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Htr&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Htr</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(finite_protocol_trace_from_app_iff&nbsp;X)&nbsp;in&nbsp;Htr.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Htr&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">Htr</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;subst&nbsp;pre1.&nbsp;rewrite&nbsp;map_app.&nbsp;rewrite&nbsp;last_app.&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;left.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(@state_lt_in_futures&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;Hfinite&nbsp;idec&nbsp;est&nbsp;e1&nbsp;e2)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;<span class="inlinecode">|<span class="id" title="tactic">assumption</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remember&nbsp;(composite_vlsm_constrained_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v)&nbsp;as&nbsp;Xj.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(VLSM_incl_in_futures<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(composite_vlsm_constrained_projection_machine&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(pre_loaded_with_all_messages_vlsm_machine&nbsp;(@VLSM_list&nbsp;index&nbsp;v&nbsp;index_listing&nbsp;idec&nbsp;est))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;<span class="inlinecode"><span class="id" title="tactic">solve</span>[<span class="id" title="tactic">apply</span></span> <span class="inlinecode">(<span class="id" title="var">proj_pre_loaded_with_all_messages_incl</span></span> <span class="inlinecode"><span class="id" title="var">IM_index</span></span> <span class="inlinecode"><span class="id" title="var">i0</span></span> <span class="inlinecode"><span class="id" title="var">constraint</span></span> <span class="inlinecode"><span class="id" title="var">v</span>)]|</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subst&nbsp;e1&nbsp;e2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(in_futures_projection&nbsp;IM_index&nbsp;i0&nbsp;constraint&nbsp;v).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Hlt&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">suf2'</span></span> <span class="inlinecode"><span class="id" title="var">Hlt</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exists&nbsp;suf2'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;split.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;clear&nbsp;Heq1.&nbsp;subst&nbsp;tr.&nbsp;subst&nbsp;pre2.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Htr&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Htr</span></span> <span class="inlinecode"><span class="id" title="var">Hinit</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(finite_protocol_trace_from_app_iff&nbsp;X)&nbsp;in&nbsp;Htr.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Htr&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">Htr</span></span> <span class="inlinecode"><span class="id" title="var">_</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply&nbsp;(finite_protocol_trace_from_app_iff&nbsp;X)&nbsp;in&nbsp;Htr.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destruct&nbsp;Htr&nbsp;as&nbsp;<span class="inlinecode"><span class="id" title="var">_</span></span> <span class="inlinecode"><span class="id" title="var">Htr</span></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assumption.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;subst&nbsp;pre2.&nbsp;rewrite&nbsp;map_app.&nbsp;rewrite&nbsp;last_app.&nbsp;reflexivity.<br/>
+&nbsp;&nbsp;Qed.<br/>
+<br/>
+&nbsp;&nbsp;Instance&nbsp;composite_vlsm_comparable_generated_events_lv<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;composite_vlsm_comparable_generated_events&nbsp;index_listing&nbsp;IM_index&nbsp;Hevidence&nbsp;i0&nbsp;constraint<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;comparable_generated_events&nbsp;:=&nbsp;comparable_generated_events_lv<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+&nbsp;*)</span><br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.ListValidator.GeneralComposition.html#Composition"><span class="id" title="section">Composition</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
