@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html class="alectryon-standalone"><head><title>GeneralComposition.v</title><meta charset="utf-8"><meta content="Alectryon" name="generator"><link href="alectryon.css" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/IBM-type/0.5.4/css/ibm-type.min.css" integrity="sha512-sky5cf9Ts6FY1kstGOBHSybfKqdHR41M0Ldb0BjNiv3ifltoQIsg0zIaQ+wwdwgQ0w9vKFW7Js50lxH9vqNSSw==" crossorigin="anonymous" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/firacode/5.2.0/fira_code.min.css" integrity="sha512-MbysAYimH1hH2xYzkkMHB6MqxBqfP0megxsCLknbYqHVwXTCg9IqHbk+ZP/vnhO8UEW6PaXAkKe2vQ+SWACxxA==" crossorigin="anonymous" /><script src="alectryon.js"></script><style type="text/css">pre { line-height: 125%; }
+td.linenos pre { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
+td.linenos pre.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight .c { color: #555753; font-style: italic } /* Comment */
+.highlight .err { color: #a40000; border: 1px solid #cc0000 } /* Error */
+.highlight .g { color: #000000 } /* Generic */
+.highlight .k { color: #8f5902 } /* Keyword */
+.highlight .l { color: #2e3436 } /* Literal */
+.highlight .n { color: #000000 } /* Name */
+.highlight .o { color: #000000 } /* Operator */
+.highlight .x { color: #2e3436 } /* Other */
+.highlight .p { color: #000000 } /* Punctuation */
+.highlight .ch { color: #555753; font-weight: bold; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #555753; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #3465a4; font-style: italic } /* Comment.Preproc */
+.highlight .cpf { color: #555753; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #555753; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3465a4; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #a40000 } /* Generic.Deleted */
+.highlight .ge { color: #000000; font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #a40000 } /* Generic.Error */
+.highlight .gh { color: #a40000; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #4e9a06 } /* Generic.Inserted */
+.highlight .go { color: #000000; font-style: italic } /* Generic.Output */
+.highlight .gp { color: #8f5902 } /* Generic.Prompt */
+.highlight .gs { color: #000000; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #000000; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #000000; font-style: italic } /* Generic.Traceback */
+.highlight .kc { color: #204a87; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #4e9a06; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #4e9a06; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #204a87 } /* Keyword.Pseudo */
+.highlight .kr { color: #8f5902 } /* Keyword.Reserved */
+.highlight .kt { color: #204a87 } /* Keyword.Type */
+.highlight .ld { color: #2e3436 } /* Literal.Date */
+.highlight .m { color: #2e3436 } /* Literal.Number */
+.highlight .s { color: #ad7fa8 } /* Literal.String */
+.highlight .na { color: #c4a000 } /* Name.Attribute */
+.highlight .nb { color: #75507b } /* Name.Builtin */
+.highlight .nc { color: #204a87 } /* Name.Class */
+.highlight .no { color: #ce5c00 } /* Name.Constant */
+.highlight .nd { color: #3465a4; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #c4a000; text-decoration: underline } /* Name.Entity */
+.highlight .ne { color: #cc0000 } /* Name.Exception */
+.highlight .nf { color: #a40000 } /* Name.Function */
+.highlight .nl { color: #3465a4; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #000000 } /* Name.Namespace */
+.highlight .nx { color: #000000 } /* Name.Other */
+.highlight .py { color: #000000 } /* Name.Property */
+.highlight .nt { color: #a40000 } /* Name.Tag */
+.highlight .nv { color: #ce5c00 } /* Name.Variable */
+.highlight .ow { color: #8f5902 } /* Operator.Word */
+.highlight .w { color: #d3d7cf; text-decoration: underline } /* Text.Whitespace */
+.highlight .mb { color: #2e3436 } /* Literal.Number.Bin */
+.highlight .mf { color: #2e3436 } /* Literal.Number.Float */
+.highlight .mh { color: #2e3436 } /* Literal.Number.Hex */
+.highlight .mi { color: #2e3436 } /* Literal.Number.Integer */
+.highlight .mo { color: #2e3436 } /* Literal.Number.Oct */
+.highlight .sa { color: #ad7fa8 } /* Literal.String.Affix */
+.highlight .sb { color: #ad7fa8 } /* Literal.String.Backtick */
+.highlight .sc { color: #ad7fa8; font-weight: bold } /* Literal.String.Char */
+.highlight .dl { color: #ad7fa8 } /* Literal.String.Delimiter */
+.highlight .sd { color: #ad7fa8 } /* Literal.String.Doc */
+.highlight .s2 { color: #ad7fa8 } /* Literal.String.Double */
+.highlight .se { color: #ad7fa8; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #ad7fa8; text-decoration: underline } /* Literal.String.Heredoc */
+.highlight .si { color: #ce5c00 } /* Literal.String.Interpol */
+.highlight .sx { color: #ad7fa8 } /* Literal.String.Other */
+.highlight .sr { color: #ad7fa8 } /* Literal.String.Regex */
+.highlight .s1 { color: #ad7fa8 } /* Literal.String.Single */
+.highlight .ss { color: #8f5902 } /* Literal.String.Symbol */
+.highlight .bp { color: #5c35cc } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #a40000 } /* Name.Function.Magic */
+.highlight .vc { color: #ce5c00 } /* Name.Variable.Class */
+.highlight .vg { color: #ce5c00; text-decoration: underline } /* Name.Variable.Global */
+.highlight .vi { color: #ce5c00 } /* Name.Variable.Instance */
+.highlight .vm { color: #ce5c00 } /* Name.Variable.Magic */
+.highlight .il { color: #2e3436 } /* Literal.Number.Integer.Long */</style></head><body><article class="alectryon-root alectryon-windowed alectryon-coqdoc"><pre class="alectryon-io"><!-- Generator: Alectryon --><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">Require Import</span> Bool List ListSet Reals FinFun RelationClasses Relations Relations_1 Sorting.</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">Require Import</span> Lia.</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">Import</span> ListNotations.</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">From</span> CasperCBC
+<span class="kn">Require Import</span>
+  Lib.Preamble
+  Lib.ListExtras
+  Lib.ListSetExtras
+  Lib.SortedLists
+  VLSM.Common
+  VLSM.Composition
+  VLSM.ProjectionTraces
+  VLSM.Equivocation
+  VLSM.ListValidator.ListValidator
+  VLSM.ListValidator.Equivocation
+  VLSM.ObservableEquivocation
+  CBC.Common
+  CBC.Equivocation.</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="highlight">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">Section</span> <span class="nf">Composition</span>.</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="highlight">
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">Context</span>
+  {<span class="nv">index</span> : <span class="kt">Type</span>}
+  {<span class="nv">i0</span> : index}
+  {<span class="nv">index_listing</span> : list index}
+  {<span class="nv">Hfinite</span> : Listing index_listing}
+  {<span class="nv">idec</span> : EqDecision index}
+  (<span class="nv">message</span> := @ListValidator.message index index_listing)
+  (<span class="nv">state</span> := @ListValidator.state index index_listing)
+  (<span class="nv">est</span> : state -&gt; bool -&gt; <span class="kt">Prop</span>)
+  (<span class="nv">IM_index</span> := <span class="kr">fun</span> (<span class="nv">i</span> : index) =&gt; @VLSM_list index i index_listing idec est)
+  {<span class="nv">constraint</span> : composite_label IM_index -&gt; (composite_state IM_index) * option message -&gt; <span class="kt">Prop</span>}
+  (<span class="nv">X</span> := composite_vlsm IM_index i0 constraint)
+  (<span class="nv">preX</span> := pre_loaded_with_all_messages_vlsm X)
+  (* (Hevidence := <span class="kr">fun</span> (<span class="nv">i</span> : index) =&gt; @observable_full index index_listing Hfinite idec) *)
+  {<span class="nv">Mindex</span> : Measurable index}
+  {<span class="nv">Rindex</span> : ReachableThreshold index}
+  .</span></span><span class="alectryon-wsp">
+</span></span><span class="alectryon-wsp"><span class="highlight"> <span class="c">(*</span>
+
+<span class="c">  Definition composed_eqv_evidence</span>
+<span class="c">  : observation_based_equivocation_evidence (vstate X) index state state_eq_dec state_lt state_lt_dec</span>
+<span class="c">  :=</span>
+<span class="c">  (@composed_observation_based_equivocation_evidence</span>
+<span class="c">    message index state</span>
+<span class="c">    state_eq_dec state_lt state_lt_dec</span>
+<span class="c">    index index_listing IM_index Hevidence</span>
+<span class="c">  ).</span>
+
+<span class="c">  Existing Instance composed_eqv_evidence.</span>
+
+<span class="c">  Definition message_observable_events_lv (m : message) (target : index) : set state :=</span>
+<span class="c">    let obs := @full_observations index index_listing idec (snd m) target in</span>
+<span class="c">    if (decide (fst m = target)) then set_add decide_eq (snd m) obs else obs.</span>
+
+<span class="c">  Lemma message_observable_consistency_lv</span>
+<span class="c">      (m : message)</span>
+<span class="c">      (i : index)</span>
+<span class="c">      (som : (vstate X) * option message)</span>
+<span class="c">      (l : label)</span>
+<span class="c">      (dest : vstate X)</span>
+<span class="c">      (Ht : protocol_transition X l som (dest, Some m))</span>
+<span class="c">      : incl (message_observable_events_lv m i)</span>
+<span class="c">      (@observable_events _ _ _ _ _ _ (Hevidence i) (dest (projT1 l)) i).</span>
+<span class="c">   Proof.</span>
+<span class="c">    unfold message_observable_events_lv.</span>
+<span class="c">    unfold observable_events.</span>
+<span class="c">    unfold Hevidence.</span>
+<span class="c">    unfold observable_full.</span>
+<span class="c">    destruct Ht as [Hv Ht].</span>
+<span class="c">    simpl in Ht. unfold composite_transition in Ht.</span>
+<span class="c">    destruct som as (s, om). destruct l as (il, l).</span>
+<span class="c">    simpl in *.  unfold vtransition in Ht. simpl in Ht.</span>
+<span class="c">    destruct l as [c|].</span>
+<span class="c">    - assert ((s i) &lt;&gt; Bottom). {</span>
+<span class="c">          apply (@protocol_prop_no_bottom index i _ _ est).</span>
+<span class="c">          destruct Hv as [Hv _].</span>
+<span class="c">          apply (protocol_state_projection IM_index i0 constraint i) in Hv.</span>
+<span class="c">          destruct Hv as [_oms Hv].</span>
+<span class="c">          apply proj_pre_loaded_with_all_messages_protocol_prop in Hv.</span>
+<span class="c">          unfold protocol_state_prop.</span>
+<span class="c">          exists _oms.</span>
+<span class="c">          assumption.</span>
+<span class="c">      }</span>
+<span class="c">      assert ((s il) &lt;&gt; Bottom). {</span>
+<span class="c">          apply (@protocol_prop_no_bottom index il _ _ est).</span>
+<span class="c">          destruct Hv as [Hv _].</span>
+<span class="c">          apply (protocol_state_projection IM_index i0 constraint il) in Hv.</span>
+<span class="c">          destruct Hv as [_oms Hv].</span>
+<span class="c">          apply proj_pre_loaded_with_all_messages_protocol_prop in Hv.</span>
+<span class="c">          unfold protocol_state_prop.</span>
+<span class="c">          exists _oms.</span>
+<span class="c">          assumption.</span>
+<span class="c">      }</span>
+<span class="c">      inversion Ht. subst m. simpl.</span>
+<span class="c">      rewrite state_update_eq.</span>
+<span class="c">      rewrite (@observations_disregards_cv index i index_listing idec est).</span>
+<span class="c">      destruct (decide (il = i)).</span>
+<span class="c">      + subst il. intros ob Hob.</span>
+<span class="c">        apply (@observations_update_eq index i index_listing Hfinite idec est).</span>
+<span class="c">        assumption.</span>
+<span class="c">        assumption.</span>
+<span class="c">        reflexivity.</span>
+<span class="c">        apply set_add_iff. apply set_add_iff in Hob.</span>
+<span class="c">        destruct Hob as [Hob | Hob]; try (left; assumption).</span>
+<span class="c">        right. apply set_union_iff. left. assumption.</span>
+<span class="c">      + intros ob Hob.</span>
+<span class="c">       apply (@observations_update_neq index i index_listing Hfinite idec est); try assumption.</span>
+<span class="c">       reflexivity.</span>
+<span class="c">        apply set_union_iff. left. assumption.</span>
+<span class="c">    - destruct om as [im|]; inversion Ht.</span>
+<span class="c">   Qed.</span>
+
+<span class="c">  Program Instance Hcomposite</span>
+<span class="c">    : composite_vlsm_observable_messages index_listing IM_index Hevidence i0 constraint</span>
+<span class="c">    :=</span>
+<span class="c">    { message_observable_events := message_observable_events_lv;</span>
+<span class="c">      message_observable_consistency := message_observable_consistency_lv;</span>
+<span class="c">    }.</span>
+<span class="c">  Next Obligation.</span>
+<span class="c">  unfold composed_observable_events.</span>
+<span class="c">  unfold vinitial_state_prop in His.</span>
+<span class="c">  simpl in His.</span>
+<span class="c">  unfold composite_initial_state_prop in His.</span>
+<span class="c">  unfold vinitial_state_prop in His.</span>
+<span class="c">  simpl in His.</span>
+<span class="c">  unfold initial_state_prop in His.</span>
+<span class="c">  apply set_union_iterated_empty.</span>
+<span class="c">  intros.</span>
+<span class="c">  rewrite in_map_iff in H.</span>
+<span class="c">  destruct H.</span>
+<span class="c">  unfold observable_events in H.</span>
+<span class="c">  unfold Hevidence in H.</span>
+<span class="c">  unfold observable_full in H.</span>
+<span class="c">  specialize (His x).</span>
+<span class="c">  destruct His as [cv Heq].</span>
+<span class="c">  rewrite Heq in H.</span>
+<span class="c">  destruct H as [H _].</span>
+<span class="c">  unfold full_observations in H.</span>
+<span class="c">  destruct s0.</span>
+<span class="c">  reflexivity.</span>
+<span class="c">  assert (In s0 (get_observations v (@depth index index_listing (Something cv all_bottom)) (Something cv all_bottom))). {</span>
+<span class="c">    rewrite H.</span>
+<span class="c">    intuition.</span>
+<span class="c">  }</span>
+<span class="c">  assert (s0 &lt;&gt; Bottom). {</span>
+<span class="c">    apply (@no_bottom_in_observations index index_listing Hfinite) in H0.</span>
+<span class="c">    assumption.</span>
+<span class="c">  }</span>
+<span class="c">  apply (@unfold_full_observations index index_listing Hfinite) in H0.</span>
+<span class="c">  destruct H0.</span>
+<span class="c">  simpl in H0.</span>
+<span class="c">  rewrite project_all_bottom in H0.</span>
+<span class="c">  elim H1.</span>
+<span class="c">  intuition.</span>
+<span class="c">  destruct H0 as [i Hin].</span>
+<span class="c">  simpl in Hin.</span>
+<span class="c">  rewrite project_all_bottom in Hin.</span>
+<span class="c">  simpl in Hin.</span>
+<span class="c">  exfalso.</span>
+<span class="c">  assumption.</span>
+<span class="c">  intros contra.</span>
+<span class="c">  discriminate contra.</span>
+<span class="c">  assumption.</span>
+<span class="c">  Qed.</span>
+
+<span class="c">  Program Instance Hunforgeable</span>
+<span class="c">    : unforgeable_messages index_listing IM_index Hevidence i0 constraint (fun i:index =&gt; i)</span>
+<span class="c">    := {}.</span>
+<span class="c">  Next Obligation.</span>
+<span class="c">    unfold message_observable_events_lv.</span>
+<span class="c">    unfold observable_events.</span>
+<span class="c">    unfold Hevidence.</span>
+<span class="c">    unfold observable_full.</span>
+<span class="c">    destruct Ht as [Hvalid Ht].</span>
+<span class="c">    simpl in Ht. unfold composite_transition in Ht.</span>
+<span class="c">    destruct l as (il, l).</span>
+<span class="c">    simpl in *.  unfold vtransition in Ht. simpl in Ht.</span>
+<span class="c">        assert (Hnb : (s il) &lt;&gt; Bottom). {</span>
+<span class="c">          apply (@protocol_prop_no_bottom index il _ _ est).</span>
+<span class="c">          destruct Hvalid as [Hvalid _].</span>
+<span class="c">          apply (protocol_state_projection IM_index i0 constraint il) in Hvalid.</span>
+<span class="c">          destruct Hvalid as [_oms Hvalid].</span>
+<span class="c">          apply proj_pre_loaded_with_all_messages_protocol_prop in Hvalid.</span>
+<span class="c">          unfold protocol_state_prop.</span>
+<span class="c">          exists _oms.</span>
+<span class="c">          assumption.</span>
+<span class="c">        }</span>
+<span class="c">    destruct l as [c|] eqn : eq_l.</span>
+<span class="c">    - inversion Ht.</span>
+<span class="c">      unfold incl.</span>
+<span class="c">      intros.</span>
+<span class="c">      destruct om as [m|] eqn : eq_om.</span>
+<span class="c">      + destruct Hvalid as [_ [_ Hcvalid]].</span>
+<span class="c">        unfold constrained_composite_valid in Hcvalid.</span>
+<span class="c">        unfold free_composite_valid in Hcvalid.</span>
+<span class="c">        unfold vvalid in Hcvalid.</span>
+<span class="c">        unfold valid in Hcvalid.</span>
+<span class="c">        unfold machine in Hcvalid.</span>
+<span class="c">        simpl in Hcvalid.</span>
+<span class="c">        destruct Hcvalid.</span>
+<span class="c">        destruct H2 as [_ contra].</span>
+<span class="c">        discriminate contra.</span>
+<span class="c">      + rewrite state_update_eq in H.</span>
+<span class="c">        rewrite (@observations_disregards_cv index il index_listing idec est) in H.</span>
+<span class="c">        specialize (@observations_update_neq index il index_listing Hfinite idec est).</span>
+<span class="c">        intros.</span>
+<span class="c">        specialize (H2 (s il) (s il) Hnb Hnb v il eq_refl).</span>
+<span class="c">        spec H2.</span>
+<span class="c">        intuition.</span>
+<span class="c">        unfold set_eq in H2.</span>
+<span class="c">        destruct H2 as [H2 _].</span>
+<span class="c">        unfold incl in H2.</span>
+<span class="c">        specialize (H2 a H).</span>
+<span class="c">        apply set_union_elim in H2.</span>
+<span class="c">        destruct H2; intuition.</span>
+<span class="c">    - destruct om as [m|] eqn : eq_om.</span>
+<span class="c">      + inversion Ht.</span>
+<span class="c">        destruct Hvalid as [_ [_ Hcvalid]].</span>
+<span class="c">          unfold constrained_composite_valid in Hcvalid.</span>
+<span class="c">          unfold free_composite_valid in Hcvalid.</span>
+<span class="c">          unfold vvalid in Hcvalid.</span>
+<span class="c">          unfold valid in Hcvalid.</span>
+<span class="c">          unfold machine in Hcvalid.</span>
+<span class="c">          simpl in Hcvalid.</span>
+<span class="c">          destruct Hcvalid as [Hcvalid _].</span>
+<span class="c">          destruct Hcvalid as [Hproject [Hnb2 Hother]].</span>
+<span class="c">        destruct (decide (fst m = v)).</span>
+<span class="c">        * rewrite state_update_eq.</span>
+<span class="c">          unfold incl.</span>
+<span class="c">          intros.</span>
+<span class="c">          specialize (@observations_update_eq index v index_listing Hfinite idec est (s il)).</span>
+<span class="c">          intros.</span>
+<span class="c">          specialize (H2 (snd m) Hnb).</span>
+<span class="c">          rewrite e in Hproject.</span>
+<span class="c">          symmetry in Hproject.</span>
+<span class="c">          specialize (H2 Hnb2 v Hproject).</span>
+<span class="c">          unfold set_eq in H2.</span>
+<span class="c">          destruct H2 as [H2 _].</span>
+<span class="c">          unfold incl in H2.</span>
+<span class="c">          rewrite e in H.</span>
+<span class="c">          specialize (H2 a H).</span>
+<span class="c">          apply set_add_elim in H2.</span>
+<span class="c">          destruct H2.</span>
+<span class="c">          apply set_union_intro.</span>
+<span class="c">          right.</span>
+<span class="c">          simpl.</span>
+<span class="c">          unfold message_observable_events_lv.</span>
+<span class="c">          rewrite decide_True.</span>
+<span class="c">          rewrite H2.</span>
+<span class="c">          apply set_add_intro2.</span>
+<span class="c">          reflexivity.</span>
+<span class="c">          assumption.</span>
+<span class="c">          simpl.</span>
+<span class="c">          unfold message_observable_events_lv.</span>
+<span class="c">          rewrite decide_True.</span>
+<span class="c">          apply set_union_intro.</span>
+<span class="c">          apply set_union_elim in H2.</span>
+<span class="c">          destruct H2.</span>
+<span class="c">          left. assumption.</span>
+<span class="c">          right. apply set_add_intro1.</span>
+<span class="c">          assumption.</span>
+<span class="c">          assumption.</span>
+<span class="c">        * rewrite state_update_eq.</span>
+<span class="c">          unfold incl.</span>
+<span class="c">          intros.</span>
+<span class="c">          specialize (@observations_update_neq index v index_listing Hfinite idec est (s il) (snd m)).</span>
+<span class="c">          intros.</span>
+<span class="c">          symmetry in Hproject.</span>
+<span class="c">          specialize (H2 Hnb Hnb2 v (fst m) Hproject n).</span>
+<span class="c">          unfold set_eq in H2.</span>
+<span class="c">          destruct H2 as [H2 _].</span>
+<span class="c">          unfold incl in H2.</span>
+<span class="c">          specialize (H2 a H).</span>
+<span class="c">          simpl.</span>
+<span class="c">          unfold message_observable_events_lv.</span>
+<span class="c">          rewrite decide_False.</span>
+<span class="c">          assumption.</span>
+<span class="c">          assumption.</span>
+<span class="c">       + unfold constrained_composite_valid in Hvalid.</span>
+<span class="c">         unfold free_composite_valid in Hvalid.</span>
+<span class="c">         unfold vvalid in Hvalid.</span>
+<span class="c">         unfold valid in Hvalid.</span>
+<span class="c">         unfold machine in Hvalid.</span>
+<span class="c">         simpl in Hvalid.</span>
+<span class="c">         intuition.</span>
+<span class="c">  Qed.</span>
+
+<span class="c">  Let id := fun i : index =&gt; i.</span>
+<span class="c">  Let trace_generated_event_lv := trace_generated_event index_listing IM_index Hevidence i0 constraint.</span>
+<span class="c">  Let trace_generated_index_lv := trace_generated_index index_listing IM_index Hevidence i0 constraint (fun i:index =&gt; i).</span>
+
+<span class="c">  Lemma generated_events_lv_sent</span>
+<span class="c">    (is : vstate X)</span>
+<span class="c">    (tr : list transition_item)</span>
+<span class="c">    (Htr : finite_protocol_trace X is tr)</span>
+<span class="c">    (v : index)</span>
+<span class="c">    (e : state)</span>
+<span class="c">    (He : trace_generated_event_lv is tr v e)</span>
+<span class="c">    : exists</span>
+<span class="c">      (prefix suffix : list (transition_item))</span>
+<span class="c">      (Heq : tr = prefix ++ suffix),</span>
+<span class="c">      e = last (map destination prefix) is v.</span>
+<span class="c">  Proof.</span>
+<span class="c">    destruct He as [prefix [suffix [item [Heq He]]]].</span>
+<span class="c">    exists prefix. exists ([item] ++ suffix). exists Heq.</span>
+<span class="c">    specialize (trace_generated_index_lv is tr Htr v e prefix suffix item Heq He).</span>
+<span class="c">    unfold id in trace_generated_index_lv.</span>
+<span class="c">    rewrite &lt;- trace_generated_index_lv in He.</span>
+<span class="c">    apply set_diff_iff in He. destruct He as [He Hne].</span>
+<span class="c">    specialize (protocol_transition_to X is item tr prefix suffix Heq (proj1 Htr))</span>
+<span class="c">      as Ht.</span>
+<span class="c">    destruct Ht as [[Ha [_ [Hv _]]] Ht]. simpl in Ht. simpl in Hv.</span>
+<span class="c">    assert (Hnb : last (map destination prefix) is v &lt;&gt; Bottom). {</span>
+<span class="c">        apply (@protocol_prop_no_bottom index v _ _ est).</span>
+<span class="c">          apply (protocol_state_projection IM_index i0 constraint v) in Ha.</span>
+<span class="c">          destruct Ha as [_oms Ha].</span>
+<span class="c">          apply proj_pre_loaded_with_all_messages_protocol_prop in Ha.</span>
+<span class="c">          unfold protocol_state_prop.</span>
+<span class="c">          exists _oms.</span>
+<span class="c">          assumption.</span>
+<span class="c">      }</span>
+<span class="c">    destruct</span>
+<span class="c">      ( @l (@ListValidator.message index index_listing)</span>
+<span class="c">      (@composite_type (@ListValidator.message index index_listing)</span>
+<span class="c">         index IM_index) item)</span>
+<span class="c">      as (i, li) eqn:Hl.</span>
+<span class="c">    replace (l item) with (existT (fun n : index =&gt; vlabel (IM_index n)) i li)</span>
+<span class="c">      in trace_generated_index_lv. simpl in trace_generated_index_lv. subst i.</span>
+<span class="c">    unfold vtransition in Ht. simpl in Ht. unfold vvalid in Hv. simpl in Hv.</span>
+<span class="c">    destruct li as [c|].</span>
+<span class="c">    - inversion Ht.</span>
+<span class="c">      replace</span>
+<span class="c">        (@destination (@ListValidator.message index index_listing)</span>
+<span class="c">        (@type (@ListValidator.message index index_listing)</span>
+<span class="c">           (@composite_vlsm (@ListValidator.message index index_listing)</span>
+<span class="c">              index idec IM_index i0 constraint)) item)</span>
+<span class="c">        with</span>
+<span class="c">          (state_update IM_index (last (map destination prefix) is) v</span>
+<span class="c">          (update_consensus</span>
+<span class="c">             (update_state (last (map destination prefix) is v)</span>
+<span class="c">                (last (map destination prefix) is v) v) c))</span>
+<span class="c">        in He.</span>
+<span class="c">      rewrite state_update_eq in He.</span>
+<span class="c">      unfold observable_events in He. simpl in He.</span>
+<span class="c">      unfold observable_events in Hne. simpl in Hne.</span>
+<span class="c">      rewrite (@observations_disregards_cv index v index_listing idec est) in He.</span>
+<span class="c">      apply (@observations_update_eq index v index_listing Hfinite idec est) in He.</span>
+<span class="c">      apply set_add_iff in He.</span>
+<span class="c">      destruct He as [He | He]; try assumption.</span>
+<span class="c">      elim Hne. apply set_union_iff. left.</span>
+<span class="c">      apply set_union_iff in He. destruct He; assumption.</span>
+<span class="c">      assumption.</span>
+<span class="c">      assumption.</span>
+<span class="c">      reflexivity.</span>
+<span class="c">    - elim Hne. apply set_union_iff.</span>
+<span class="c">      destruct</span>
+<span class="c">        (@input (@ListValidator.message index index_listing)</span>
+<span class="c">        (@composite_type (@ListValidator.message index index_listing)</span>
+<span class="c">           index IM_index) item)</span>
+<span class="c">        as [m|] eqn:Hinput; inversion Ht.</span>
+<span class="c">      + replace</span>
+<span class="c">          (@destination (@ListValidator.message index index_listing)</span>
+<span class="c">            (@type (@ListValidator.message index index_listing)</span>
+<span class="c">               (@composite_vlsm (@ListValidator.message index index_listing)</span>
+<span class="c">                  index idec IM_index i0 constraint)) item)</span>
+<span class="c">          with</span>
+<span class="c">            (state_update IM_index (last (map destination prefix) is) v</span>
+<span class="c">            (update_state (last (map destination prefix) is v) (snd m) (fst m)))</span>
+<span class="c">          in He.</span>
+<span class="c">        rewrite state_update_eq in He.</span>
+<span class="c">        unfold observable_events in He. simpl in He.</span>
+<span class="c">        replace</span>
+<span class="c">          ((@input (@ListValidator.message index index_listing)</span>
+<span class="c">          (@type (@ListValidator.message index index_listing)</span>
+<span class="c">             (@composite_vlsm (@ListValidator.message index index_listing)</span>
+<span class="c">                index idec IM_index i0 constraint)) item))</span>
+<span class="c">          with (Some m).</span>
+<span class="c">        unfold option_message_observable_events. unfold message_observable_events.</span>
+<span class="c">        simpl. unfold message_observable_events_lv.</span>
+<span class="c">        destruct (decide (fst m = v)).</span>
+<span class="c">        * subst v.</span>
+<span class="c">          intuition.</span>
+<span class="c">        * apply (@observations_update_neq index v index_listing Hfinite idec est) in He; try assumption.</span>
+<span class="c">          apply set_union_iff in He.</span>
+<span class="c">          assumption.</span>
+<span class="c">          intuition.</span>
+<span class="c">          intuition.</span>
+<span class="c">      + inversion Hv.</span>
+<span class="c">  Qed.</span>
+
+<span class="c">  Lemma comparable_generated_events_lv</span>
+<span class="c">    (is : vstate X)</span>
+<span class="c">    (tr : list transition_item)</span>
+<span class="c">    (Htr : finite_protocol_trace X is tr)</span>
+<span class="c">    (v : index)</span>
+<span class="c">    (e1 e2 : state)</span>
+<span class="c">    (He1 : trace_generated_event_lv is tr v e1)</span>
+<span class="c">    (He2 : trace_generated_event_lv is tr v e2)</span>
+<span class="c">    : comparable state_lt e1 e2.</span>
+<span class="c">  Proof.</span>
+<span class="c">    apply generated_events_lv_sent in He1; try assumption.</span>
+<span class="c">    apply generated_events_lv_sent in He2; try assumption.</span>
+<span class="c">    destruct He1 as [pre1 [suf1 [Heq1 He1]]].</span>
+<span class="c">    destruct He2 as [pre2 [suf2 [Heq2 He2]]].</span>
+<span class="c">    assert (Heq := Heq2).</span>
+<span class="c">    rewrite Heq1 in Heq.</span>
+<span class="c">    apply order_decompositions in Heq.</span>
+<span class="c">    unfold comparable.</span>
+<span class="c">    destruct (decide (e1 = e2)) as [?|n];[left;assumption|].</span>
+<span class="c">    destruct Heq as [Heq | Hord];</span>
+<span class="c">      [left;congruence|right].</span>
+<span class="c">    destruct Hord as  [Hgt | Hlt].</span>
+<span class="c">    - right.</span>
+<span class="c">      apply</span>
+<span class="c">        (@state_lt_in_futures index v index_listing Hfinite idec est e2 e1)</span>
+<span class="c">      ;[| intro contra; elim n; symmetry; assumption].</span>
+<span class="c">      remember (composite_vlsm_constrained_projection IM_index i0 constraint v) as Xj.</span>
+<span class="c">      apply</span>
+<span class="c">        (VLSM_incl_in_futures</span>
+<span class="c">          (composite_vlsm_constrained_projection_machine IM_index i0 constraint v)</span>
+<span class="c">          (pre_loaded_with_all_messages_vlsm_machine (@VLSM_list index v index_listing idec est))</span>
+<span class="c">        );</span>
+<span class="c">      [solve[apply (proj_pre_loaded_with_all_messages_incl IM_index i0 constraint v)]|].</span>
+<span class="c">      subst e1 e2.</span>
+<span class="c">      apply (in_futures_projection IM_index i0 constraint v).</span>
+<span class="c">      destruct Hgt as [suf1&#39; Hgt].</span>
+<span class="c">      exists suf1&#39;.</span>
+<span class="c">      split.</span>
+<span class="c">      + clear Heq2. subst tr. subst pre1.</span>
+<span class="c">        destruct Htr as [Htr Hinit].</span>
+<span class="c">        apply (finite_protocol_trace_from_app_iff X) in Htr.</span>
+<span class="c">        destruct Htr as [Htr _].</span>
+<span class="c">        apply (finite_protocol_trace_from_app_iff X) in Htr.</span>
+<span class="c">        destruct Htr as [_ Htr].</span>
+<span class="c">        assumption.</span>
+<span class="c">      + subst pre1. rewrite map_app. rewrite last_app. reflexivity.</span>
+<span class="c">    - left.</span>
+<span class="c">      apply</span>
+<span class="c">        (@state_lt_in_futures index v index_listing Hfinite idec est e1 e2)</span>
+<span class="c">      ;[|assumption].</span>
+<span class="c">      remember (composite_vlsm_constrained_projection IM_index i0 constraint v) as Xj.</span>
+<span class="c">      apply</span>
+<span class="c">        (VLSM_incl_in_futures</span>
+<span class="c">          (composite_vlsm_constrained_projection_machine IM_index i0 constraint v)</span>
+<span class="c">          (pre_loaded_with_all_messages_vlsm_machine (@VLSM_list index v index_listing idec est))</span>
+<span class="c">        )</span>
+<span class="c">      ;[solve[apply (proj_pre_loaded_with_all_messages_incl IM_index i0 constraint v)]|].</span>
+<span class="c">      subst e1 e2.</span>
+<span class="c">      apply (in_futures_projection IM_index i0 constraint v).</span>
+<span class="c">      destruct Hlt as [suf2&#39; Hlt].</span>
+<span class="c">      exists suf2&#39;.</span>
+<span class="c">      split.</span>
+<span class="c">      + clear Heq1. subst tr. subst pre2.</span>
+<span class="c">        destruct Htr as [Htr Hinit].</span>
+<span class="c">        apply (finite_protocol_trace_from_app_iff X) in Htr.</span>
+<span class="c">        destruct Htr as [Htr _].</span>
+<span class="c">        apply (finite_protocol_trace_from_app_iff X) in Htr.</span>
+<span class="c">        destruct Htr as [_ Htr].</span>
+<span class="c">        assumption.</span>
+<span class="c">      + subst pre2. rewrite map_app. rewrite last_app. reflexivity.</span>
+<span class="c">  Qed.</span>
+
+<span class="c">  Instance composite_vlsm_comparable_generated_events_lv</span>
+<span class="c">    : composite_vlsm_comparable_generated_events index_listing IM_index Hevidence i0 constraint</span>
+<span class="c">    :=</span>
+<span class="c">    {</span>
+<span class="c">      comparable_generated_events := comparable_generated_events_lv</span>
+<span class="c">    }.</span>
+<span class="c"> *)</span>
+</span></span><span class="alectryon-sentence"><span class="alectryon-input"><span class="highlight"><span class="kn">End</span> <span class="nf">Composition</span>.</span></span></span></pre></article></body></html>
