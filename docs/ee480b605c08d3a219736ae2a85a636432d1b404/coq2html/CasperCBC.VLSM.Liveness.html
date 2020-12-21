@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.Liveness</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.Liveness" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.Liveness</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html">Coq.Logic.FinFun</a></span>.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Lib.Preamble</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Lib.Traces</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">CBC.Common</span> <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Decisions.html">VLSM.Decisions</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Equivocation.html">VLSM.Equivocation</a></span> <br/>
+.<br/>
+<br/>
+<br/>
+<h1> Liveness
+ A composite VLSM is live if every complete trace reaches a <span class="bracket"><span class="id">decision</span></span>
+ </h1>
+<span class="kwd">Section</span> <span class="id"><a name="Liveness">Liveness</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Heqd</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hi</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">Hi</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">ID</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> (<span class="id">IM</span> <span class="id">i</span>)).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="live">live</a></span> : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#Trace">Trace</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Htr</span>: <span class="id"><a href="CasperCBC.VLSM.Common.html#complete_trace_prop">complete_trace_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Liveness.X">X</a></span> <span class="id">tr</span>),<br/>
+&nbsp;&nbsp;<span class="id">exists</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">n</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Liveness.index">index</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">st</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Liveness.X">X</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Liveness.X">X</a></span> <span class="id">tr</span> <span class="id">n</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">st</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;/\ (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#Liveness.ID">ID</a></span> <span class="id">i</span>) (<span class="id">st</span> <span class="id">i</span>) &lt;&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>.<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Liveness">Liveness</a></span>.<br/>
+<br/>
+<h1> Clocks
+Liveness always requires some notion of time, and assumptions
+that messages are not infinitely delayed.
+We will use logical clocks that assign states and
+messages to times in <span class="bracket"><span class="id">nat</span></span>, with messages carrying the
+time from the sending component, and messages only
+expected to be received by a node at the matching time.
+ </h1>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="Clocks">Clocks</a></span>.<br/>
+<br/>
+<div class="doc">A clock for a VLSM assigns a time to any state, and is
+      nondecreasing on transitions.
+   </div>
+&nbsp;&nbsp;<span class="kwd">Record</span> <span class="id"><a name="ClockFor">ClockFor</a></span> `(<span class="id">X</span>:<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>) : <span class="kwd">Type</span> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="clock">clock</a></span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id">X</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="clock_monotone">clock_monotone</a></span> : <span class="kwd">forall</span> <span class="id">l</span> <span class="id">s</span> <span class="id">om</span> <span class="id">s</span>' <span class="id">om</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="id">X</span> <span class="id">l</span> (<span class="id">s</span>,<span class="id">om</span>) = (<span class="id">s</span>',<span class="id">om</span>') -&gt; <span class="id">clock</span> <span class="id">s</span> &lt;= <span class="id">clock</span> <span class="id">s</span>';<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+<div class="doc">For a composite VLSM we usually want to have a separate
+      clock for each component
+   </div>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="ClocksFor">ClocksFor</a></span> `(<span class="id">IM</span>:<span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>) : <span class="kwd">Type</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">i</span>, <span class="id"><a href="CasperCBC.VLSM.Liveness.html#ClockFor">ClockFor</a></span> (<span class="id">IM</span> <span class="id">i</span>).<br/>
+<br/>
+<div class="doc">A message time function is consistent with a
+      set of clocks for a composite VLSM if
+      the message time always agrees with the time
+      of the sending component at the begining of
+      the transition where the message is sent.
+   </div>
+&nbsp;&nbsp;<span class="kwd">Record</span> <span class="id"><a name="MessageTimeProp">MessageTimeProp</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`(<span class="id">IM</span>: <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>) `{<span class="id">EqDecision</span> <span class="id">index</span>} <span class="id">Hi</span> <span class="id">constraint</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">Hi</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">clocks</span> : <span class="id"><a href="CasperCBC.VLSM.Liveness.html#ClocksFor">ClocksFor</a></span> <span class="id">IM</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">message_time</span> : <span class="id">message</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="kwd">Type</span> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="message_time_accurate">message_time_accurate</a></span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">m</span> <span class="id">t</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">message_time</span> <span class="id">m</span> = <span class="id">t</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;-&gt; (<span class="kwd">forall</span> (<span class="id">l</span>:<span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> <span class="id">X</span>) <span class="id">s</span> <span class="id">om</span> <span class="id">l</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="id">X</span> <span class="id">l</span> (<span class="id">s</span>,<span class="id">om</span>) = (<span class="id">s</span>', <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">m</span>) -&gt; <span class="id"><a href="CasperCBC.VLSM.Liveness.html#clock">clock</a></span> <span class="id">_</span> (<span class="id">clocks</span> <span class="id">_</span>) (<span class="id">s</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> <span class="id">l</span>)) = <span class="id">t</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Clocks">Clocks</a></span>.<br/>
+<br/>
+<h1> Plans
+Protocols may be designed so that only a subset of validators
+are expected to send messages in each phase.
+Our example protocol will use a fixed that specifies the
+expected set of senders for each time.
+Here we define the conditions that such a fixed plan will
+need to satisfy.
+Later protocols will dyanmically construct plans to
+react to failures, and we will need to generalize
+these properties to apply to dynamic plans.
+ </h1>
+<span class="kwd">Section</span> <span class="id"><a name="Plan">Plan</a></span>.<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">index</span>: <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Hweights</span>: <span class="id">Measurable</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index_listing</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Hfinite</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html#Listing">FinFun.Listing</a></span> <span class="id">index_listing</span>}<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<div class="doc">An "odd" set cannot be partitioned into
+      two disjoint pieces with equal weight,
+      so votes cannot have ties </div>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="odd_set">odd_set</a></span> (<span class="id">P</span>: <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Plan.index">index</a></span> -&gt; <span class="kwd">Prop</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">l1</span> <span class="id">l2</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">i</span>, <span class="id">P</span> <span class="id">i</span> &lt;-&gt; (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">i</span> <span class="id">l1</span> \/ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">i</span> <span class="id">l2</span>)) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id">l1</span>++<span class="id">l2</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">sum_weights</span> <span class="id">l1</span> &lt;&gt; <span class="id">sum_weights</span> <span class="id">l2</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Record</span> <span class="id"><a name="Plan">Plan</a></span> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="planned_senders">planned_senders</a></span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Plan.index">index</a></span> -&gt; <span class="kwd">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="stages_nonempty">stages_nonempty</a></span> : <span class="kwd">forall</span> <span class="id">n</span>, ~<span class="kwd">forall</span> <span class="id">v</span>, ~<span class="id">planned_senders</span> <span class="id">n</span> <span class="id">v</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="plan_has_odd_stage">plan_has_odd_stage</a></span>: <span class="id">exists</span> <span class="id">n</span>, <span class="id"><a href="CasperCBC.VLSM.Liveness.html#odd_set">odd_set</a></span> (<span class="id">planned_senders</span> <span class="id">n</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="recurring_sends">recurring_sends</a></span>: <span class="kwd">forall</span> <span class="id">n</span> <span class="id">v</span>, <span class="id">exists</span> <span class="id">n</span>', <span class="id">n</span>' &gt; <span class="id">n</span> /\ <span class="id">planned_senders</span> <span class="id">n</span>' <span class="id">v</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#Plan">Plan</a></span>.<br/>
+<br/>
+<h1> Synchrony Constraint
+Synchrony assumptions will be expresed with composition constraints.
+Currently we define only a strong assumption that doesn't allow
+any messages to be delayed, which will be used for example proofs of
+liveness.
+Definitions allowing a limited rate of "synchronization faults" will
+be added before verifying more robust protocols over more realistic
+assumptions.
+ </h1>
+<span class="kwd">Section</span> <span class="id"><a name="StrongSynchrony">StrongSynchrony</a></span>.<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i0</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index_listing</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">finite_index</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html#Listing">Listing</a></span> <span class="id">index_listing</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Heqd</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hi</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Hsents</span> : <span class="kwd">forall</span> <span class="id">i</span>, <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability">has_been_sent_capability</a></span> (<span class="id">IM</span> <span class="id">i</span>)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Hobserveds</span>: <span class="kwd">forall</span> <span class="id">i</span>, <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_observed_capability">has_been_observed_capability</a></span> (<span class="id">IM</span> <span class="id">i</span>)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">clocks</span> : <span class="id"><a href="CasperCBC.VLSM.Liveness.html#ClocksFor">ClocksFor</a></span> <span class="id">IM</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">message_time</span> : <span class="id">message</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<div class="doc">This portion of a constraint ensures that messages are received only
+      by components at the proper time.
+      Perhaps this condition should be added to <span class="bracket"><span class="id">MessageTimeProp</span></span> and
+      required as a property of the components in <span class="bracket"><span class="id">IM</span></span> rather than
+      imposed as a composition constraint.
+   </div>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="delivery_time_constraint">delivery_time_constraint</a></span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message">message</a></span> -&gt; <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="kwd">fun</span> <span class="id">l</span> <span class="id">som</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">i</span>,<span class="id">_</span>) := <span class="id">l</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">s</span>,<span class="id">om</span>) := <span class="id">som</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">om</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">m</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message_time">message_time</a></span> <span class="id">m</span> = <span class="id"><a href="CasperCBC.VLSM.Liveness.html#clock">clock</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks">clocks</a></span> <span class="id">i</span>) (<span class="id">s</span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="all_earlier_messages_received">all_earlier_messages_received</a></span> (<span class="id">i</span>:<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.index">index</a></span>) (<span class="id">s</span>:<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">msg</span>, (<span class="id">exists</span> (<span class="id">j</span>:<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.index">index</a></span>), <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent">has_been_sent</a></span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> <span class="id">j</span>) (<span class="id">s</span> <span class="id">j</span>) <span class="id">msg</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message_time">message_time</a></span> <span class="id">msg</span> &lt;= <span class="id"><a href="CasperCBC.VLSM.Liveness.html#clock">clock</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks">clocks</a></span> <span class="id">i</span>) (<span class="id">s</span> <span class="id">i</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_observed">has_been_observed</a></span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> <span class="id">i</span>) (<span class="id">s</span> <span class="id">i</span>) <span class="id">msg</span>.<br/>
+<br/>
+<div class="doc">This portion of a constraint prevents a component from advancing its clock
+      if it has not received all oustanding messages from the time
+      it is leaving.
+      N.B. As written, this does not prevent the possiblity that some
+      other component which is still in the earlier time hasn't even
+      sent a message yet. Combined with the use of <span class="bracket"><span class="id">lt</span></span> in
+      <span class="bracket"><span class="id">all_earlier_messages_received</span></span>, and the <span class="bracket"><span class="id">delivery_time_constraint</span></span>,
+      this component would never be able to advance its clock again
+      after such a "late send".
+   </div>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="timely_reception_constraint">timely_reception_constraint</a></span>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message">message</a></span> -&gt; <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="kwd">fun</span> <span class="id">l</span> <span class="id">som</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">i</span>,<span class="id">l_i</span>) := <span class="id">l</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">s</span>,<span class="id">om</span>) := <span class="id">som</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">s</span>',<span class="id">_</span>) := <span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> <span class="id">i</span>) <span class="id">l_i</span> (<span class="id">s</span> <span class="id">i</span>,<span class="id">om</span>) <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Liveness.html#clock">clock</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks">clocks</a></span> <span class="id">i</span>) (<span class="id">s</span> <span class="id">i</span>) &lt; <span class="id"><a href="CasperCBC.VLSM.Liveness.html#clock">clock</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks">clocks</a></span> <span class="id">i</span>) <span class="id">s</span>'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id"><a href="CasperCBC.VLSM.Liveness.html#all_earlier_messages_received">all_earlier_messages_received</a></span> <span class="id">i</span> <span class="id">s</span>.<br/>
+<br/>
+<div class="doc">This strong constraint allows no equivocations and
+      no failures of synchrony.
+   </div>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="no_synch_faults_no_equivocation_constraint">no_synch_faults_no_equivocation_constraint</a></span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message">message</a></span> -&gt; <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="kwd">fun</span> <span class="id">l</span> <span class="id">som</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#no_equivocations">no_equivocations</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.i0">i0</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id">_</span>) <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.finite_index">finite_index</a></span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.Hsents">Hsents</a></span> <span class="id">l</span> <span class="id">som</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\ <span class="id"><a href="CasperCBC.VLSM.Liveness.html#delivery_time_constraint">delivery_time_constraint</a></span> <span class="id">l</span> <span class="id">som</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\ <span class="id"><a href="CasperCBC.VLSM.Liveness.html#timely_reception_constraint">timely_reception_constraint</a></span> <span class="id">l</span> <span class="id">som</span>.<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Liveness.html#StrongSynchrony">StrongSynchrony</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
