@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Logic.FinFun.html#"><span class="id" title="library">Coq.Logic.FinFun</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Lib.Preamble</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Traces.html#"><span class="id" title="library">Lib.Traces</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Common.html#"><span class="id" title="library">CBC.Common</span></a> <span class="comment">(*&nbsp;for&nbsp;weight&nbsp;stuff&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#"><span class="id" title="library">VLSM.Common</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Decisions.html#"><span class="id" title="library">VLSM.Decisions</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Composition.html#"><span class="id" title="library">VLSM.Composition</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#"><span class="id" title="library">VLSM.Equivocation</span></a> <span class="comment">(*&nbsp;for&nbsp;has_been_sent&nbsp;*)</span><br/>
+.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+   This module defines liveness, and contains basic defintiions
+   that will be used for proving liveness properties,
+   constructing protocols designed for liveness, and
+   stating the assumptions under which those protocols are live.
+ 
+<div class="paragraph"> </div>
+
+<a id="lab76"></a><h1 class="section">Liveness</h1>
+
+
+<div class="paragraph"> </div>
+
+ A composite VLSM is live if every complete trace reaches a <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.ListValidator.ListValidator.html#decision"><span class="id" title="definition">decision</span></a></span>
+ 
+</div>
+<div class="code">
+<span class="id" title="keyword">Section</span> <a id="Liveness" class="idref" href="#Liveness"><span class="id" title="section">Liveness</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="CV:1" class="idref" href="#CV:1"><span class="id" title="binder">CV</span></a> : <a class="idref" href="CasperCBC.VLSM.Decisions.html#consensus_values"><span class="id" title="class">consensus_values</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="message:2" class="idref" href="#message:2"><span class="id" title="binder">message</span></a> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="index:3" class="idref" href="#index:3"><span class="id" title="binder">index</span></a> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="Heqd:4" class="idref" href="#Heqd:4"><span class="id" title="binder">Heqd</span></a> : <a class="idref" href="CasperCBC.Lib.Classes.html#EqDecision"><span class="id" title="abbreviation">EqDecision</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:3"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="IM:5" class="idref" href="#IM:5"><span class="id" title="binder">IM</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:3"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#message:2"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hi:6" class="idref" href="#Hi:6"><span class="id" title="binder">Hi</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:3"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="constraint:7" class="idref" href="#constraint:7"><span class="id" title="binder">constraint</span></a> : <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:5"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:5"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#message:2"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="X:8" class="idref" href="#X:8"><span class="id" title="binder">X</span></a> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm"><span class="id" title="definition">composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:5"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Hi:6"><span class="id" title="variable">Hi</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#constraint:7"><span class="id" title="variable">constraint</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="ID:10" class="idref" href="#ID:10"><span class="id" title="binder">ID</span></a> : <span class="id" title="keyword">forall</span> <a id="i:9" class="idref" href="#i:9"><span class="id" title="binder">i</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:3"><span class="id" title="variable">index</span></a>, <a class="idref" href="CasperCBC.VLSM.Decisions.html#vdecision"><span class="id" title="definition">vdecision</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:5"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:9"><span class="id" title="variable">i</span></a>)).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="live" class="idref" href="#live"><span class="id" title="definition">live</span></a> : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="tr:11" class="idref" href="#tr:11"><span class="id" title="binder">tr</span></a> : <a class="idref" href="CasperCBC.VLSM.Common.html#Trace"><span class="id" title="inductive">Trace</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Htr:12" class="idref" href="#Htr:12"><span class="id" title="binder">Htr</span></a>: <a class="idref" href="CasperCBC.VLSM.Common.html#complete_trace_prop"><span class="id" title="definition">complete_trace_prop</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Liveness.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#tr:11"><span class="id" title="variable">tr</span></a>),<br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><a id="n:13" class="idref" href="#n:13"><span class="id" title="binder">n</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="i:14" class="idref" href="#i:14"><span class="id" title="binder">i</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#Liveness.index"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="st:15" class="idref" href="#st:15"><span class="id" title="binder">st</span></a> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Liveness.X"><span class="id" title="variable">X</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#trace_nth"><span class="id" title="definition">trace_nth</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Liveness.X"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#tr:11"><span class="id" title="variable">tr</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#n:13"><span class="id" title="variable">n</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">(</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#st:15"><span class="id" title="variable">st</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">)</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#Liveness.ID"><span class="id" title="variable">ID</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:14"><span class="id" title="variable">i</span></a>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#st:15"><span class="id" title="variable">st</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:14"><span class="id" title="variable">i</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;&gt;'_x"><span class="id" title="notation">&lt;&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#None"><span class="id" title="constructor">None</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Liveness"><span class="id" title="section">Liveness</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab77"></a><h1 class="section">Clocks</h1>
+
+
+<div class="paragraph"> </div>
+
+Liveness always requires some notion of time, and assumptions
+that messages are not infinitely delayed.
+
+<div class="paragraph"> </div>
+
+We will use logical clocks that assign states and
+messages to times in <span class="inlinecode"><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a></span>, with messages carrying the
+time from the sending component, and messages only
+expected to be received by a node at the matching time.
+ 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a id="Clocks" class="idref" href="#Clocks"><span class="id" title="section">Clocks</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A clock for a VLSM assigns a time to any state, and is
+      nondecreasing on transitions.
+   
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Record</span> <a id="ClockFor" class="idref" href="#ClockFor"><span class="id" title="record">ClockFor</span></a> `(<a id="X:17" class="idref" href="#X:17"><span class="id" title="binder">X</span></a>:<a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a id="message:16" class="idref" href="#message:16"><span class="id" title="binder">message</span></a>) : <span class="id" title="keyword">Type</span> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="clock" class="idref" href="#clock"><span class="id" title="projection">clock</span></a> : <a class="idref" href="CasperCBC.VLSM.Common.html#vstate"><span class="id" title="definition">vstate</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#X:17"><span class="id" title="variable">X</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="clock_monotone" class="idref" href="#clock_monotone"><span class="id" title="projection">clock_monotone</span></a> : <span class="id" title="keyword">forall</span> <a id="l:20" class="idref" href="#l:20"><span class="id" title="binder">l</span></a> <a id="s:21" class="idref" href="#s:21"><span class="id" title="binder">s</span></a> <a id="om:22" class="idref" href="#om:22"><span class="id" title="binder">om</span></a> <a id="s':23" class="idref" href="#s':23"><span class="id" title="binder">s'</span></a> <a id="om':24" class="idref" href="#om':24"><span class="id" title="binder">om'</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#vtransition"><span class="id" title="definition">vtransition</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#X:17"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:20"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#s:21"><span class="id" title="variable">s</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#om:22"><span class="id" title="variable">om</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#s':23"><span class="id" title="variable">s'</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#om':24"><span class="id" title="variable">om'</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#clock:19"><span class="id" title="method">clock</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#s:21"><span class="id" title="variable">s</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a3"><span class="id" title="notation">&lt;=</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#clock:19"><span class="id" title="method">clock</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#s':23"><span class="id" title="variable">s'</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+For a composite VLSM we usually want to have a separate
+      clock for each component
+   
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="ClocksFor" class="idref" href="#ClocksFor"><span class="id" title="definition">ClocksFor</span></a> `(<a id="IM:28" class="idref" href="#IM:28"><span class="id" title="binder">IM</span></a>:<a id="index:26" class="idref" href="#index:26"><span class="id" title="binder">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a id="message:27" class="idref" href="#message:27"><span class="id" title="binder">message</span></a>) : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="i:29" class="idref" href="#i:29"><span class="id" title="binder">i</span></a>, <a class="idref" href="CasperCBC.VLSM.Liveness.html#ClockFor"><span class="id" title="record">ClockFor</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:28"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:29"><span class="id" title="variable">i</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A message time function is consistent with a
+      set of clocks for a composite VLSM if
+      the message time always agrees with the time
+      of the sending component at the begining of
+      the transition where the message is sent.
+   
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Record</span> <a id="MessageTimeProp" class="idref" href="#MessageTimeProp"><span class="id" title="record">MessageTimeProp</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`(<a id="IM:32" class="idref" href="#IM:32"><span class="id" title="binder">IM</span></a>: <a id="index:30" class="idref" href="#index:30"><span class="id" title="binder">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a id="message:31" class="idref" href="#message:31"><span class="id" title="binder">message</span></a>) `{<a id="EqDecision0:33" class="idref" href="#EqDecision0:33"><span class="id" title="binder">EqDecision</span></a> <a id="EqDecision0:33" class="idref" href="#EqDecision0:33"><span class="id" title="binder">index</span></a>} <a id="Hi:34" class="idref" href="#Hi:34"><span class="id" title="binder">Hi</span></a> <a id="constraint:35" class="idref" href="#constraint:35"><span class="id" title="binder">constraint</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="X:36" class="idref" href="#X:36"><span class="id" title="binder">X</span></a> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm"><span class="id" title="definition">composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:32"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Hi:34"><span class="id" title="variable">Hi</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#constraint:35"><span class="id" title="variable">constraint</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="clocks:37" class="idref" href="#clocks:37"><span class="id" title="binder">clocks</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#ClocksFor"><span class="id" title="definition">ClocksFor</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:32"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="message_time:38" class="idref" href="#message_time:38"><span class="id" title="binder">message_time</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#message:31"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="keyword">Type</span> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="message_time_accurate" class="idref" href="#message_time_accurate"><span class="id" title="projection">message_time_accurate</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="m:40" class="idref" href="#m:40"><span class="id" title="binder">m</span></a> <a id="t:41" class="idref" href="#t:41"><span class="id" title="binder">t</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Liveness.html#message_time:38"><span class="id" title="variable">message_time</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#m:40"><span class="id" title="variable">m</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#t:41"><span class="id" title="variable">t</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">&lt;-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">(</span></a><span class="id" title="keyword">forall</span> (<a id="l:42" class="idref" href="#l:42"><span class="id" title="binder">l</span></a>:<a class="idref" href="CasperCBC.VLSM.Common.html#vlabel"><span class="id" title="definition">vlabel</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#X:36"><span class="id" title="variable">X</span></a>) <a id="s:43" class="idref" href="#s:43"><span class="id" title="binder">s</span></a> <a id="om:44" class="idref" href="#om:44"><span class="id" title="binder">om</span></a> <a id="l:45" class="idref" href="#l:45"><span class="id" title="binder">l</span></a> <a id="s':46" class="idref" href="#s':46"><span class="id" title="binder">s'</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#vtransition"><span class="id" title="definition">vtransition</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#X:36"><span class="id" title="variable">X</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:45"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#s:43"><span class="id" title="variable">s</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#om:44"><span class="id" title="variable">om</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#s':46"><span class="id" title="variable">s'</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#m:40"><span class="id" title="variable">m</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#clock"><span class="id" title="projection">clock</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#clocks:37"><span class="id" title="variable">clocks</span></a> <span class="id" title="var">_</span>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#s:43"><span class="id" title="variable">s</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Specif.html#projT1"><span class="id" title="definition">projT1</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:45"><span class="id" title="variable">l</span></a>)) <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#t:41"><span class="id" title="variable">t</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">)</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Clocks"><span class="id" title="section">Clocks</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab78"></a><h1 class="section">Plans</h1>
+
+
+<div class="paragraph"> </div>
+
+Protocols may be designed so that only a subset of validators
+are expected to send messages in each phase.
+
+<div class="paragraph"> </div>
+
+Our example protocol will use a fixed that specifies the
+expected set of senders for each time.
+Here we define the conditions that such a fixed plan will
+need to satisfy.
+
+<div class="paragraph"> </div>
+
+Later protocols will dyanmically construct plans to
+react to failures, and we will need to generalize
+these properties to apply to dynamic plans.
+ 
+</div>
+<div class="code">
+<span class="id" title="keyword">Section</span> <a id="Plan" class="idref" href="#Plan"><span class="id" title="section">Plan</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="index:48" class="idref" href="#index:48"><span class="id" title="binder">index</span></a>: <span class="id" title="keyword">Type</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="Hweights:49" class="idref" href="#Hweights:49"><span class="id" title="binder">Hweights</span></a>: <a class="idref" href="CasperCBC.CBC.Common.html#Measurable"><span class="id" title="class">Measurable</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:48"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="index_listing:50" class="idref" href="#index_listing:50"><span class="id" title="binder">index_listing</span></a>: <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:48"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="Hfinite:51" class="idref" href="#Hfinite:51"><span class="id" title="binder">Hfinite</span></a>: <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Logic.FinFun.html#Listing"><span class="id" title="definition">FinFun.Listing</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index_listing:50"><span class="id" title="variable">index_listing</span></a>}<br/>
+&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An "odd" set cannot be partitioned into
+      two disjoint pieces with equal weight,
+      so votes cannot have ties 
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="odd_set" class="idref" href="#odd_set"><span class="id" title="definition">odd_set</span></a> (<a id="P:52" class="idref" href="#P:52"><span class="id" title="binder">P</span></a>: <a class="idref" href="CasperCBC.VLSM.Liveness.html#Plan.index"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="l1:53" class="idref" href="#l1:53"><span class="id" title="binder">l1</span></a> <a id="l2:54" class="idref" href="#l2:54"><span class="id" title="binder">l2</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><span class="id" title="keyword">forall</span> <a id="i:55" class="idref" href="#i:55"><span class="id" title="binder">i</span></a>, <a class="idref" href="CasperCBC.VLSM.Liveness.html#P:52"><span class="id" title="variable">P</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:55"><span class="id" title="variable">i</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">&lt;-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">(</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">In</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:55"><span class="id" title="variable">i</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l1:53"><span class="id" title="variable">l1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#f031fe1957c4a4a8e217aa46af2b4e25"><span class="id" title="notation">\/</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">In</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:55"><span class="id" title="variable">i</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l2:54"><span class="id" title="variable">l2</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">)</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.List.html#NoDup"><span class="id" title="inductive">NoDup</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#l1:53"><span class="id" title="variable">l1</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#bc347c51eaf667706ae54503b26d52c6"><span class="id" title="notation">++</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#l2:54"><span class="id" title="variable">l2</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.CBC.Common.html#sum_weights"><span class="id" title="definition">sum_weights</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l1:53"><span class="id" title="variable">l1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;&gt;'_x"><span class="id" title="notation">&lt;&gt;</span></a> <a class="idref" href="CasperCBC.CBC.Common.html#sum_weights"><span class="id" title="definition">sum_weights</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l2:54"><span class="id" title="variable">l2</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Record</span> <a id="Plan" class="idref" href="#Plan"><span class="id" title="record">Plan</span></a> := {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="planned_senders" class="idref" href="#planned_senders"><span class="id" title="projection">planned_senders</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Plan.index"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="stages_nonempty" class="idref" href="#stages_nonempty"><span class="id" title="projection">stages_nonempty</span></a> : <span class="id" title="keyword">forall</span> <a id="n:58" class="idref" href="#n:58"><span class="id" title="binder">n</span></a>, <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a><span class="id" title="keyword">forall</span> <a id="v:59" class="idref" href="#v:59"><span class="id" title="binder">v</span></a>, <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#planned_senders:57"><span class="id" title="method">planned_senders</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#n:58"><span class="id" title="variable">n</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#v:59"><span class="id" title="variable">v</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="plan_has_odd_stage" class="idref" href="#plan_has_odd_stage"><span class="id" title="projection">plan_has_odd_stage</span></a>: <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a id="n:61" class="idref" href="#n:61"><span class="id" title="binder">n</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">,</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#odd_set"><span class="id" title="definition">odd_set</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#planned_senders:57"><span class="id" title="method">planned_senders</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#n:61"><span class="id" title="variable">n</span></a>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a id="recurring_sends" class="idref" href="#recurring_sends"><span class="id" title="projection">recurring_sends</span></a>: <span class="id" title="keyword">forall</span> <a id="n:63" class="idref" href="#n:63"><span class="id" title="binder">n</span></a> <a id="v:64" class="idref" href="#v:64"><span class="id" title="binder">v</span></a>, <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a id="n':65" class="idref" href="#n':65"><span class="id" title="binder">n'</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">,</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#n':65"><span class="id" title="variable">n'</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Peano.html#::nat_scope:x_'&gt;'_x"><span class="id" title="notation">&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#n:63"><span class="id" title="variable">n</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#planned_senders:57"><span class="id" title="method">planned_senders</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#n':65"><span class="id" title="variable">n'</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#v:64"><span class="id" title="variable">v</span></a>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Plan"><span class="id" title="section">Plan</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab79"></a><h1 class="section">Synchrony Constraint</h1>
+
+
+<div class="paragraph"> </div>
+
+Synchrony assumptions will be expresed with composition constraints.
+
+<div class="paragraph"> </div>
+
+Currently we define only a strong assumption that doesn't allow
+any messages to be delayed, which will be used for example proofs of
+liveness.
+
+<div class="paragraph"> </div>
+
+Definitions allowing a limited rate of "synchronization faults" will
+be added before verifying more robust protocols over more realistic
+assumptions.
+ 
+</div>
+<div class="code">
+<span class="id" title="keyword">Section</span> <a id="StrongSynchrony" class="idref" href="#StrongSynchrony"><span class="id" title="section">StrongSynchrony</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="message:67" class="idref" href="#message:67"><span class="id" title="binder">message</span></a> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="index:68" class="idref" href="#index:68"><span class="id" title="binder">index</span></a> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="i0:69" class="idref" href="#i0:69"><span class="id" title="binder">i0</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:68"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="index_listing:70" class="idref" href="#index_listing:70"><span class="id" title="binder">index_listing</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:68"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="finite_index:71" class="idref" href="#finite_index:71"><span class="id" title="binder">finite_index</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Logic.FinFun.html#Listing"><span class="id" title="definition">Listing</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index_listing:70"><span class="id" title="variable">index_listing</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="Heqd:72" class="idref" href="#Heqd:72"><span class="id" title="binder">Heqd</span></a> : <a class="idref" href="CasperCBC.Lib.Classes.html#EqDecision"><span class="id" title="abbreviation">EqDecision</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:68"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="IM:73" class="idref" href="#IM:73"><span class="id" title="binder">IM</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:68"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#message:67"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Hi:74" class="idref" href="#Hi:74"><span class="id" title="binder">Hi</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#index:68"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="constraint:75" class="idref" href="#constraint:75"><span class="id" title="binder">constraint</span></a> : <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:73"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:73"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#message:67"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="Hsents:77" class="idref" href="#Hsents:77"><span class="id" title="binder">Hsents</span></a> : <span class="id" title="keyword">forall</span> <a id="i:76" class="idref" href="#i:76"><span class="id" title="binder">i</span></a>, <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability"><span class="id" title="class">has_been_sent_capability</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:73"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:76"><span class="id" title="variable">i</span></a>)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="Hobserveds:79" class="idref" href="#Hobserveds:79"><span class="id" title="binder">Hobserveds</span></a>: <span class="id" title="keyword">forall</span> <a id="i:78" class="idref" href="#i:78"><span class="id" title="binder">i</span></a>, <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_observed_capability"><span class="id" title="class">has_been_observed_capability</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:73"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:78"><span class="id" title="variable">i</span></a>)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="clocks:80" class="idref" href="#clocks:80"><span class="id" title="binder">clocks</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#ClocksFor"><span class="id" title="definition">ClocksFor</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#IM:73"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="message_time:81" class="idref" href="#message_time:81"><span class="id" title="binder">message_time</span></a> : <a class="idref" href="CasperCBC.VLSM.Liveness.html#message:67"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>)<br/>
+&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This portion of a constraint ensures that messages are received only
+      by components at the proper time.
+
+<div class="paragraph"> </div>
+
+      Perhaps this condition should be added to <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Liveness.html#MessageTimeProp"><span class="id" title="record">MessageTimeProp</span></a></span> and
+      required as a property of the components in <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Liveness.SimpleFragileProtocol.html#IM"><span class="id" title="definition">IM</span></a></span> rather than
+      imposed as a composition constraint.
+   
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="delivery_time_constraint" class="idref" href="#delivery_time_constraint"><span class="id" title="definition">delivery_time_constraint</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id" title="keyword">fun</span> <a id="l:82" class="idref" href="#l:82"><span class="id" title="binder">l</span></a> <a id="som:83" class="idref" href="#som:83"><span class="id" title="binder">som</span></a> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<a id="i:84" class="idref" href="#i:84"><span class="id" title="binder">i</span></a>,<span class="id" title="var">_</span>) := <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:82"><span class="id" title="variable">l</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<a id="s:85" class="idref" href="#s:85"><span class="id" title="binder">s</span></a>,<a id="om:86" class="idref" href="#om:86"><span class="id" title="binder">om</span></a>) := <a class="idref" href="CasperCBC.VLSM.Liveness.html#som:83"><span class="id" title="variable">som</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="CasperCBC.VLSM.Liveness.html#om:86"><span class="id" title="variable">om</span></a> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#Some"><span class="id" title="constructor">Some</span></a> <span class="id" title="var">m</span> =&gt; <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message_time"><span class="id" title="variable">message_time</span></a> <span class="id" title="var">m</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#clock"><span class="id" title="projection">clock</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks"><span class="id" title="variable">clocks</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:84"><span class="id" title="variable">i</span></a>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#s:85"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:84"><span class="id" title="variable">i</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#None"><span class="id" title="constructor">None</span></a> =&gt; <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#True"><span class="id" title="inductive">True</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="all_earlier_messages_received" class="idref" href="#all_earlier_messages_received"><span class="id" title="definition">all_earlier_messages_received</span></a> (<a id="i:88" class="idref" href="#i:88"><span class="id" title="binder">i</span></a>:<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.index"><span class="id" title="variable">index</span></a>) (<a id="s:89" class="idref" href="#s:89"><span class="id" title="binder">s</span></a>:<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="msg:90" class="idref" href="#msg:90"><span class="id" title="binder">msg</span></a>, <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">exists</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">(</span></a><a id="j:91" class="idref" href="#j:91"><span class="id" title="binder">j</span></a>:<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.index"><span class="id" title="variable">index</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">),</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent"><span class="id" title="method">has_been_sent</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#j:91"><span class="id" title="variable">j</span></a>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#s:89"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#j:91"><span class="id" title="variable">j</span></a>) <a class="idref" href="CasperCBC.VLSM.Liveness.html#msg:90"><span class="id" title="variable">msg</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message_time"><span class="id" title="variable">message_time</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#msg:90"><span class="id" title="variable">msg</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a3"><span class="id" title="notation">&lt;=</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#clock"><span class="id" title="projection">clock</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks"><span class="id" title="variable">clocks</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:88"><span class="id" title="variable">i</span></a>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#s:89"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:88"><span class="id" title="variable">i</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_observed"><span class="id" title="method">has_been_observed</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:88"><span class="id" title="variable">i</span></a>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#s:89"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:88"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Liveness.html#msg:90"><span class="id" title="variable">msg</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This portion of a constraint prevents a component from advancing its clock
+      if it has not received all oustanding messages from the time
+      it is leaving.
+
+<div class="paragraph"> </div>
+
+      N.B. As written, this does not prevent the possiblity that some
+      other component which is still in the earlier time hasn't even
+      sent a message yet. Combined with the use of <span class="inlinecode"><span class="id" title="var">lt</span></span> in
+      <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Liveness.html#all_earlier_messages_received"><span class="id" title="definition">all_earlier_messages_received</span></a></span>, and the <span class="inlinecode"><a class="idref" href="CasperCBC.VLSM.Liveness.html#delivery_time_constraint"><span class="id" title="definition">delivery_time_constraint</span></a></span>,
+      this component would never be able to advance its clock again
+      after such a "late send".
+   
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="timely_reception_constraint" class="idref" href="#timely_reception_constraint"><span class="id" title="definition">timely_reception_constraint</span></a>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id" title="keyword">fun</span> <a id="l:92" class="idref" href="#l:92"><span class="id" title="binder">l</span></a> <a id="som:93" class="idref" href="#som:93"><span class="id" title="binder">som</span></a> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<a id="i:94" class="idref" href="#i:94"><span class="id" title="binder">i</span></a>,<a id="l_i:95" class="idref" href="#l_i:95"><span class="id" title="binder">l_i</span></a>) := <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:92"><span class="id" title="variable">l</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<a id="s:96" class="idref" href="#s:96"><span class="id" title="binder">s</span></a>,<a id="om:97" class="idref" href="#om:97"><span class="id" title="binder">om</span></a>) := <a class="idref" href="CasperCBC.VLSM.Liveness.html#som:93"><span class="id" title="variable">som</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> (<a id="s':98" class="idref" href="#s':98"><span class="id" title="binder">s'</span></a>,<span class="id" title="var">_</span>) := <a class="idref" href="CasperCBC.VLSM.Common.html#vtransition"><span class="id" title="definition">vtransition</span></a> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:94"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Liveness.html#l_i:95"><span class="id" title="variable">l_i</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">(</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#s:96"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:94"><span class="id" title="variable">i</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">,</span></a><a class="idref" href="CasperCBC.VLSM.Liveness.html#om:97"><span class="id" title="variable">om</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#e6756e10c36f149b18b4a8741ed83079"><span class="id" title="notation">)</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Liveness.html#clock"><span class="id" title="projection">clock</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks"><span class="id" title="variable">clocks</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:94"><span class="id" title="variable">i</span></a>) (<a class="idref" href="CasperCBC.VLSM.Liveness.html#s:96"><span class="id" title="variable">s</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:94"><span class="id" title="variable">i</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Peano.html#::nat_scope:x_'&lt;'_x"><span class="id" title="notation">&lt;</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#clock"><span class="id" title="projection">clock</span></a> <span class="id" title="var">_</span> (<a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.clocks"><span class="id" title="variable">clocks</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:94"><span class="id" title="variable">i</span></a>) <a class="idref" href="CasperCBC.VLSM.Liveness.html#s':98"><span class="id" title="variable">s'</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#all_earlier_messages_received"><span class="id" title="definition">all_earlier_messages_received</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#i:94"><span class="id" title="variable">i</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#s:96"><span class="id" title="variable">s</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="Free:99" class="idref" href="#Free:99"><span class="id" title="binder">Free</span></a> := <a class="idref" href="CasperCBC.VLSM.Composition.html#free_composite_vlsm"><span class="id" title="definition">free_composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.i0"><span class="id" title="variable">i0</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="composite_has_been_sent_capability:100" class="idref" href="#composite_has_been_sent_capability:100"><span class="id" title="binder">composite_has_been_sent_capability</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability"><span class="id" title="class">has_been_sent_capability</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#Free:99"><span class="id" title="variable">Free</span></a> := <a class="idref" href="CasperCBC.VLSM.Equivocation.html#composite_has_been_sent_capability"><span class="id" title="instance">composite_has_been_sent_capability</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.i0"><span class="id" title="variable">i0</span></a> (<a class="idref" href="CasperCBC.VLSM.Composition.html#free_constraint"><span class="id" title="definition">free_constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a>) <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.finite_index"><span class="id" title="variable">finite_index</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.Hsents"><span class="id" title="variable">Hsents</span></a>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="var">Existing</span> <span class="id" title="keyword">Instance</span> <span class="id" title="var">composite_has_been_sent_capability</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This strong constraint allows no equivocations and
+      no failures of synchrony.
+   
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="no_synch_faults_no_equivocation_constraint" class="idref" href="#no_synch_faults_no_equivocation_constraint"><span class="id" title="definition">no_synch_faults_no_equivocation_constraint</span></a> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.message"><span class="id" title="variable">message</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id" title="keyword">fun</span> <a id="l:101" class="idref" href="#l:101"><span class="id" title="binder">l</span></a> <a id="som:102" class="idref" href="#som:102"><span class="id" title="binder">som</span></a> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocation.html#no_equivocations"><span class="id" title="definition">no_equivocations</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony.Free"><span class="id" title="variable">Free</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:101"><span class="id" title="variable">l</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#som:102"><span class="id" title="variable">som</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#delivery_time_constraint"><span class="id" title="definition">delivery_time_constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:101"><span class="id" title="variable">l</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#som:102"><span class="id" title="variable">som</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#timely_reception_constraint"><span class="id" title="definition">timely_reception_constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#l:101"><span class="id" title="variable">l</span></a> <a class="idref" href="CasperCBC.VLSM.Liveness.html#som:102"><span class="id" title="variable">som</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Liveness.html#StrongSynchrony"><span class="id" title="section">StrongSynchrony</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
