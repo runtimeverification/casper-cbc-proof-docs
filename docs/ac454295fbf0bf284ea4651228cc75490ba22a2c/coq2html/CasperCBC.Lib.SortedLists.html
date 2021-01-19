@@ -1,0 +1,437 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.SortedLists</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.SortedLists" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.SortedLists</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorting.html">Sorting</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relations.html">Relations</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Structures.Orders.html">Orders</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html">Lib.Preamble</a></span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html">Lib.ListSetExtras</a></span>.<br/>
+<br/>
+<div class="doc">Sorted Lists *</div>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="list_compare">list_compare</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">l1</span> <span class="id">l2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">l1</span>,<span class="id">l2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [], [] =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span><br/>
+&nbsp;&nbsp;| [], <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span><br/>
+&nbsp;&nbsp;| <span class="id">_</span>, [] =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span><br/>
+&nbsp;&nbsp;| (<span class="id">h1</span> :: <span class="id">t1</span>), (<span class="id">h2</span> :: <span class="id">t2</span>) =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">compare</span> <span class="id">h1</span> <span class="id">h2</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> =&gt; @<span class="id">list_compare</span> <span class="id">A</span> <span class="id">compare</span> <span class="id">t1</span> <span class="id">t2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">cmp</span> =&gt; <span class="id">cmp</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="Inb">Inb</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) (<span class="id">a</span> : <span class="id">A</span>) (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">l</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span><br/>
+&nbsp;&nbsp;| <span class="id">h</span> :: <span class="id">t</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">compare</span> <span class="id">a</span> <span class="id">h</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id">Inb</span> <span class="id">compare</span> <span class="id">a</span> <span class="id">t</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_in">compare_in</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#PredicateFunction2">PredicateFunction2</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">A</span>) (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#Inb">Inb</a></span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof269')">Proof.</div>
+<div class="proofscript" id="proof269">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">a</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span>; <span class="tactic">intros</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">discriminate</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id">IHl</span> <span class="kwd">in</span> <span class="id">H1</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="tactic">rewrite</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">a</span> <span class="id">a0</span>); <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">a</span> <span class="id">a0</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">left</span>. <span class="tactic">symmetry</span>. <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHl</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHl</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="compare_not_in">compare_not_in</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">a</span> <span class="id">l</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#not">not</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id">l</span>) &lt;-&gt; <span class="id"><a href="CasperCBC.Lib.SortedLists.html#Inb">Inb</a></span> <span class="id">compare</span> <span class="id">a</span> <span class="id">l</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof270')">Proof.</div>
+<div class="proofscript" id="proof270">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">rewrite</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#compare_in">compare_in</a></span> <span class="id">a</span> <span class="id">l</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#not_true_iff_false">not_true_iff_false</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="list_compare_strict_order">list_compare_strict_order</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> (@<span class="id"><a href="CasperCBC.Lib.SortedLists.html#list_compare">list_compare</a></span> <span class="id">A</span> <span class="id">compare</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof271')">Proof.</div>
+<div class="proofscript" id="proof271">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">R</span> <span class="id">T</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intro</span> <span class="id">x</span>. <span class="tactic">induction</span> <span class="id">x</span>; <span class="tactic">intros</span>; <span class="tactic">destruct</span> <span class="id">y</span>; <span class="tactic">split</span>; <span class="tactic">intros</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">a</span> <span class="id">a0</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">R</span> <span class="kwd">in</span> <span class="id">Hcmp</span>; <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id">IHx</span> <span class="kwd">in</span> <span class="id">H</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">subst</span>. <span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHx</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">y</span>; <span class="tactic">intros</span>; <span class="tactic">destruct</span> <span class="id">x</span>; <span class="tactic">destruct</span> <span class="id">z</span>; <span class="tactic">try</span> <span class="tactic">assumption</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">destruct</span> <span class="id">comp</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">clear</span> <span class="id">H</span>; <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">a0</span> <span class="id">a</span>) <span class="id">eqn</span>:<span class="id">Ha0</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="tactic">clear</span> <span class="id">H0</span>; <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">a</span> <span class="id">a1</span>) <span class="id">eqn</span>:<span class="id">Ha1</span>; <span class="tactic">try</span> <span class="tactic">discriminate</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> <span class="tactic">apply</span> (<span class="id">IHy</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H2</span>) <span class="kwd">in</span> <span class="id">H1</span>; <span class="tactic">try</span> <span class="tactic">apply</span> (<span class="id">T</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Ha0</span>) <span class="kwd">in</span> <span class="id">Ha1</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id">R</span> <span class="kwd">in</span> <span class="id">Ha0</span>; <span class="tactic">subst</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">Ha1</span>; <span class="tactic">try</span> <span class="tactic">rewrite</span> <span class="id">H1</span>, <span class="id">H2</span>; <span class="tactic">reflexivity</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">simpl</span>; <span class="tactic">rewrite</span> <span class="id">Ha1</span>; <span class="tactic">rewrite</span> <span class="id">H2</span>; <span class="tactic">reflexivity</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">apply</span> <span class="id">R</span> <span class="kwd">in</span> <span class="id">Ha1</span>; <span class="tactic">subst</span>; <span class="tactic">simpl</span>;  <span class="tactic">rewrite</span> <span class="id">Ha0</span>; <span class="tactic">rewrite</span> <span class="id">H1</span>; <span class="tactic">reflexivity</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="list_compare_eq_dec">list_compare_eq_dec</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} :<br/>
+&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>, {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">x</span> &lt;&gt; <span class="id">y</span>}).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof272')">Proof.</div>
+<div class="proofscript" id="proof272">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_dec">compare_eq_dec</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) (<span class="id">x</span> : <span class="id">A</span>) (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">l</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; [<span class="id">x</span>]<br/>
+&nbsp;&nbsp;| <span class="id">h</span> :: <span class="id">t</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">compare</span> <span class="id">x</span> <span class="id">h</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Lt">Lt</a></span> =&gt; <span class="id">x</span> :: <span class="id">h</span> :: <span class="id">t</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Eq">Eq</a></span> =&gt; <span class="id">h</span> :: <span class="id">t</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Gt">Gt</a></span> =&gt; <span class="id">h</span> :: @<span class="id">add_in_sorted_list_fn</span> <span class="id">A</span> <span class="id">compare</span> <span class="id">x</span> <span class="id">t</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_no_empty">add_in_sorted_list_no_empty</a></span> {<span class="id">A</span>} (<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>) : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span> &lt;&gt; [].<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof273')">Proof.</div>
+<div class="proofscript" id="proof273">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#not">not</a></span>. <span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">sigma</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">a</span>); <span class="tactic">inversion</span> <span class="id">H</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_in">add_in_sorted_list_in</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">msg</span>' <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span>' (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id">msg</span> = <span class="id">msg</span>' \/ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span>' <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof274')">Proof.</div>
+<div class="proofscript" id="proof274">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">induction</span> <span class="id">sigma</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H0</span><br/>
+&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">H0</span> | <span class="id">H0</span>]; <span class="tactic">subst</span>; <span class="tactic">try</span> <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>)<br/>
+&nbsp;&nbsp;.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">a</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">Hcmp</span>; <span class="tactic">subst</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id">right</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id">IHsigma</span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">destruct</span> <span class="id">Hin</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_in_rev">add_in_sorted_list_in_rev</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">msg</span>' <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id">msg</span> = <span class="id">msg</span>' \/ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span>' <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span>' (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof275')">Proof.</div>
+<div class="proofscript" id="proof275">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">induction</span> <span class="id">sigma</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H0</span><br/>
+&nbsp;&nbsp;; <span class="tactic">try</span> (<span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">H0</span> | <span class="id">H0</span>]; <span class="tactic">subst</span>; <span class="tactic">try</span> <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>)<br/>
+&nbsp;&nbsp;.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#or_comm">or_comm</a></span> (<span class="id">a</span> = <span class="id">msg</span>')) <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#or_assoc">or_assoc</a></span> <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">HI</span> | <span class="id">Heq</span>].<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">IHsigma</span> <span class="kwd">in</span> <span class="id">HI</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_in">add_in_sorted_list_in</a></span> <span class="kwd">in</span> <span class="id">HI</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HI</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">simpl</span>; <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">a</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">Hcmp</span>; <span class="tactic">subst</span>; <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHsigma</span>. <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>; <span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">right</span>. <span class="tactic">apply</span> <span class="id">IHsigma</span>. <span class="id">right</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">subst</span>. <span class="tactic">simpl</span>. <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">msg</span>'); <span class="tactic">try</span> (<span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_iff">add_in_sorted_list_iff</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">msg</span>' <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span>' (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span>) &lt;-&gt;<br/>
+&nbsp;&nbsp;<span class="id">msg</span> = <span class="id">msg</span>' \/ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span>' <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof276')">Proof.</div>
+<div class="proofscript" id="proof276">
+&nbsp;&nbsp;<span class="tactic">intros</span>; <span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_in">add_in_sorted_list_in</a></span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_in_rev">add_in_sorted_list_in_rev</a></span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_head">add_in_sorted_list_head</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof277')">Proof.</div>
+<div class="proofscript" id="proof277">
+&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_iff">add_in_sorted_list_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="id">left</span>; <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_tail">add_in_sorted_list_tail</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">sigma</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof278')">Proof.</div>
+<div class="proofscript" id="proof278">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">intros</span> <span class="id">x</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_iff">add_in_sorted_list_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="LocallySorted_tl">LocallySorted_tl</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>) (<span class="id">msg</span> :: <span class="id">sigma</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>) <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof279')">Proof.</div>
+<div class="proofscript" id="proof279">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">H0</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H0</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_sorted">add_in_sorted_list_sorted</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>) <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>) (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof280')">Proof.</div>
+<div class="proofscript" id="proof280">
+&nbsp;&nbsp;<span class="tactic">intros</span>. <span class="tactic">apply</span> (@<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_asymmetric_intro">compare_asymmetric_intro</a></span> <span class="id">_</span>) <span class="kwd">in</span> <span class="id">H</span> <span class="kwd">as</span> <span class="id">Hasymm</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">H0</span>; <span class="tactic">simpl</span>; <span class="tactic">try</span> <span class="id">constructor</span>; <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">a</span>) <span class="id">eqn</span>:<span class="id">Hcmpa</span>.<br/>
+&nbsp;&nbsp;- <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;- <span class="id">constructor</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">Hasymm</span> <span class="kwd">in</span> <span class="id">Hcmpa</span>. <span class="id">constructor</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;- <span class="id">constructor</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">constructor</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>. <span class="id">constructor</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">Hasymm</span> <span class="kwd">in</span> <span class="id">Hcmpa</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">IHLocallySorted</span>. <span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">b</span>) <span class="id">eqn</span>:<span class="id">Hcmpb</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#StrictOrder_Reflexive">StrictOrder_Reflexive</a></span> <span class="kwd">in</span> <span class="id">Hcmpb</span>. <span class="tactic">subst</span>. <span class="id">constructor</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">constructor</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">Hasymm</span> <span class="kwd">in</span> <span class="id">Hcmpb</span>. <span class="id">constructor</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">Sorted lists as sets *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_In">set_In</a></span> {<span class="id">A</span>} {<span class="id">lt</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>} `{<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> <span class="id">A</span> <span class="id">lt</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x</span> <span class="id">y</span> <span class="id">s</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">lt</span> (<span class="id">y</span> :: <span class="id">s</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">s</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id">lt</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof281')">Proof.</div>
+<div class="proofscript" id="proof281">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span> <span class="id">s</span> <span class="id">LS</span> <span class="id">IN</span>. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">x</span>. <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">s</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">y</span> <span class="id">LS</span> <span class="id">x</span> <span class="id">IN</span>. <span class="tactic">inversion</span> <span class="id">IN</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">y</span> <span class="id">LS</span> <span class="id">x</span> <span class="id">IN</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">LS</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">IN</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">spec</span> <span class="id">IHs</span> <span class="id">a</span> <span class="id">H2</span> <span class="id">x</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> <span class="id">H</span>]; <span class="tactic">red</span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id">H</span> <span class="id">y</span> <span class="id">a</span> <span class="id">x</span> <span class="id">H4</span> <span class="id">IHs</span>).<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="add_in_sorted_list_existing">add_in_sorted_list_existing</a></span> {<span class="id">A</span>} {<span class="id">compare</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>} `{<span class="id"><a href="CasperCBC.Lib.Preamble.html#CompareStrictOrder">CompareStrictOrder</a></span> <span class="id">A</span> <span class="id">compare</span>} : <span class="kwd">forall</span> <span class="id">msg</span> <span class="id">sigma</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> (<span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="id">compare</span>) <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">msg</span> <span class="id">sigma</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.SortedLists.html#add_in_sorted_list_fn">add_in_sorted_list_fn</a></span> <span class="id">compare</span> <span class="id">msg</span> <span class="id">sigma</span> = <span class="id">sigma</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof282')">Proof.</div>
+<div class="proofscript" id="proof282">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">sigma</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H1</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_eq_refl">compare_eq_refl</a></span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#LocallySorted_tl">LocallySorted_tl</a></span> <span class="kwd">in</span> <span class="id">H0</span> <span class="kwd">as</span> <span class="id">LS</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHsigma</span> <span class="id">LS</span> <span class="id">Hin</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">compare</span> <span class="id">msg</span> <span class="id">a</span>) <span class="id">eqn</span>:<span class="id">Hcmp</span>; <span class="tactic">try</span> <span class="tactic">rewrite</span> <span class="id">IHsigma</span>; <span class="tactic">try</span> <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (@<span class="id"><a href="CasperCBC.Lib.SortedLists.html#set_In">set_In</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt_strict_order">compare_lt_strict_order</a></span> <span class="id">msg</span> <span class="id">a</span> <span class="id">sigma</span> <span class="id">H0</span>) <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_lt">compare_lt</a></span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html#compare_asymmetric">compare_asymmetric</a></span> <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hin</span> <span class="kwd">in</span> <span class="id">Hcmp</span>. <span class="tactic">inversion</span> <span class="id">Hcmp</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_first_equal">set_eq_first_equal</a></span> {<span class="id">A</span>}  {<span class="id">lt</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>} `{<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> <span class="id">A</span> <span class="id">lt</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">lt</span> (<span class="id">x1</span> :: <span class="id">s1</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">lt</span> (<span class="id">x2</span> :: <span class="id">s2</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> (<span class="id">x1</span> :: <span class="id">s1</span>) (<span class="id">x2</span> :: <span class="id">s2</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id">x1</span> = <span class="id">x2</span> /\ <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof283')">Proof.</div>
+<div class="proofscript" id="proof283">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">LS1</span> <span class="id">LS2</span> [<span class="id">IN1</span> <span class="id">IN2</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">x12</span> : <span class="id">x1</span> = <span class="id">x2</span>).<br/>
+&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">IN1</span> <span class="id">x1</span>). { <span class="tactic">simpl</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">subst</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#set_In">set_In</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">s2</span> <span class="id">LS2</span>) <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">IN2</span> <span class="id">x2</span>). { <span class="tactic">simpl</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Irreflexive">StrictOrder_Irreflexive</a></span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#set_In">set_In</a></span> <span class="id">x2</span> <span class="id">x1</span> <span class="id">s1</span> <span class="id">LS1</span>) <span class="kwd">in</span> <span class="id">H1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_copy</span> := <span class="id">H</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> <span class="id">H</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H</span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">x1</span> <span class="id">H1</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Irreflexive">StrictOrder_Irreflexive</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">tauto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>. <span class="tactic">assert</span> (<span class="id">INa1</span> := <span class="id">H0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#set_In">set_In</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">LS1</span>) <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">IN1</span> <span class="id">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">simpl</span>. <span class="id">right</span>. <span class="tactic">assumption</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Irreflexive">StrictOrder_Irreflexive</a></span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>. <span class="tactic">assert</span> (<span class="id">INa2</span> := <span class="id">H0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#set_In">set_In</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">LS2</span>) <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">IN2</span> <span class="id">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">simpl</span>. <span class="id">right</span>. <span class="tactic">assumption</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder_Irreflexive">StrictOrder_Irreflexive</a></span> <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_equality_predicate">set_equality_predicate</a></span> {<span class="id">A</span>}  {<span class="id">lt</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>} `{<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> <span class="id">A</span> <span class="id">lt</span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>,<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">lt</span> <span class="id">s1</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">lt</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">s1</span> <span class="id">s2</span> &lt;-&gt; <span class="id">s1</span> = <span class="id">s2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof284')">Proof.</div>
+<div class="proofscript" id="proof284">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">LS1</span> <span class="id">LS2</span> . <span class="tactic">rename</span> <span class="id">H</span> <span class="id">into</span> <span class="id">SO</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">SO</span>' := <span class="id">SO</span>). <span class="tactic">destruct</span> <span class="id">SO</span>' <span class="kwd">as</span> [<span class="id">IR</span> <span class="id">TR</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">s2</span>. <span class="tactic">induction</span> <span class="id">s1</span>; <span class="tactic">destruct</span> <span class="id">s2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intros</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span>. <span class="id">exfalso</span>. <span class="tactic">apply</span> (<span class="id">H0</span> <span class="id">a</span>). <span class="tactic">simpl</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">H</span>. <span class="id">exfalso</span>. <span class="tactic">apply</span> (<span class="id">H</span> <span class="id">a</span>). <span class="tactic">simpl</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intros</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#set_eq_first_equal">set_eq_first_equal</a></span> <span class="id">a</span> <span class="id">a0</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">LS1</span> <span class="id">LS2</span>) <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">LS1</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_inv">Sorted_inv</a></span> <span class="kwd">in</span> <span class="id">LS1</span>. <span class="tactic">destruct</span> <span class="id">LS1</span> <span class="kwd">as</span> [<span class="id">LS1</span> <span class="id">_</span>]. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">LS1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">LS2</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_inv">Sorted_inv</a></span> <span class="kwd">in</span> <span class="id">LS2</span>. <span class="tactic">destruct</span> <span class="id">LS2</span> <span class="kwd">as</span> [<span class="id">LS2</span> <span class="id">_</span>]. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">LS2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id">IHs1</span> <span class="id">LS1</span> <span class="id">s2</span> <span class="id">LS2</span>) <span class="kwd">in</span> <span class="id">H0</span>. <span class="tactic">subst</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>. <span class="tactic">subst</span>. <span class="id">easy</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="lsorted_app">lsorted_app</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">R</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hsorted</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">R</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Htransitive</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id">R</span>)<br/>
+&nbsp;&nbsp;(<span class="id">alfa</span> <span class="id">beta</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hconcat</span> : <span class="id">l</span> = <span class="id">alfa</span> ++ <span class="id">beta</span>) :<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">R</span> <span class="id">alfa</span> /\ <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">R</span> <span class="id">beta</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof285')">Proof.</div>
+<div class="proofscript" id="proof285">
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">beta</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">alfa</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LSorted_nil">LSorted_nil</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hconcat</span> <span class="kwd">in</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_StronglySorted">Sorted_StronglySorted</a></span> <span class="kwd">in</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hconcat</span> <span class="kwd">in</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#StronglySorted_inv">StronglySorted_inv</a></span> <span class="kwd">in</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hsorted</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHalfa</span> <span class="id">beta</span> (<span class="id">alfa</span> ++ <span class="id">beta</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHalfa</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#StronglySorted_Sorted">StronglySorted_Sorted</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHalfa</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">IHalfa</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">destruct</span> <span class="id">alfa</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LSorted_cons1">LSorted_cons1</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LSorted_consn">LSorted_consn</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">H0</span> <span class="id">a0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="lsorted_pairwise_ordered">lsorted_pairwise_ordered</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">R</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hsorted</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">R</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Htransitive</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id">R</span>)<br/>
+&nbsp;&nbsp;(<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">alfa</span> <span class="id">beta</span> <span class="id">gamma</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hconcat</span> : <span class="id">l</span> = <span class="id">alfa</span> ++ [<span class="id">x</span>] ++ <span class="id">beta</span> ++ [<span class="id">y</span>] ++ <span class="id">gamma</span>) :<br/>
+&nbsp;&nbsp;<span class="id">R</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof286')">Proof.</div>
+<div class="proofscript" id="proof286">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SortedLists.html#lsorted_app">lsorted_app</a></span> <span class="kwd">with</span> (<span class="id">R0</span> := <span class="id">R</span>) (<span class="id">alfa0</span> := <span class="id">alfa</span>) <span class="kwd">in</span> <span class="id">Hconcat</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hconcat</span> <span class="kwd">as</span> [<span class="id">_</span> <span class="id">Hneed</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Hneed</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_LocallySorted_iff">Sorted_LocallySorted_iff</a></span> <span class="kwd">in</span> <span class="id">Hneed</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#Sorted_extends">Sorted_extends</a></span> <span class="kwd">in</span> <span class="id">Hneed</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">Hneed</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hneed</span> <span class="id">y</span>).<br/>
+&nbsp;&nbsp;<span class="id">spec</span> <span class="id">Hneed</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_elt">in_elt</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="lsorted_pair_wise_unordered">lsorted_pair_wise_unordered</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">R</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hsorted</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Sorted.html#LocallySorted">LocallySorted</a></span> <span class="id">R</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Htransitive</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id">R</span>)<br/>
+&nbsp;&nbsp;(<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hin_x</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">x</span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hin_y</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">y</span> <span class="id">l</span>) :<br/>
+&nbsp;&nbsp;<span class="id">x</span> = <span class="id">y</span> \/ <span class="id">R</span> <span class="id">x</span> <span class="id">y</span> \/ <span class="id">R</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof287')">Proof.</div>
+<div class="proofscript" id="proof287">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">Hin_x</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin_x</span> <span class="kwd">as</span> [<span class="id">pref1</span> [<span class="id">suf1</span> <span class="id">Hconcat1</span>]].<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hconcat1</span> <span class="kwd">in</span> <span class="id">Hin_y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_elt_inv">in_elt_inv</a></span> <span class="kwd">in</span> <span class="id">Hin_y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin_y</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intuition</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_or">in_app_or</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">pref2</span> [<span class="id">suf2</span> <span class="id">Hconcat2</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hconcat2</span> <span class="kwd">in</span> <span class="id">Hconcat1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_assoc">app_assoc</a></span> <span class="kwd">in</span> <span class="id">Hconcat1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#lsorted_pairwise_ordered">lsorted_pairwise_ordered</a></span> <span class="id">l</span> <span class="id">R</span> <span class="id">Hsorted</span> <span class="id">Htransitive</span> <span class="id">y</span> <span class="id">x</span> <span class="id">pref2</span> <span class="id">suf2</span> <span class="id">suf1</span> <span class="id">Hconcat1</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">pref2</span> [<span class="id">suf2</span> <span class="id">Hconcat2</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hconcat2</span> <span class="kwd">in</span> <span class="id">Hconcat1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.SortedLists.html#lsorted_pairwise_ordered">lsorted_pairwise_ordered</a></span> <span class="id">l</span> <span class="id">R</span> <span class="id">Hsorted</span> <span class="id">Htransitive</span> <span class="id">x</span> <span class="id">y</span> <span class="id">pref1</span> <span class="id">pref2</span> <span class="id">suf2</span> <span class="id">Hconcat1</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">right</span>. <span class="id">left</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>

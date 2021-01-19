@@ -1,0 +1,329 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.Decisions</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.Decisions" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.Decisions</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html">Coq.Logic.FinFun</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html">Streams</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Epsilon.html">Logic.Epsilon</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html">Coq.Arith.Compare_dec</a></span>.<br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.micromega.Lia.html">Lia</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">List</span> <span class="id">Notations</span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Lib.Preamble</span> <span class="id">Lib.ListExtras</span> <span class="id">Lib.ListSetExtras</span> <span class="id">Lib.RealsExtras</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">CBC.Protocol</span> <span class="id">CBC.Common</span> <span class="id">CBC.Definitions</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span> <span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span> <span class="id"><a href="CasperCBC.VLSM.ProjectionTraces.html">VLSM.ProjectionTraces</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="consensus_values">consensus_values</a></span> :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a name="C">C</a></span> : <span class="kwd">Type</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_C">about_C</a></span> : <span class="id">exists</span> (<span class="id">c1</span> <span class="id">c2</span> : <span class="id">C</span>), <span class="id">c1</span> &lt;&gt; <span class="id">c2</span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="decision">decision</a></span> {<span class="id">message</span>} (<span class="id">T</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_type">VLSM_type</a></span> <span class="id">message</span>) {<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;:= @<span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span> <span class="id">_</span> <span class="id">T</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="vdecision">vdecision</a></span> {<span class="id">message</span>} (<span class="id">V</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>) {<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.Decisions.html#decision">decision</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#type">type</a></span> <span class="id">V</span>).<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="CommuteSingleton">CommuteSingleton</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">V</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>).<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="final_original">final_original</a></span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">D</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) =&gt; <span class="kwd">forall</span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace">protocol_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">n1</span> <span class="id">n2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>) (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>) (<span class="id">c1</span> <span class="id">c2</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n1</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s1</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n2</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s2</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">D</span> <span class="id">s1</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c1</span>)) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">D</span> <span class="id">s2</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c2</span>)) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">c1</span> = <span class="id">c2</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="final">final</a></span>: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">D</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) =&gt; <span class="kwd">forall</span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) (<span class="id">c1</span> <span class="id">c2</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> <span class="id">s1</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">D</span> <span class="id">s1</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c1</span>)) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">D</span> <span class="id">s2</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c2</span>)) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">c1</span> = <span class="id">c2</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="bivalent">bivalent</a></span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">D</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> (<span class="id">s0</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vinitial_state_prop">vinitial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> <span class="id">s0</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">D</span> <span class="id">s0</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>) /\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> (<span class="id">c</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>) ,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace">protocol_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>) (<span class="id">n</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s</span> /\ <span class="id">D</span> <span class="id">s</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c</span>)).<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="stuck_free">stuck_free</a></span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">D</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace">protocol_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">decided_state</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">n_s</span> <span class="id">n_decided</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n_s</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s</span> /\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n_decided</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">decided_state</span> /\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">n_decided</span> &gt;= <span class="id">n_s</span> /\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">D</span> <span class="id">decided_state</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c</span>).<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="behavior">behavior</a></span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="symmetric">symmetric</a></span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">D</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>) =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id">f</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton.V">V</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Decisions.html#behavior">behavior</a></span> <span class="id">D</span> = <span class="id"><a href="CasperCBC.VLSM.Decisions.html#behavior">behavior</a></span> (<span class="id">f</span> <span class="id">D</span>).<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteSingleton">CommuteSingleton</a></span>.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="CommuteIndexed">CommuteIndexed</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Heqd</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Hi</span> : <span class="id">Inhabited</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">ID</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> (<span class="id">IM</span> <span class="id">i</span>)).<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="consistent_original">consistent_original</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">tr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace">protocol_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">n1</span> <span class="id">n2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">j</span> <span class="id">k</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.index">index</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">c1</span> <span class="id">c2</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">j</span> &lt;&gt; <span class="id">k</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n1</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s1</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">tr</span>) <span class="id">n2</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s2</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">j</span>) (<span class="id">s1</span> <span class="id">j</span>) = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c1</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">k</span>) (<span class="id">s2</span> <span class="id">k</span>) = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c2</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">c1</span> = <span class="id">c2</span>.<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="consistent">consistent</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hfuture</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">j</span> <span class="id">k</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.index">index</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hneq</span> : <span class="id">j</span> &lt;&gt; <span class="id">k</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c1</span> <span class="id">c2</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">HDecided1</span> : (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">j</span>) (<span class="id">s1</span> <span class="id">j</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">HDecided2</span> : (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">k</span>) (<span class="id">s2</span> <span class="id">k</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, <span class="id">c1</span> = <span class="id">c2</span>.<br/>
+<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="consistent_to_original">consistent_to_original</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hconsistent</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent">consistent</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent_original">consistent_original</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof153')">Proof.</div>
+<div class="proofscript" id="proof153">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">tr</span> <span class="id">n1</span> <span class="id">n2</span> <span class="id">j</span> <span class="id">k</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">c1</span> <span class="id">c2</span> <span class="id">Hneq</span> <span class="id">Hs1</span> <span class="id">Hs2</span> <span class="id">HD1</span> <span class="id">HD2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Arith.Compare_dec.html#le_lt_dec">le_lt_dec</a></span> <span class="id">n1</span> <span class="id">n2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_witness_reverse">in_futures_witness_reverse</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">tr</span> <span class="id">n1</span> <span class="id">n2</span> <span class="id">l</span> <span class="id">Hs1</span> <span class="id">Hs2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span> <span class="id">Hfutures</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hconsistent</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">Hfutures</span> <span class="id">j</span> <span class="id">k</span> <span class="id">Hneq</span> <span class="id">c1</span> <span class="id">c2</span> <span class="id">HD1</span> <span class="id">HD2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">assert</span> (<span class="id">Hle</span> : <span class="id">n2</span> &lt;= <span class="id">n1</span>) <span class="tactic">by</span> <span class="id">lia</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">clear</span> <span class="id">l</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_witness_reverse">in_futures_witness_reverse</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">s2</span> <span class="id">s1</span> <span class="id">tr</span> <span class="id">n2</span> <span class="id">n1</span> <span class="id">Hle</span> <span class="id">Hs2</span> <span class="id">Hs1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span> <span class="id">Hfutures</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hneq</span>' : <span class="id">k</span> &lt;&gt; <span class="id">j</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">by</span> (<span class="tactic">intro</span> <span class="id">Heq</span>; <span class="tactic">elim</span> <span class="id">Hneq</span>; <span class="tactic">symmetry</span>; <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hconsistent</span> <span class="id">s2</span> <span class="id">s1</span> <span class="id">Hfutures</span> <span class="id">k</span> <span class="id">j</span> <span class="id">Hneq</span>' <span class="id">c2</span> <span class="id">c1</span> <span class="id">HD2</span> <span class="id">HD1</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">symmetry</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="original_to_consistent">original_to_consistent</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Horiginal</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent_original">consistent_original</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent">consistent</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof154')">Proof.</div>
+<div class="proofscript" id="proof154">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent">consistent</a></span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_witness">in_futures_witness</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">Hfuture</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span> [<span class="id">tr</span> [<span class="id">n1</span> [<span class="id">n2</span> [<span class="id">Hle</span> [<span class="id">Hs1</span> <span class="id">Hs2</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Horiginal</span> <span class="id">tr</span> <span class="id">n1</span> <span class="id">n2</span> <span class="id">j</span> <span class="id">k</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">c1</span> <span class="id">c2</span> <span class="id">Hneq</span> <span class="id">Hs1</span> <span class="id">Hs2</span> <span class="id">HDecided1</span> <span class="id">HDecided2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+<div class="doc">The following is an attempt to include finality in the definition of consistency by dropping the requirement
+      that (j &lt;&gt; k). *</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="final_and_consistent">final_and_consistent</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hfuture</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">j</span> <span class="id">k</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.index">index</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c1</span> <span class="id">c2</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">HDecided1</span> : (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">j</span>) (<span class="id">s1</span> <span class="id">j</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c1</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">HDecided2</span> : (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">k</span>) (<span class="id">s2</span> <span class="id">k</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, <span class="id">c1</span> = <span class="id">c2</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="final_and_consistent_implies_final">final_and_consistent_implies_final</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hcons</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final_and_consistent">final_and_consistent</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.index">index</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hfr</span> : <span class="id"><a href="CasperCBC.VLSM.ProjectionTraces.html#finite_projection_friendly">finite_projection_friendly</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.constraint">constraint</a></span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final">final</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection">composite_vlsm_constrained_projection</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.constraint">constraint</a></span> <span class="id">i</span>) (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">i</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof155')">Proof.</div>
+<div class="proofscript" id="proof155">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">c1</span> <span class="id">c2</span> <span class="id">Hfuturesi</span> <span class="id">HD1</span> <span class="id">HD2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.ProjectionTraces.html#projection_friendly_in_futures">projection_friendly_in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.constraint">constraint</a></span> <span class="id">i</span> <span class="id">Hfr</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">Hfuturesi</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span> [<span class="id">sX1</span> [<span class="id">sX2</span> [<span class="id">Hs1</span> [<span class="id">Hs2</span> <span class="id">HfuturesX</span>]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id">Hcons</span> <span class="id">sX1</span> <span class="id">sX2</span> <span class="id">HfuturesX</span> <span class="id">i</span> <span class="id">i</span> <span class="id">c1</span> <span class="id">c2</span> <span class="id">HD1</span> <span class="id">HD2</span>).<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="final_and_consistent_implies_consistent">final_and_consistent_implies_consistent</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hcons</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final_and_consistent">final_and_consistent</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent">consistent</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof156')">Proof.</div>
+<div class="proofscript" id="proof156">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consistent">consistent</a></span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id">Hcons</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">Hfuture</span> <span class="id">j</span> <span class="id">k</span> <span class="id">c1</span> <span class="id">c2</span> <span class="id">HDecided1</span> <span class="id">HDecided2</span>).<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="live">live</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">tr</span> : @<span class="id"><a href="CasperCBC.VLSM.Common.html#Trace">Trace</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#type">type</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span>)),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#complete_trace_prop">complete_trace_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">tr</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span>) (<span class="id">n</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#nat">nat</a></span>) (<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.index">index</a></span>) (<span class="id">c</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#trace_nth">trace_nth</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.X">X</a></span> <span class="id">tr</span> <span class="id">n</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">s</span> /\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed.ID">ID</a></span> <span class="id">i</span>) (<span class="id">s</span> <span class="id">i</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c</span>.<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#CommuteIndexed">CommuteIndexed</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="Estimators">Estimators</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">D</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> <span class="id">X</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">E</span> : <span class="id">Estimator</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id">X</span>) <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">estimates</span> := @<span class="id">estimator</span> <span class="id">_</span> <span class="id">_</span> <span class="id">E</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="decision_estimator_property">decision_estimator_property</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">HD</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.D">D</a></span> <span class="id">sigma</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">sigma</span>' : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hreach</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span> <span class="id">sigma</span> <span class="id">sigma</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c</span>' : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hc</span>' : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.estimates">estimates</a></span> <span class="id">sigma</span>' <span class="id">c</span>'),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">c</span>' = <span class="id">c</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="estimator_only_has_decision">estimator_only_has_decision</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hde</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#decision_estimator_property">decision_estimator_property</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state">protocol_state</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c</span> <span class="id">c_other</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hc</span>  : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.D">D</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">s</span>) = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hc_other</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.estimates">estimates</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">s</span>) <span class="id">c_other</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id">c_other</span> = <span class="id">c</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof157')">Proof.</div>
+<div class="proofscript" id="proof157">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">s</span> <span class="kwd">as</span> [<span class="id">s</span> <span class="id">Hs</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hde</span> <span class="kwd">with</span> (<span class="id">sigma</span> := <span class="id">s</span>) (<span class="id">sigma</span>':= <span class="id">s</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_refl">in_futures_refl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="estimator_surely_has_decision">estimator_surely_has_decision</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hde</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#decision_estimator_property">decision_estimator_property</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state">protocol_state</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">c</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hc</span>  : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.D">D</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">s</span>) = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">c</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.estimates">estimates</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">s</span>) <span class="id">c</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof158')">Proof.</div>
+<div class="proofscript" id="proof158">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span>(<span class="id">Hc_other</span> : <span class="id">exists</span> (<span class="id">c_other</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>), (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.estimates">estimates</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">s</span>) <span class="id">c_other</span>)). {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">estimator_total</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hc_other</span> <span class="kwd">as</span> [<span class="id">c_other</span> <span class="id">Hc_other</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">s</span> <span class="kwd">as</span> [<span class="id">s</span> <span class="id">Hs</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Heq</span> : <span class="id">c_other</span> = <span class="id">c</span>). {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hde</span> <span class="kwd">with</span> (<span class="id">sigma</span> := <span class="id">s</span>) (<span class="id">sigma</span>' := <span class="id">s</span>); <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_refl">in_futures_refl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Theorem</span> <span class="id"><a name="decision_estimator_finality">decision_estimator_finality</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Decisions.html#decision_estimator_property">decision_estimator_property</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final">final</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.D">D</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof159')">Proof.</div>
+<div class="proofscript" id="proof159">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#final">final</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures_protocol_snd">in_futures_protocol_snd</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">H0</span>); <span class="tactic">intro</span> <span class="id">Hps2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#estimator_only_has_decision">estimator_only_has_decision</a></span> <span class="kwd">with</span> (<span class="id">s</span> := (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">s2</span> <span class="id">Hps2</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#decision_estimator_property">decision_estimator_property</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span>(<span class="id">c2</span> = <span class="id">c1</span>). {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H</span> <span class="kwd">with</span> (<span class="id">sigma</span> := <span class="id">s1</span>) (<span class="id">sigma</span>' := <span class="id">s2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#estimator_surely_has_decision">estimator_surely_has_decision</a></span> <span class="id">H</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">s2</span> <span class="id">Hps2</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">H3</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#estimator_surely_has_decision">estimator_surely_has_decision</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;Qed.</div>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#Estimators">Estimators</a></span>.<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="composite_estimators">composite_estimators</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">CV</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#consensus_values">consensus_values</a></span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Heqd</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">Hi</span> : <span class="id">Inhabited</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">ID</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id"><a href="CasperCBC.VLSM.Decisions.html#vdecision">vdecision</a></span> (<span class="id">IM</span> <span class="id">i</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IE</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id">index</span>, <span class="id">Estimator</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id">IM</span> <span class="id">i</span>)) <span class="id"><a href="CasperCBC.VLSM.Decisions.html#C">C</a></span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="composite_projection_decision_estimator_property">composite_projection_decision_estimator_property</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_estimators.index">index</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Xi</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection">composite_vlsm_constrained_projection</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_estimators.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_estimators.constraint">constraint</a></span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.Decisions.html#decision_estimator_property">decision_estimator_property</a></span> <span class="id">Xi</span> (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_estimators.ID">ID</a></span> <span class="id">i</span>) (<span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_estimators.IE">IE</a></span> <span class="id">i</span>).<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Decisions.html#composite_estimators">composite_estimators</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
