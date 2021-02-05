@@ -1,0 +1,93 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.CBC.Equivocation</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.CBC.Equivocation" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.CBC.Equivocation</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Reals</a></span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span><br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span><br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="kwd">Require</span> <span class="kwd">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">Preamble</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Common.html">CBC.Common</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">ListExtras</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">ListSetExtras</span><br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<h1> Equivocation definitions *</h1>
+<br/>
+<h2> Basic equivocation *</h2>
+<br/>
+<div class="doc">Assuming a set of &lt;&lt;state&gt;&gt;s, and a set of &lt;&lt;validator&gt;&gt;s,
+  which is <span class="bracket"><span class="id">Measurable</span></span> and has a <span class="bracket"><span class="id">ReachableThreshold</span></span>, we can define
+  <span class="bracket"><span class="id">basic_equivocation</span></span> starting from a computable <span class="bracket"><span class="id">is_equivocating_fn</span></span>
+  deciding whether a validator is equivocating in a state.
+  To avoid a <span class="bracket"><span class="id">Finite</span></span> constraint on the entire set of validators, we will
+  assume that there is a finite set of validators for each state, which
+  can be retrieved through the <span class="bracket"><span class="id">state_validators</span></span> function.
+  This can be taken to be entire set of validators when that is finite,
+  or the set of senders for all messages in the state for
+  <span class="bracket"><span class="id">state_encapsulating_messages</span></span>.
+  This allows us to determine the <span class="bracket"><span class="id">equivocating_validators</span></span> for a given
+  state as those equivocating in that state.
+  The <span class="bracket"><span class="id">equivocation_fault</span></span> is determined the as the sum of weights of the
+  <span class="bracket"><span class="id">equivocating_validators</span></span>.
+  We call a state <span class="bracket"><span class="id">not_heavy</span></span> if its corresponding <span class="bracket"><span class="id">equivocation_fault</span></span>
+  is lower than the <span class="bracket"><span class="id">threshold</span></span> set for the &lt;&lt;validator&gt;&gt;s type.
+  *</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Class</span> <span class="id"><a name="basic_equivocation">basic_equivocation</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">state</span> <span class="id">validator</span> : <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">measurable_V</span> : <span class="id"><a href="CasperCBC.CBC.Common.html#Measurable">Measurable</a></span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">reachable_threshold</span> : <span class="id"><a href="CasperCBC.CBC.Common.html#ReachableThreshold">ReachableThreshold</a></span> <span class="id">validator</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id"><a name="is_equivocating">is_equivocating</a></span> (<span class="id">s</span> : <span class="id">state</span>) (<span class="id">v</span> : <span class="id">validator</span>) : <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a name="is_equivocating_dec">is_equivocating_dec</a></span> : <span class="id">RelDecision</span> <span class="id">is_equivocating</span><br/>
+<br/>
+<div class="doc">retrieves a set containing all possible validators for a state. *</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a name="state_validators">state_validators</a></span> (<span class="id">s</span> : <span class="id">state</span>) : <span class="tactic">set</span> <span class="id">validator</span><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id"><a name="state_validators_nodup">state_validators_nodup</a></span> : <span class="kwd">forall</span> (<span class="id">s</span> : <span class="id">state</span>), <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> (<span class="id">state_validators</span> <span class="id">s</span>)<br/>
+<br/>
+<div class="doc">All validators which are equivocating in a given composite state *</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id">equivocating_validators</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id">state</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">validator</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">List.filter</a></span> (<span class="kwd">fun</span> <span class="id">v</span> =&gt; <span class="id">bool_decide</span> (<span class="id">is_equivocating</span> <span class="id">s</span> <span class="id">v</span>)) (<span class="id">state_validators</span> <span class="id">s</span>)<br/>
+<br/>
+<div class="doc">The equivocation fault sum: the sum of the weights of equivocating
+       validators *</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id">equivocation_fault</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id">state</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Common.html#sum_weights">sum_weights</a></span> (<span class="id">equivocating_validators</span> <span class="id">s</span>)<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; <span class="id">not_heavy</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> : <span class="id">state</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=  (<span class="id">equivocation_fault</span> <span class="id">s</span> &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Common.html#threshold">threshold</a></span>)%<span class="id">R</span><br/>
+&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
