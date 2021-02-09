@@ -1,0 +1,196 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.Validating</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.Validating" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.Validating</h1>
+<div class="coq">
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html">FinFun</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.Streams.html">Streams</a></span>.<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Lib.Preamble</span> <span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span> <span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="validating_projection">validating_projection</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">IndEqDec</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">i0</span> : <span class="id">Inhabited</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id">IM</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id">IM</span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">message</span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id">IM</span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">i</span> : <span class="id">index</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Xi</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm_constrained_projection">composite_vlsm_constrained_projection</a></span> <span class="id">IM</span> <span class="id">constraint</span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="validating_projection_received_messages_prop">validating_projection_received_messages_prop</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">li</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>)) (<span class="id">si</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>)) (<span class="id">mi</span> : <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.message">message</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~ <span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.Xi">Xi</a></span> <span class="id">li</span> (<span class="id">si</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">mi</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; ~ <span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>) <span class="id">li</span> (<span class="id">si</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">mi</span>).<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="validating_projection_prop">validating_projection_prop</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">li</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>)) (<span class="id">siomi</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>) * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.message">message</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>) <span class="id">li</span> <span class="id">siomi</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.Xi">Xi</a></span> <span class="id">li</span> <span class="id">siomi</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="validating_projection_messages_received">validating_projection_messages_received</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_received_messages_prop">validating_projection_received_messages_prop</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof330')">Proof.</div>
+<div class="proofscript" id="proof330">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_received_messages_prop">validating_projection_received_messages_prop</a></span>. <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">Hvalid</span>. <span class="tactic">apply</span> <span class="id">H0</span>. <span class="tactic">clear</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">H</span> <span class="id">li</span> (<span class="id">si</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">mi</span>) <span class="id">Hvalid</span>). <span class="tactic">clear</span> <span class="id">Hvalid</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">ps</span> [<span class="id">Hsi</span> [<span class="id">Hps</span> [<span class="id">Hpm</span> [<span class="id">Hvalid</span> <span class="id">Hctr</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">ps</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">repeat</span> <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="validating_transitions">validating_transitions</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">si</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">omi</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.message">message</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">li</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>) <span class="id">li</span> (<span class="id">si</span>, <span class="id">omi</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">exists</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">s</span> <span class="id">s</span>' : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">om</span>' : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.message">message</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">si</span> = <span class="id">s</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_transition">protocol_transition</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.X">X</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span> <span class="id">li</span>) (<span class="id">s</span>, <span class="id">omi</span>) (<span class="id">s</span>', <span class="id">om</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="validating_projection_messages_transitions">validating_projection_messages_transitions</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_transitions">validating_transitions</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof331')">Proof.</div>
+<div class="proofscript" id="proof331">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_transitions">validating_transitions</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#projection_valid">projection_valid</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_transition">protocol_transition</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">H</span> <span class="id">li</span> (<span class="id">si</span>, <span class="id">omi</span>) <span class="id">H0</span>). <span class="tactic">clear</span> <span class="id">H0</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">s</span> [<span class="id">Hsi</span> [<span class="id">Hps</span> [<span class="id">Hopm</span> [<span class="id">Hvalid</span> <span class="id">Hctr</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.X">X</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span> <span class="id">li</span>) (<span class="id">s</span>, <span class="id">omi</span>)) <span class="kwd">as</span> <span class="id">t</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">t</span> <span class="kwd">as</span> [<span class="id">s</span>' <span class="id">om</span>'].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">s</span>. <span class="id">exists</span> <span class="id">s</span>'. <span class="id">exists</span> <span class="id">om</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">Hsi</span>. <span class="tactic">subst</span> <span class="id">si</span>; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">repeat</span> <span class="tactic">split</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="kwd">in</span> <span class="id">Heqt</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Heqt</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>) <span class="id">li</span> (<span class="id">s</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>, <span class="id">omi</span>)) <span class="kwd">as</span> <span class="id">t</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">t</span> <span class="kwd">as</span> [<span class="id">si</span>' <span class="id">om</span>''].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Heqt</span>; <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="validating_transitions_messages">validating_transitions_messages</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_transitions">validating_transitions</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof332')">Proof.</div>
+<div class="proofscript" id="proof332">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_transitions">validating_transitions</a></span>. <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">siomi</span> <span class="kwd">as</span> [<span class="id">si</span> <span class="id">omi</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">H</span> <span class="id">si</span> <span class="id">omi</span> <span class="id">li</span> <span class="id">H0</span>); <span class="tactic">clear</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">s</span> [<span class="id">s</span>' [<span class="id">om</span>' [<span class="id">Hsi</span> [<span class="id">Hvalid</span> <span class="id">Htransition</span>]]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">symmetry</span> <span class="kwd">in</span> <span class="id">Hsi</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">s</span>. <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="validating_projection.pre_loaded_with_all_messages_validating_proj">pre_loaded_with_all_messages_validating_proj</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hvalidating</span> : <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection_prop">validating_projection_prop</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">PreLoaded</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.i">i</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_validating_proj_incl">pre_loaded_with_all_messages_validating_proj_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_with_all_messages_validating_proj.PreLoaded">PreLoaded</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.Xi">Xi</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof333')">Proof.</div>
+<div class="proofscript" id="proof333">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#basic_VLSM_incl">basic_VLSM_incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_with_all_messages_validating_proj.PreLoaded">PreLoaded</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.Xi">Xi</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span>; <span class="tactic">try</span> (<span class="tactic">assumption</span> || <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_with_all_messages_validating_proj.Hvalidating">Hvalidating</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">_</span> [<span class="id">_</span> [<span class="id">Hopm</span> <span class="id">_</span>]]]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#protocol_message_projection">protocol_message_projection</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">_</span> <span class="id">H</span>]]. <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_with_all_messages_validating_proj.Hvalidating">Hvalidating</a></span> <span class="kwd">in</span> <span class="id">H</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_validating_proj_eq">pre_loaded_with_all_messages_validating_proj_eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_eq">VLSM_eq</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_with_all_messages_validating_proj.PreLoaded">PreLoaded</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.Xi">Xi</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof334')">Proof.</div>
+<div class="proofscript" id="proof334">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#pre_loaded_with_all_messages_validating_proj_incl">pre_loaded_with_all_messages_validating_proj_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#proj_pre_loaded_with_all_messages_incl">proj_pre_loaded_with_all_messages_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection.pre_loaded_with_all_messages_validating_proj">pre_loaded_with_all_messages_validating_proj</a></span>.<br/>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_projection">validating_projection</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="validating_vlsm">validating_vlsm</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">X</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="validating_vlsm_prop">validating_vlsm_prop</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">l</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#label">label</a></span>) (<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>) (<span class="id">om</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.message">message</a></span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#vvalid">vvalid</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span> <span class="id">l</span> (<span class="id">s</span>, <span class="id">om</span>) -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span> <span class="id">s</span> /\ <span class="id"><a href="CasperCBC.VLSM.Common.html#option_protocol_message_prop">option_protocol_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span> <span class="id">om</span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">Hvalidating</span> : <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm_prop">validating_vlsm_prop</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">PreLoaded</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_validating_vlsm_incl">pre_loaded_with_all_messages_validating_vlsm_incl</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.PreLoaded">PreLoaded</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof335')">Proof.</div>
+<div class="proofscript" id="proof335">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#basic_VLSM_incl">basic_VLSM_incl</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.PreLoaded">PreLoaded</a></span>) (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; <span class="tactic">intros</span>; <span class="tactic">try</span> <span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">_</span> <span class="id">H</span>]]; <span class="tactic">try</span> (<span class="tactic">assumption</span> || <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.Hvalidating">Hvalidating</a></span> <span class="kwd">in</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [<span class="id">_</span> <span class="id">Hpm</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span> <span class="kwd">as</span> (<span class="id">T</span>, (<span class="id">S</span>, <span class="id">M</span>)); <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pre_loaded_with_all_messages_validating_vlsm_eq">pre_loaded_with_all_messages_validating_vlsm_eq</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_eq">VLSM_eq</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.PreLoaded">PreLoaded</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof336')">Proof.</div>
+<div class="proofscript" id="proof336">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#pre_loaded_with_all_messages_validating_vlsm_incl">pre_loaded_with_all_messages_validating_vlsm_incl</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id">pose</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vlsm_incl_pre_loaded_with_all_messages_vlsm">vlsm_incl_pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span>) <span class="kwd">as</span> <span class="id">Hincl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm.X">X</a></span> <span class="kwd">as</span> (<span class="id">T</span>, (<span class="id">S</span>, <span class="id">M</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hincl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.Validating.html#validating_vlsm">validating_vlsm</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
