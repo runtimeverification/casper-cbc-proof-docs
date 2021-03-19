@@ -1,0 +1,112 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.SumWeights</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.SumWeights" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.SumWeights</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Reals</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span>.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="CasperCBC.Lib.Preamble.html">Lib.Preamble</a></span> <span class="id"><a href="CasperCBC.Lib.ListExtras.html">Lib.ListExtras</a></span> <span class="id"><a href="CasperCBC.Lib.ListSetExtras.html">Lib.ListSetExtras</a></span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="pos_R">pos_R</a></span> := {<span class="id">r</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> | (<span class="id">r</span> &gt; 0)%<span class="id">R</span>}.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Measurable">Measurable</a></span> <span class="id">V</span> := { <span class="id"><a name="weight">weight</a></span> : <span class="id">V</span> -&gt; <span class="id"><a href="CasperCBC.Lib.SumWeights.html#pos_R">pos_R</a></span>}.<br/>
+<span class="kwd">Hint</span> <span class="id">Mode</span> <span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> ! : <span class="id">typeclass_instances</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="sum_weights">sum_weights</a></span> `{<span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> <span class="id">V</span>} (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">V</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="kwd">fun</span> <span class="id">v</span> <span class="id">r</span> =&gt; (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#weight">weight</a></span> <span class="id">v</span>) + <span class="id">r</span>)%<span class="id">R</span>) 0%<span class="id">R</span> <span class="id">l</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="sum_weights_positive">sum_weights_positive</a></span><br/>
+&nbsp;&nbsp;`{<span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> <span class="id">V</span>} (<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">V</span>)<br/>
+&nbsp;&nbsp;: (0 &lt;= <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">l</span>)%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof353')">Proof.</div>
+<div class="proofscript" id="proof353">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_refl">Rle_refl</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">apply</span>  <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_le_le_0_compat">Rplus_le_le_0_compat</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#weight">weight</a></span> <span class="id">a</span>). <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rlt_le">Rlt_le</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="weight_proj1_sig">weight_proj1_sig</a></span> (<span class="id">w</span> : <span class="id"><a href="CasperCBC.Lib.SumWeights.html#pos_R">pos_R</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">w</span>.<br/>
+<br/>
+<span class="kwd">Coercion</span> <span class="id">weight_proj1_sig</span> : <span class="id">pos_R</span> &gt;-&gt; <span class="id">R</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="sum_weights_in">sum_weights_in</a></span><br/>
+&nbsp;&nbsp;`{<span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">V</span>} `{<span class="id">Hm</span> : <span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> <span class="id">V</span>}<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> <span class="id">v</span> (<span class="id">vs</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">V</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">v</span> <span class="id">vs</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">vs</span> = (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#weight">weight</a></span> <span class="id">v</span>) + <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove">set_remove</a></span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_eq">decide_eq</a></span> <span class="id">v</span> <span class="id">vs</span>))%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof354')">Proof.</div>
+<div class="proofscript" id="proof354">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">vs</span>; <span class="tactic">intros</span>; <span class="tactic">inversion</span> <span class="id">H0</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>. <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_eq_compat_l">Rplus_eq_compat_l</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">v</span> = <span class="id">v</span>)); <span class="tactic">congruence</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H</span>; <span class="tactic">subst</span>; <span class="tactic">clear</span> <span class="id">H</span>. <span class="tactic">simpl</span>. <span class="tactic">assert</span> (<span class="id">Hav</span> := <span class="id">H3</span>). <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.ListExtras.html#in_not_in">in_not_in</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">H1</span>) <span class="kwd">in</span> <span class="id">Hav</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">v</span> = <span class="id">a</span>)); <span class="tactic">try</span> (<span class="id">exfalso</span>; <span class="tactic">apply</span> <span class="id">Hav</span>; <span class="tactic">assumption</span>). <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>. <span class="tactic">rewrite</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_comm">Rplus_comm</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#weight">weight</a></span> <span class="id">v</span>)) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#weight">weight</a></span> <span class="id">a</span>))). <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_eq_compat_l">Rplus_eq_compat_l</a></span>. <span class="tactic">apply</span> <span class="id">IHvs</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="sum_weights_incl">sum_weights_incl</a></span><br/>
+&nbsp;&nbsp;`{<span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">V</span>} `{<span class="id">Hm</span> : <span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> <span class="id">V</span>}<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> (<span class="id">vs</span> <span class="id">vs</span>':<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">V</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span>' -&gt;<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#incl">incl</a></span> <span class="id">vs</span> <span class="id">vs</span>' -&gt;<br/>
+&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">vs</span> &lt;= <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">vs</span>')%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof355')">Proof.</div>
+<div class="proofscript" id="proof355">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">vs</span>; <span class="tactic">intros</span>; <span class="tactic">try</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights_positive">sum_weights_positive</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights_in">sum_weights_in</a></span> <span class="id">a</span> <span class="id">vs</span>' <span class="id">H0</span>) <span class="kwd">as</span> <span class="id">Hvs</span>'.<br/>
+&nbsp;&nbsp;<span class="id">spec</span> <span class="id">Hvs</span>'; <span class="tactic">try</span> (<span class="tactic">apply</span> <span class="id">H1</span>; <span class="id">left</span>; <span class="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hvs</span>'. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rplus_le_compat_l">Rplus_le_compat_l</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">H</span>. <span class="tactic">subst</span>.  <span class="tactic">clear</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">IHvs</span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_nodup">set_remove_nodup</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">v</span> <span class="id">Hv</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html#set_remove_iff">set_remove_iff</a></span>; <span class="tactic">try</span> <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">H1</span>. <span class="id">right</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">intro</span> <span class="id">contra</span>. <span class="tactic">elim</span> <span class="id">H4</span>. <span class="tactic">subst</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="set_eq_nodup_sum_weight_eq">set_eq_nodup_sum_weight_eq</a></span><br/>
+&nbsp;&nbsp;`{<span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">V</span>} `{<span class="id">Hm</span> : <span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> <span class="id">V</span>}<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> (<span class="id">lv1</span> <span class="id">lv2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">V</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">lv1</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">lv2</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.ListSetExtras.html#set_eq">set_eq</a></span> <span class="id">lv1</span> <span class="id">lv2</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">lv1</span> = <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">lv2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof356')">Proof.</div>
+<div class="proofscript" id="proof356">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">lv1</span> <span class="id">lv2</span> <span class="id">H_nodup1</span> <span class="id">H_nodup2</span> [<span class="id">H_eq_l</span> <span class="id">H_eq_r</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span> := <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights_incl">sum_weights_incl</a></span> <span class="id">lv1</span> <span class="id">lv2</span> <span class="id">H_nodup1</span> <span class="id">H_nodup2</span> <span class="id">H_eq_l</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span>' := <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights_incl">sum_weights_incl</a></span> <span class="id">lv2</span> <span class="id">lv1</span> <span class="id">H_nodup2</span> <span class="id">H_nodup1</span> <span class="id">H_eq_r</span>).<br/>
+&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_antisym">Rle_antisym</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="sum_weights_app">sum_weights_app</a></span><br/>
+&nbsp;&nbsp;`{<span class="id">Hm</span> : <span class="id"><a href="CasperCBC.Lib.SumWeights.html#Measurable">Measurable</a></span> <span class="id">V</span>}<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> (<span class="id">vs</span> <span class="id">vs</span>':<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">V</span>),<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> (<span class="id">vs</span> ++ <span class="id">vs</span>') = (<span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">vs</span> + <span class="id"><a href="CasperCBC.Lib.SumWeights.html#sum_weights">sum_weights</a></span> <span class="id">vs</span>')%<span class="id">R</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof357')">Proof.</div>
+<div class="proofscript" id="proof357">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">vs</span>; <span class="tactic">intros</span>; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_0_l">Rplus_0_l</a></span>. <span class="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id">IHvs</span>. <span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Raxioms.html#Rplus_assoc">Rplus_assoc</a></span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
