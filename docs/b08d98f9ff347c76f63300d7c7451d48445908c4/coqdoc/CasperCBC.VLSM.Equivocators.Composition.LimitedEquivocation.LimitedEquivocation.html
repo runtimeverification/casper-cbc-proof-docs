@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"><script>document.write("<a href='" + document.title + ".svg'>" + document.title + "</a>")</script></span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Vectors.Fin.html#"><span class="id" title="library">Coq.Vectors.Fin</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Logic.FinFun.html#"><span class="id" title="library">FinFun</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.ListSet.html#"><span class="id" title="library">ListSet</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Arith.Compare_dec.html#"><span class="id" title="library">Arith.Compare_dec</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.micromega.Lia.html#"><span class="id" title="library">Lia</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Reals.Reals.html#"><span class="id" title="library">Reals</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Program.Program.html#"><span class="id" title="library">Program</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Logic.JMeq.html#"><span class="id" title="library">Coq.Logic.JMeq</span></a><br/>
+&nbsp;&nbsp;.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">ListNotations</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">CasperCBC</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Preamble.html#"><span class="id" title="library">Preamble</span></a> <a class="idref" href="CasperCBC.Lib.ListExtras.html#"><span class="id" title="library">ListExtras</span></a> <a class="idref" href="CasperCBC.Lib.FinExtras.html#"><span class="id" title="library">FinExtras</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.Lib.Measurable.html#"><span class="id" title="library">Lib.Measurable</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Common.html#"><span class="id" title="library">VLSM.Common</span></a> <a class="idref" href="CasperCBC.VLSM.Composition.html#"><span class="id" title="library">VLSM.Composition</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#"><span class="id" title="library">VLSM.Equivocation</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocators.Common.html#"><span class="id" title="library">VLSM.Equivocators.Common</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Projections.html#"><span class="id" title="library">VLSM.Equivocators.Projections</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocators.MessageProperties.html#"><span class="id" title="library">VLSM.Equivocators.MessageProperties</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#"><span class="id" title="library">VLSM.Equivocators.Composition.Common</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab122"></a><h1 class="section">VLSM Limited Equivocation</h1>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <a id="equivocators_composition_projections" class="idref" href="#equivocators_composition_projections"><span class="id" title="section">equivocators_composition_projections</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> {<a id="message:1" class="idref" href="#message:1"><span class="id" title="binder">message</span></a> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;(<a id="index:2" class="idref" href="#index:2"><span class="id" title="binder">index</span></a> := <span class="id" title="keyword">Type</span>)<br/>
+&nbsp;&nbsp;{<a id="IndEqDec:3" class="idref" href="#IndEqDec:3"><span class="id" title="binder">IndEqDec</span></a> : <a class="idref" href="CasperCBC.Lib.Classes.html#EqDecision"><span class="id" title="abbreviation">EqDecision</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;(<a id="IM:4" class="idref" href="#IM:4"><span class="id" title="binder">IM</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#message:1"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;(<a id="Hbs:6" class="idref" href="#Hbs:6"><span class="id" title="binder">Hbs</span></a> : <span class="id" title="keyword">forall</span> <a id="i:5" class="idref" href="#i:5"><span class="id" title="binder">i</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>, <a class="idref" href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability"><span class="id" title="class">has_been_sent_capability</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#i:5"><span class="id" title="variable">i</span></a>))<br/>
+&nbsp;&nbsp;{<a id="i0:7" class="idref" href="#i0:7"><span class="id" title="binder">i0</span></a> : <a class="idref" href="CasperCBC.Lib.Classes.html#Inhabited"><span class="id" title="class">Inhabited</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;(<a id="X:8" class="idref" href="#X:8"><span class="id" title="binder">X</span></a> := <a class="idref" href="CasperCBC.VLSM.Composition.html#free_composite_vlsm"><span class="id" title="definition">free_composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;(<a id="index_listing:9" class="idref" href="#index_listing:9"><span class="id" title="binder">index_listing</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;(<a id="finite_index:10" class="idref" href="#finite_index:10"><span class="id" title="binder">finite_index</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Logic.FinFun.html#Listing"><span class="id" title="definition">Listing</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index_listing:9"><span class="id" title="variable">index_listing</span></a>)<br/>
+&nbsp;&nbsp;(<a id="equivocator_descriptors:11" class="idref" href="#equivocator_descriptors:11"><span class="id" title="binder">equivocator_descriptors</span></a> := <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#equivocator_descriptors"><span class="id" title="definition">equivocator_descriptors</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;(<a id="equivocators_state_project:12" class="idref" href="#equivocators_state_project:12"><span class="id" title="binder">equivocators_state_project</span></a> := <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#equivocators_state_project"><span class="id" title="definition">equivocators_state_project</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;(<a id="equivocator_IM:13" class="idref" href="#equivocator_IM:13"><span class="id" title="binder">equivocator_IM</span></a> := <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#equivocator_IM"><span class="id" title="definition">equivocator_IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;(<a id="equivocator_descriptors_update:14" class="idref" href="#equivocator_descriptors_update:14"><span class="id" title="binder">equivocator_descriptors_update</span></a> := <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#equivocator_descriptors_update"><span class="id" title="definition">equivocator_descriptors_update</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;(<a id="proper_equivocator_descriptors:15" class="idref" href="#proper_equivocator_descriptors:15"><span class="id" title="binder">proper_equivocator_descriptors</span></a> := <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#proper_equivocator_descriptors"><span class="id" title="definition">proper_equivocator_descriptors</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#IM:4"><span class="id" title="variable">IM</span></a>)<br/>
+&nbsp;&nbsp;{<a id="Hmeasurable:16" class="idref" href="#Hmeasurable:16"><span class="id" title="binder">Hmeasurable</span></a> : <a class="idref" href="CasperCBC.Lib.Measurable.html#Measurable"><span class="id" title="class">Measurable</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;(<a id="equivocating:17" class="idref" href="#equivocating:17"><span class="id" title="binder">equivocating</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Lists.ListSet.html#set"><span class="id" title="definition">set</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>)<br/>
+&nbsp;&nbsp;{<a id="reachable_threshold:18" class="idref" href="#reachable_threshold:18"><span class="id" title="binder">reachable_threshold</span></a> : <a class="idref" href="CasperCBC.VLSM.Equivocation.html#ReachableThreshold"><span class="id" title="class">ReachableThreshold</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#index:2"><span class="id" title="variable">index</span></a>}<br/>
+&nbsp;&nbsp;.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="equivocators_limited_equivocations_constraint" class="idref" href="#equivocators_limited_equivocations_constraint"><span class="id" title="definition">equivocators_limited_equivocations_constraint</span></a><br/>
+&nbsp;&nbsp;(<a id="l:19" class="idref" href="#l:19"><span class="id" title="binder">l</span></a> : <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_label"><span class="id" title="definition">composite_label</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.equivocator_IM"><span class="id" title="variable">equivocator_IM</span></a>)<br/>
+&nbsp;&nbsp;(<a id="som:20" class="idref" href="#som:20"><span class="id" title="binder">som</span></a> : <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_state"><span class="id" title="definition">composite_state</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.equivocator_IM"><span class="id" title="variable">equivocator_IM</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.message"><span class="id" title="variable">message</span></a>)<br/>
+&nbsp;&nbsp;(<a id="som':21" class="idref" href="#som':21"><span class="id" title="binder">som'</span></a> := <a class="idref" href="CasperCBC.VLSM.Composition.html#composite_transition"><span class="id" title="definition">composite_transition</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.equivocator_IM"><span class="id" title="variable">equivocator_IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#l:19"><span class="id" title="variable">l</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#som:20"><span class="id" title="variable">som</span></a>)<br/>
+&nbsp;&nbsp;: <span class="id" title="keyword">Prop</span><br/>
+&nbsp;&nbsp;:= <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#equivocators_no_equivocations_constraint"><span class="id" title="definition">equivocators_no_equivocations_constraint</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.Hbs"><span class="id" title="variable">Hbs</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.finite_index"><span class="id" title="variable">finite_index</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#l:19"><span class="id" title="variable">l</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#som:20"><span class="id" title="variable">som</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">/\</span></a> (<a class="idref" href="CasperCBC.Lib.Measurable.html#sum_weights"><span class="id" title="definition">sum_weights</span></a> (<a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.Common.html#equivocating_indices"><span class="id" title="definition">equivocating_indices</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.IM"><span class="id" title="variable">IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.index_listing"><span class="id" title="variable">index_listing</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Datatypes.html#fst"><span class="id" title="definition">fst</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#som':21"><span class="id" title="variable">som'</span></a>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Reals.Rdefinitions.html#77d341fe206b2891763e25999ffddca2"><span class="id" title="notation">&lt;=</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.12.2/stdlib//Coq.Init.Specif.html#proj1_sig"><span class="id" title="definition">proj1_sig</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocation.html#threshold"><span class="id" title="method">threshold</span></a>)%<span class="id" title="var">R</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="equivocators_limited_equivocations_vlsm" class="idref" href="#equivocators_limited_equivocations_vlsm"><span class="id" title="definition">equivocators_limited_equivocations_vlsm</span></a><br/>
+&nbsp;&nbsp;: <a class="idref" href="CasperCBC.VLSM.Common.html#VLSM"><span class="id" title="definition">VLSM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.message"><span class="id" title="variable">message</span></a><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<a class="idref" href="CasperCBC.VLSM.Composition.html#composite_vlsm"><span class="id" title="definition">composite_vlsm</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections.equivocator_IM"><span class="id" title="variable">equivocator_IM</span></a> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_limited_equivocations_constraint"><span class="id" title="definition">equivocators_limited_equivocations_constraint</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#equivocators_composition_projections"><span class="id" title="section">equivocators_composition_projections</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
