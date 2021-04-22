@@ -1,0 +1,529 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.Lib.Classes</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.Lib.Classes" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.Lib.Classes</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html">Relation_Definitions</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html">Morphisms</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Peano.html">Peano</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<span class="id">From</span> <span class="id">Coq.Program</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Program.Basics.html">Basics</a></span> <span class="kwd">Syntax</span>.<br/>
+<br/>
+<span class="kwd">Global</span> <span class="id">Generalizable</span> <span class="id">All</span> <span class="kwd">Variables</span>.<br/>
+<br/>
+<h1> General typeclasses </h1>
+<br/>
+<div class="doc">This typeclass hierarchy has been adapted mainly from the
+<a href="https://gitlab.mpi-sws.org/iris/stdpp">stdpp</a> library. </div>
+<br/>
+<span class="kwd">Instance</span>: <span class="kwd">forall</span> <span class="id">A</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#PreOrder">PreOrder</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">A</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof1')">Proof.</div>
+<div class="proofscript" id="proof1">
+ <span class="tactic">split</span>; <span class="tactic">repeat</span> <span class="tactic">intro</span>; <span class="tactic">congruence</span>. Qed.</div>
+<br/>
+<h2> Top-level classes </h2>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Decision">Decision</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) := <span class="id"><a name="decide">decide</a></span> : {<span class="id">P</span>} + {~<span class="id">P</span>}.<br/>
+<span class="kwd">Hint</span> <span class="id">Mode</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> ! : <span class="id">typeclass_instances</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">_</span> {<span class="id">_</span>} : <span class="tactic">simpl</span> <span class="id">never</span>, <span class="tactic">assert</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="RelDecision">RelDecision</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">R</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="kwd">Prop</span>) :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="decide_rel">decide_rel</a></span> <span class="id">x</span> <span class="id">y</span> :&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">R</span> <span class="id">x</span> <span class="id">y</span>).<br/>
+<span class="kwd">Hint</span> <span class="id">Mode</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> ! ! ! : <span class="id">typeclass_instances</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide_rel">decide_rel</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> : <span class="tactic">simpl</span> <span class="id">never</span>, <span class="tactic">assert</span>.<br/>
+<span class="kwd">Notation</span> <span class="id"><a name="EqDecision">EqDecision</a></span> <span class="id">A</span> := (<span class="id"><a href="CasperCBC.Lib.Classes.html#RelDecision">RelDecision</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">A</span>)).<br/>
+<span class="kwd">Notation</span> <span class="id"><a name="decide_eq">decide_eq</a></span> := (<span class="kwd">fun</span> <span class="id">x</span> <span class="id">y</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">x</span> = <span class="id">y</span>)).<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Inhabited">Inhabited</a></span> (<span class="id">A</span> : <span class="kwd">Type</span>) : <span class="kwd">Type</span> := <span class="id"><a name="populate">populate</a></span> { <span class="id"><a name="inhabitant">inhabitant</a></span> : <span class="id">A</span> }.<br/>
+<span class="kwd">Hint</span> <span class="id">Mode</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> ! : <span class="id">typeclass_instances</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Inj">Inj</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">S</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">B</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">B</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="inj">inj</a></span> <span class="id">x</span> <span class="id">y</span> : <span class="id">S</span> (<span class="id">f</span> <span class="id">x</span>) (<span class="id">f</span> <span class="id">y</span>) -&gt; <span class="id">R</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Inj2">Inj2</a></span> {<span class="id">A</span> <span class="id">B</span> <span class="id">C</span>} (<span class="id">R1</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">R2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">B</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">S</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">C</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">B</span> -&gt; <span class="id">C</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="inj2">inj2</a></span> <span class="id">x1</span> <span class="id">x2</span> <span class="id">y1</span> <span class="id">y2</span> : <span class="id">S</span> (<span class="id">f</span> <span class="id">x1</span> <span class="id">x2</span>) (<span class="id">f</span> <span class="id">y1</span> <span class="id">y2</span>) -&gt; <span class="id">R1</span> <span class="id">x1</span> <span class="id">y1</span> /\ <span class="id">R2</span> <span class="id">x2</span> <span class="id">y2</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Cancel">Cancel</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">S</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">B</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">B</span>) (<span class="id">g</span> : <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="cancel">cancel</a></span> : <span class="kwd">forall</span> <span class="id">x</span>, <span class="id">S</span> (<span class="id">f</span> (<span class="id">g</span> <span class="id">x</span>)) <span class="id">x</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Surj">Surj</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">B</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">B</span>) :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="surj">surj</a></span> <span class="id">y</span> : <span class="id">exists</span> <span class="id">x</span>, <span class="id">R</span> (<span class="id">f</span> <span class="id">x</span>) <span class="id">y</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="IdemP">IdemP</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="idemp">idemp</a></span> <span class="id">x</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">x</span> <span class="id">x</span>) <span class="id">x</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Comm">Comm</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">f</span> : <span class="id">B</span> -&gt; <span class="id">B</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="comm">comm</a></span> <span class="id">x</span> <span class="id">y</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">x</span> <span class="id">y</span>) (<span class="id">f</span> <span class="id">y</span> <span class="id">x</span>).<br/>
+<span class="kwd">Class</span> <span class="id"><a name="LeftId">LeftId</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">i</span> : <span class="id">A</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="left_id">left_id</a></span> <span class="id">x</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">i</span> <span class="id">x</span>) <span class="id">x</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="RightId">RightId</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">i</span> : <span class="id">A</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="right_id">right_id</a></span> <span class="id">x</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">x</span> <span class="id">i</span>) <span class="id">x</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Assoc">Assoc</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="assoc">assoc</a></span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">x</span> (<span class="id">f</span> <span class="id">y</span> <span class="id">z</span>)) (<span class="id">f</span> (<span class="id">f</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">z</span>).<br/>
+<span class="kwd">Class</span> <span class="id"><a name="LeftAbsorb">LeftAbsorb</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">i</span> : <span class="id">A</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="left_absorb">left_absorb</a></span> <span class="id">x</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">i</span> <span class="id">x</span>) <span class="id">i</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="RightAbsorb">RightAbsorb</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) (<span class="id">i</span> : <span class="id">A</span>) (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="right_absorb">right_absorb</a></span> <span class="id">x</span> : <span class="id">R</span> (<span class="id">f</span> <span class="id">x</span> <span class="id">i</span>) <span class="id">i</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="AntiSymm">AntiSymm</a></span> {<span class="id">A</span>} (<span class="id">R</span> <span class="id">S</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="anti_symm">anti_symm</a></span> <span class="id">x</span> <span class="id">y</span> : <span class="id">S</span> <span class="id">x</span> <span class="id">y</span> -&gt; <span class="id">S</span> <span class="id">y</span> <span class="id">x</span> -&gt; <span class="id">R</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Total">Total</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) := <span class="id"><a name="total">total</a></span> <span class="id">x</span> <span class="id">y</span> : <span class="id">R</span> <span class="id">x</span> <span class="id">y</span> \/ <span class="id">R</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="Trichotomy">Trichotomy</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="trichotomy">trichotomy</a></span> <span class="id">x</span> <span class="id">y</span> : <span class="id">R</span> <span class="id">x</span> <span class="id">y</span> \/ <span class="id">x</span> = <span class="id">y</span> \/ <span class="id">R</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="TrichotomyT">TrichotomyT</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) :=<br/>
+&nbsp;&nbsp;<span class="id"><a name="trichotomyT">trichotomyT</a></span> <span class="id">x</span> <span class="id">y</span> : {<span class="id">R</span> <span class="id">x</span> <span class="id">y</span>} + {<span class="id">x</span> = <span class="id">y</span>} + {<span class="id">R</span> <span class="id">y</span> <span class="id">x</span>}.<br/>
+<br/>
+<span class="kwd">Notation</span> <span class="id"><a name="Involutive">Involutive</a></span> <span class="id">R</span> <span class="id">f</span> := (<span class="id"><a href="CasperCBC.Lib.Classes.html#Cancel">Cancel</a></span> <span class="id">R</span> <span class="id">f</span> <span class="id">f</span>).<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="involutive">involutive</a></span> {<span class="id">A</span>} {<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>} (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">A</span>) `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Involutive">Involutive</a></span> <span class="id">R</span> <span class="id">f</span>} <span class="id">x</span> :<br/>
+&nbsp;&nbsp;<span class="id">R</span> (<span class="id">f</span> (<span class="id">f</span> <span class="id">x</span>)) <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof2')">Proof.</div>
+<div class="proofscript" id="proof2">
+ <span class="tactic">auto</span>. Qed.</div>
+<br/>
+<span class="id">Arguments</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#irreflexivity">irreflexivity</a></span> {<span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#inj">inj</a></span> {<span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#inj2">inj2</a></span> {<span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span>: <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#cancel">cancel</a></span> {<span class="id">_</span> <span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#surj">surj</a></span> {<span class="id">_</span> <span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#idemp">idemp</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#comm">comm</a></span> {<span class="id">_</span> <span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#left_id">left_id</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#right_id">right_id</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#assoc">assoc</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#left_absorb">left_absorb</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#right_absorb">right_absorb</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#anti_symm">anti_symm</a></span> {<span class="id">_</span> <span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#total">total</a></span> {<span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#trichotomy">trichotomy</a></span> {<span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<span class="id">Arguments</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#trichotomyT">trichotomyT</a></span> {<span class="id">_</span>} <span class="id">_</span> {<span class="id">_</span>} <span class="id">_</span> <span class="id">_</span> : <span class="tactic">assert</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Decision_iff">Decision_iff</a></span> : <span class="kwd">forall</span> {<span class="id">P</span> <span class="id">Q</span>}, (<span class="id">P</span> &lt;-&gt; <span class="id">Q</span>) -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">Q</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof3')">Proof.</div>
+<div class="proofscript" id="proof3">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Decision_and">Decision_and</a></span> : <span class="kwd">forall</span> {<span class="id">P</span> <span class="id">Q</span>}, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">Q</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> /\ <span class="id">Q</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof4')">Proof.</div>
+<div class="proofscript" id="proof4">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Decision_or">Decision_or</a></span> : <span class="kwd">forall</span> {<span class="id">P</span> <span class="id">Q</span>}, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">Q</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> \/ <span class="id">Q</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof5')">Proof.</div>
+<div class="proofscript" id="proof5">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Decision_not">Decision_not</a></span> : <span class="kwd">forall</span> {<span class="id">P</span>}, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (~<span class="id">P</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof6')">Proof.</div>
+<div class="proofscript" id="proof6">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_symmetry">not_symmetry</a></span> `{<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>, !<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Symmetric">Symmetric</a></span> <span class="id">R</span>} <span class="id">x</span> <span class="id">y</span> : ~<span class="id">R</span> <span class="id">x</span> <span class="id">y</span> -&gt; ~<span class="id">R</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof7')">Proof.</div>
+<div class="proofscript" id="proof7">
+ <span class="tactic">intuition</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="symmetry_iff">symmetry_iff</a></span> `(<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) `{!<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Symmetric">Symmetric</a></span> <span class="id">R</span>} <span class="id">x</span> <span class="id">y</span> : <span class="id">R</span> <span class="id">x</span> <span class="id">y</span> &lt;-&gt; <span class="id">R</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof8')">Proof.</div>
+<div class="proofscript" id="proof8">
+ <span class="tactic">intuition</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_inj">not_inj</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj">Inj</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">R</span> <span class="id">R</span>' <span class="id">f</span>} <span class="id">x</span> <span class="id">y</span> : ~<span class="id">R</span> <span class="id">x</span> <span class="id">y</span> -&gt; ~<span class="id">R</span>' (<span class="id">f</span> <span class="id">x</span>) (<span class="id">f</span> <span class="id">y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof9')">Proof.</div>
+<div class="proofscript" id="proof9">
+ <span class="tactic">intuition</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_inj2_1">not_inj2_1</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj2">Inj2</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">C</span> <span class="id">R</span> <span class="id">R</span>' <span class="id">R</span>'' <span class="id">f</span>} <span class="id">x1</span> <span class="id">x2</span> <span class="id">y1</span> <span class="id">y2</span> :<br/>
+&nbsp;&nbsp;~<span class="id">R</span> <span class="id">x1</span> <span class="id">x2</span> -&gt; ~<span class="id">R</span>'' (<span class="id">f</span> <span class="id">x1</span> <span class="id">y1</span>) (<span class="id">f</span> <span class="id">x2</span> <span class="id">y2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof10')">Proof.</div>
+<div class="proofscript" id="proof10">
+ <span class="tactic">intros</span> <span class="id">HR</span> <span class="id">HR</span>''. <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#inj2">inj2</a></span> <span class="id">f</span> <span class="id">x1</span> <span class="id">y1</span> <span class="id">x2</span> <span class="id">y2</span>); <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="not_inj2_2">not_inj2_2</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj2">Inj2</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">C</span> <span class="id">R</span> <span class="id">R</span>' <span class="id">R</span>'' <span class="id">f</span>} <span class="id">x1</span> <span class="id">x2</span> <span class="id">y1</span> <span class="id">y2</span> :<br/>
+&nbsp;&nbsp;~<span class="id">R</span>' <span class="id">y1</span> <span class="id">y2</span> -&gt; ~<span class="id">R</span>'' (<span class="id">f</span> <span class="id">x1</span> <span class="id">y1</span>) (<span class="id">f</span> <span class="id">x2</span> <span class="id">y2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof11')">Proof.</div>
+<div class="proofscript" id="proof11">
+ <span class="tactic">intros</span> <span class="id">HR</span>' <span class="id">HR</span>''. <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#inj2">inj2</a></span> <span class="id">f</span> <span class="id">x1</span> <span class="id">y1</span> <span class="id">x2</span> <span class="id">y2</span>); <span class="tactic">auto</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="inj_iff">inj_iff</a></span> {<span class="id">A</span> <span class="id">B</span>} {<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>} {<span class="id">S</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">B</span>} (<span class="id">f</span> : <span class="id">A</span> -&gt; <span class="id">B</span>)<br/>
+&nbsp;&nbsp;`{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj">Inj</a></span> <span class="id">R</span> <span class="id">S</span> <span class="id">f</span>} `{!<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Proper">Proper</a></span> (<span class="id">R</span> ==&gt; <span class="id">S</span>) <span class="id">f</span>} <span class="id">x</span> <span class="id">y</span> : <span class="id">S</span> (<span class="id">f</span> <span class="id">x</span>) (<span class="id">f</span> <span class="id">y</span>) &lt;-&gt; <span class="id">R</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof12')">Proof.</div>
+<div class="proofscript" id="proof12">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<span class="kwd">Instance</span> <span class="id"><a name="inj2_inj_1">inj2_inj_1</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj2">Inj2</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">C</span> <span class="id">R1</span> <span class="id">R2</span> <span class="id">R3</span> <span class="id">f</span>} <span class="id">y</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inj">Inj</a></span> <span class="id">R1</span> <span class="id">R3</span> (<span class="kwd">fun</span> <span class="id">x</span> =&gt; <span class="id">f</span> <span class="id">x</span> <span class="id">y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof13')">Proof.</div>
+<div class="proofscript" id="proof13">
+ <span class="tactic">repeat</span> <span class="tactic">intro</span>; <span class="id">edestruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#inj2">inj2</a></span> <span class="id">f</span>); <span class="tactic">eauto</span>. Qed.</div>
+<span class="kwd">Instance</span> <span class="id"><a name="inj2_inj_2">inj2_inj_2</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj2">Inj2</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">C</span> <span class="id">R1</span> <span class="id">R2</span> <span class="id">R3</span> <span class="id">f</span>} <span class="id">x</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inj">Inj</a></span> <span class="id">R2</span> <span class="id">R3</span> (<span class="id">f</span> <span class="id">x</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof14')">Proof.</div>
+<div class="proofscript" id="proof14">
+ <span class="tactic">repeat</span> <span class="tactic">intro</span>; <span class="id">edestruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#inj2">inj2</a></span> <span class="id">f</span>); <span class="tactic">eauto</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="cancel_inj">cancel_inj</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Cancel">Cancel</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">R1</span> <span class="id">f</span> <span class="id">g</span>, !<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Equivalence">Equivalence</a></span> <span class="id">R1</span>, !<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Proper">Proper</a></span> (<span class="id">R2</span> ==&gt; <span class="id">R1</span>) <span class="id">f</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Classes.html#Inj">Inj</a></span> <span class="id">R1</span> <span class="id">R2</span> <span class="id">g</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof15')">Proof.</div>
+<div class="proofscript" id="proof15">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span> <span class="id">E</span>. <span class="tactic">rewrite</span> &lt;-(<span class="id"><a href="CasperCBC.Lib.Classes.html#cancel">cancel</a></span> <span class="id">f</span> <span class="id">g</span> <span class="id">x</span>), &lt;-(<span class="id"><a href="CasperCBC.Lib.Classes.html#cancel">cancel</a></span> <span class="id">f</span> <span class="id">g</span> <span class="id">y</span>), <span class="id">E</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="cancel_surj">cancel_surj</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Cancel">Cancel</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id">R1</span> <span class="id">f</span> <span class="id">g</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#Surj">Surj</a></span> <span class="id">R1</span> <span class="id">f</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof16')">Proof.</div>
+<div class="proofscript" id="proof16">
+ <span class="tactic">intros</span> <span class="id">y</span>. <span class="id">exists</span> (<span class="id">g</span> <span class="id">y</span>). <span class="tactic">auto</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="idemp_L">idemp_L</a></span> {<span class="id">A</span>} <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#IdemP">IdemP</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">f</span>} <span class="id">x</span> : <span class="id">f</span> <span class="id">x</span> <span class="id">x</span> = <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof17')">Proof.</div>
+<div class="proofscript" id="proof17">
+ <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="comm_L">comm_L</a></span> {<span class="id">A</span> <span class="id">B</span>} <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#Comm">Comm</a></span> <span class="id">A</span> <span class="id">B</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">f</span>} <span class="id">x</span> <span class="id">y</span> : <span class="id">f</span> <span class="id">x</span> <span class="id">y</span> = <span class="id">f</span> <span class="id">y</span> <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof18')">Proof.</div>
+<div class="proofscript" id="proof18">
+ <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="left_id_L">left_id_L</a></span> {<span class="id">A</span>} <span class="id">i</span> <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#LeftId">LeftId</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">i</span> <span class="id">f</span>} <span class="id">x</span> : <span class="id">f</span> <span class="id">i</span> <span class="id">x</span> = <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof19')">Proof.</div>
+<div class="proofscript" id="proof19">
+ <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="right_id_L">right_id_L</a></span> {<span class="id">A</span>} <span class="id">i</span> <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#RightId">RightId</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">i</span> <span class="id">f</span>} <span class="id">x</span> : <span class="id">f</span> <span class="id">x</span> <span class="id">i</span> = <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof20')">Proof.</div>
+<div class="proofscript" id="proof20">
+ <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="assoc_L">assoc_L</a></span> {<span class="id">A</span>} <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#Assoc">Assoc</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">f</span>} <span class="id">x</span> <span class="id">y</span> <span class="id">z</span> : <span class="id">f</span> <span class="id">x</span> (<span class="id">f</span> <span class="id">y</span> <span class="id">z</span>) = <span class="id">f</span> (<span class="id">f</span> <span class="id">x</span> <span class="id">y</span>) <span class="id">z</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof21')">Proof.</div>
+<div class="proofscript" id="proof21">
+ <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="left_absorb_L">left_absorb_L</a></span> {<span class="id">A</span>} <span class="id">i</span> <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#LeftAbsorb">LeftAbsorb</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">i</span> <span class="id">f</span>} <span class="id">x</span> : <span class="id">f</span> <span class="id">i</span> <span class="id">x</span> = <span class="id">i</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof22')">Proof.</div>
+<div class="proofscript" id="proof22">
+ <span class="tactic">auto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="right_absorb_L">right_absorb_L</a></span> {<span class="id">A</span>} <span class="id">i</span> <span class="id">f</span> `{!@<span class="id"><a href="CasperCBC.Lib.Classes.html#RightAbsorb">RightAbsorb</a></span> <span class="id">A</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">i</span> <span class="id">f</span>} <span class="id">x</span> : <span class="id">f</span> <span class="id">x</span> <span class="id">i</span> = <span class="id">i</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof23')">Proof.</div>
+<div class="proofscript" id="proof23">
+ <span class="tactic">auto</span>. Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="strict">strict</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span> := <span class="kwd">fun</span> <span class="id">X</span> <span class="id">Y</span> =&gt; <span class="id">R</span> <span class="id">X</span> <span class="id">Y</span> /\ ~<span class="id">R</span> <span class="id">Y</span> <span class="id">X</span>.<br/>
+<span class="kwd">Instance</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Params">Params</a></span> (@<span class="id"><a href="CasperCBC.Lib.Classes.html#strict">strict</a></span>) 2 := {}.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="PartialOrder">PartialOrder</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) : <span class="kwd">Prop</span> := {<br/>
+&nbsp;&nbsp;<span class="id"><a name="partial_order_pre">partial_order_pre</a></span> :&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#PreOrder">PreOrder</a></span> <span class="id">R</span>;<br/>
+&nbsp;&nbsp;<span class="id"><a name="partial_order_anti_symm">partial_order_anti_symm</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#AntiSymm">AntiSymm</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id">R</span><br/>
+}.<br/>
+<span class="kwd">Class</span> <span class="id"><a name="TotalOrder">TotalOrder</a></span> {<span class="id">A</span>} (<span class="id">R</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">relation</a></span> <span class="id">A</span>) : <span class="kwd">Prop</span> := {<br/>
+&nbsp;&nbsp;<span class="id"><a name="total_order_partial">total_order_partial</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#PartialOrder">PartialOrder</a></span> <span class="id">R</span>;<br/>
+&nbsp;&nbsp;<span class="id"><a name="total_order_trichotomy">total_order_trichotomy</a></span> :&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#Trichotomy">Trichotomy</a></span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#strict">strict</a></span> <span class="id">R</span>)<br/>
+}.<br/>
+<br/>
+<h2> Boolean coercion </h2>
+<br/>
+<span class="kwd">Coercion</span> <span class="id">Is_true</span> : <span class="id">bool</span> &gt;-&gt; <span class="id">Sortclass</span>.<br/>
+<span class="kwd">Hint</span> <span class="kwd">Unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#Is_true">Is_true</a></span> : <span class="id">core</span>.<br/>
+<span class="kwd">Hint</span> <span class="kwd">Immediate</span> <span class="id">Is_true_eq_left</span> : <span class="id">core</span>.<br/>
+<span class="kwd">Hint</span> <span class="kwd">Resolve</span> <span class="id">orb_prop_intro</span> <span class="id">andb_prop_intro</span> : <span class="id">core</span>.<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Is_true_iff_eq_true">Is_true_iff_eq_true</a></span>: <span class="kwd">forall</span> <span class="id">x</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>, <span class="id">x</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> &lt;-&gt; <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof24')">Proof.</div>
+<div class="proofscript" id="proof24">
+&nbsp;&nbsp;<span class="tactic">split</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#Is_true_eq_left">Is_true_eq_left</a></span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#Is_true_eq_true">Is_true_eq_true</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="bool_decision">bool_decision</a></span> {<span class="id">b</span>:<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">b</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">b</span> <span class="kwd">return</span> {<span class="id">b</span>}+{~<span class="id">b</span>} <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> (<span class="kwd">fun</span> <span class="id">H</span> =&gt; <span class="id">H</span>)<br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<h2> Basic instances </h2>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="prop_inhabited">prop_inhabited</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> <span class="kwd">Prop</span> := <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>.<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="list_inhabited">list_inhabited</a></span> {<span class="id">A</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">A</span>) := <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> [].<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="bool_inhabited">bool_inhabited</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> := <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>.<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="unit_inhabited">unit_inhabited</a></span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#unit">unit</a></span> := <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> ().<br/>
+<br/>
+<span class="kwd">Instance</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Params">Params</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#pair">pair</a></span>) 2 := {}.<br/>
+<span class="kwd">Instance</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Params">Params</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#fst">fst</a></span>) 2 := {}.<br/>
+<span class="kwd">Instance</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Params">Params</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#snd">snd</a></span>) 2 := {}.<br/>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="prod_inhabited">prod_inhabited</a></span> {<span class="id">A</span> <span class="id">B</span>} (<span class="id">iA</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">iB</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> <span class="id">B</span>) : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> (<span class="id">A</span> * <span class="id">B</span>) :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">iA</span>, <span class="id">iB</span> <span class="kwd">with</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> <span class="id">x</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> <span class="id">y</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> (<span class="id">x</span>,<span class="id">y</span>) <span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="pair_inj">pair_inj</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inj2">Inj2</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#pair">pair</a></span> <span class="id">A</span> <span class="id">B</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof25')">Proof.</div>
+<div class="proofscript" id="proof25">
+ <span class="tactic">injection</span> 1; <span class="tactic">auto</span>. Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="option_inhabited">option_inhabited</a></span> {<span class="id">A</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#Inhabited">Inhabited</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">A</span>) := <span class="id"><a href="CasperCBC.Lib.Classes.html#populate">populate</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="dec_stable">dec_stable</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : ~~<span class="id">P</span> -&gt; <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof26')">Proof.</div>
+<div class="proofscript" id="proof26">
+ <span class="tactic">firstorder</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Is_true_reflect">Is_true_reflect</a></span> (<span class="id">b</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>) : <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#reflect">reflect</a></span> <span class="id">b</span> <span class="id">b</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof27')">Proof.</div>
+<div class="proofscript" id="proof27">
+ <span class="tactic">destruct</span> <span class="id">b</span>; [<span class="id">left</span>; <span class="id">constructor</span> | <span class="id">right</span>; <span class="tactic">intros</span> []]. Qed.</div>
+<span class="kwd">Instance</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#Inj">Inj</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq">eq</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#iff">iff</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#Is_true">Is_true</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof28')">Proof.</div>
+<div class="proofscript" id="proof28">
+ <span class="tactic">intros</span> [] []; <span class="tactic">simpl</span>; <span class="tactic">intuition</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="decide_True">decide_True</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} (<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>) :<br/>
+&nbsp;&nbsp;<span class="id">P</span> -&gt; (<span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span> <span class="kwd">then</span> <span class="id">x</span> <span class="kwd">else</span> <span class="id">y</span>) = <span class="id">x</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof29')">Proof.</div>
+<div class="proofscript" id="proof29">
+ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span>); <span class="tactic">tauto</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="decide_False">decide_False</a></span> {<span class="id">A</span>} `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} (<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>) :<br/>
+&nbsp;&nbsp;~<span class="id">P</span> -&gt; (<span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span> <span class="kwd">then</span> <span class="id">x</span> <span class="kwd">else</span> <span class="id">y</span>) = <span class="id">y</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof30')">Proof.</div>
+<div class="proofscript" id="proof30">
+ <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span>); <span class="tactic">tauto</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="decide_iff">decide_iff</a></span> {<span class="id">A</span>} <span class="id">P</span> <span class="id">Q</span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">Q</span>} (<span class="id">x</span> <span class="id">y</span> : <span class="id">A</span>) :<br/>
+&nbsp;&nbsp;(<span class="id">P</span> &lt;-&gt; <span class="id">Q</span>) -&gt; (<span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span> <span class="kwd">then</span> <span class="id">x</span> <span class="kwd">else</span> <span class="id">y</span>) = (<span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">Q</span> <span class="kwd">then</span> <span class="id">x</span> <span class="kwd">else</span> <span class="id">y</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof31')">Proof.</div>
+<div class="proofscript" id="proof31">
+ <span class="tactic">intros</span> [??]. <span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span>), (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">Q</span>); <span class="tactic">tauto</span>. Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="bool_decide">bool_decide</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) {<span class="id">dec</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">if</span> <span class="id">dec</span> <span class="kwd">then</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> <span class="kwd">else</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>.<br/>
+<br/>
+<span class="kwd">Ltac</span> <span class="id">solve_trivial_decision</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| |- <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (?<span class="id">P</span>) =&gt; <span class="tactic">apply</span> <span class="id">_</span><br/>
+&nbsp;&nbsp;| |- <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#sumbool">sumbool</a></span> ?<span class="id">P</span> (~?<span class="id">P</span>) =&gt; <span class="id">change</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>); <span class="tactic">apply</span> <span class="id">_</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<span class="kwd">Ltac</span> <span class="id">solve_decision</span> :=<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">EqDecision</span>; <span class="tactic">intros</span>; <span class="id">first</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[ <span class="id">solve_trivial_decision</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span>; <span class="id">decide</span> <span class="id">equality</span>; <span class="id">solve_trivial_decision</span> ].<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_reflect">bool_decide_reflect</a></span> <span class="id">P</span> `{<span class="id">dec</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#reflect">reflect</a></span> <span class="id">P</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof32')">Proof.</div>
+<div class="proofscript" id="proof32">
+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span>. <span class="tactic">destruct</span> <span class="id">dec</span>; [<span class="id">left</span>|<span class="id">right</span>]; <span class="tactic">assumption</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_decide">bool_decide_decide</a></span> <span class="id">P</span> `{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} :<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span> <span class="kwd">then</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> <span class="kwd">else</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof33')">Proof.</div>
+<div class="proofscript" id="proof33">
+ <span class="tactic">reflexivity</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="decide_bool_decide">decide_bool_decide</a></span> <span class="id">P</span> {<span class="id">Hdec</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} {<span class="id">X</span> : <span class="kwd">Type</span>} (<span class="id">x1</span> <span class="id">x2</span> : <span class="id">X</span>):<br/>
+&nbsp;&nbsp;(<span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> <span class="id">P</span> <span class="kwd">then</span> <span class="id">x1</span> <span class="kwd">else</span> <span class="id">x2</span>) = (<span class="kwd">if</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> <span class="kwd">then</span> <span class="id">x1</span> <span class="kwd">else</span> <span class="id">x2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof34')">Proof.</div>
+<div class="proofscript" id="proof34">
+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span>. <span class="tactic">destruct</span> <span class="id">Hdec</span>; <span class="tactic">reflexivity</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_spec">bool_decide_spec</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) {<span class="id">dec</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> &lt;-&gt; <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof35')">Proof.</div>
+<div class="proofscript" id="proof35">
+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span>. <span class="tactic">destruct</span> <span class="id">dec</span>; <span class="tactic">simpl</span>; <span class="tactic">tauto</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_unpack">bool_decide_unpack</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) {<span class="id">dec</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> -&gt; <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof36')">Proof.</div>
+<div class="proofscript" id="proof36">
+ <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_spec">bool_decide_spec</a></span>; <span class="tactic">trivial</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_pack">bool_decide_pack</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) {<span class="id">dec</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof37')">Proof.</div>
+<div class="proofscript" id="proof37">
+ <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_spec">bool_decide_spec</a></span>; <span class="tactic">trivial</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_true">bool_decide_eq_true</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> &lt;-&gt; <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof38')">Proof.</div>
+<div class="proofscript" id="proof38">
+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span>; <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">intuition</span> <span class="tactic">discriminate</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_false">bool_decide_eq_false</a></span> (<span class="id">P</span> : <span class="kwd">Prop</span>) `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> &lt;-&gt; ~<span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof39')">Proof.</div>
+<div class="proofscript" id="proof39">
+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span>; <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">intuition</span> <span class="tactic">discriminate</span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_iff">bool_decide_iff</a></span> (<span class="id">P</span> <span class="id">Q</span> : <span class="kwd">Prop</span>) `{<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">Q</span>} :<br/>
+&nbsp;&nbsp;(<span class="id">P</span> &lt;-&gt; <span class="id">Q</span>) -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">Q</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof40')">Proof.</div>
+<div class="proofscript" id="proof40">
+ <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span>; <span class="tactic">destruct</span> <span class="id">H</span>; <span class="tactic">destruct</span> <span class="id">H0</span>; <span class="tactic">tauto</span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_true_1">bool_decide_eq_true_1</a></span> <span class="id">P</span> `{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>}: <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> -&gt; <span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof41')">Proof.</div>
+<div class="proofscript" id="proof41">
+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true">bool_decide_eq_true</a></span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_true_2">bool_decide_eq_true_2</a></span> <span class="id">P</span> `{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>}: <span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof42')">Proof.</div>
+<div class="proofscript" id="proof42">
+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true">bool_decide_eq_true</a></span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_false_1">bool_decide_eq_false_1</a></span> <span class="id">P</span> `{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>}: <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> -&gt; ~<span class="id">P</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof43')">Proof.</div>
+<div class="proofscript" id="proof43">
+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_false">bool_decide_eq_false</a></span>. Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_false_2">bool_decide_eq_false_2</a></span> <span class="id">P</span> `{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>}: ~<span class="id">P</span> -&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof44')">Proof.</div>
+<div class="proofscript" id="proof44">
+ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_false">bool_decide_eq_false</a></span>. Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="bool_decide_eq_true_proof_irrelevance">bool_decide_eq_true_proof_irrelevance</a></span><br/>
+&nbsp;&nbsp;`{!<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> <span class="id">P</span>}<br/>
+&nbsp;&nbsp;(<span class="id">p</span> <span class="id">q</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> <span class="id">P</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id">p</span> = <span class="id">q</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof45')">Proof.</div>
+<div class="proofscript" id="proof45">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Eqdep_dec.html#UIP_dec">Eqdep_dec.UIP_dec</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html#bool_dec">Bool.bool_dec</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="comparison_eq_dec">comparison_eq_dec</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#comparison">comparison</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof46')">Proof.</div>
+<div class="proofscript" id="proof46">
+ <span class="id">solve_decision</span>. Defined.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="option_eq_dec">option_eq_dec</a></span> `{<span class="id">dec</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">A</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id">A</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof47')">Proof.</div>
+<div class="proofscript" id="proof47">
+&nbsp;<span class="tactic">refine</span> (<span class="kwd">fun</span> <span class="id">mx</span> <span class="id">my</span> =&gt;<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">mx</span>, <span class="id">my</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">x</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">y</span> =&gt; <span class="kwd">if</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide">decide</a></span> (<span class="id">x</span> = <span class="id">y</span>)) <span class="kwd">then</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span> <span class="kwd">else</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">_</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#None">None</a></span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">_</span> | <span class="id">_</span>, <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#right">right</a></span> <span class="id">_</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>); <span class="tactic">clear</span> <span class="id">dec</span>; <span class="id">abstract</span> <span class="tactic">congruence</span>.<br/>
+Defined.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="bool_eq_dec">bool_eq_dec</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#bool">bool</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof48')">Proof.</div>
+<div class="proofscript" id="proof48">
+ <span class="id">solve_decision</span>. Defined.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="unit_eq_dec">unit_eq_dec</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#unit">unit</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof49')">Proof.</div>
+<div class="proofscript" id="proof49">
+ <span class="id">solve_decision</span>. Defined.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="Empty_set_eq_dec">Empty_set_eq_dec</a></span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Empty_set">Empty_set</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof50')">Proof.</div>
+<div class="proofscript" id="proof50">
+ <span class="id">solve_decision</span>. Defined.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="prod_eq_dec">prod_eq_dec</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">A</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">B</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> (<span class="id">A</span> * <span class="id">B</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof51')">Proof.</div>
+<div class="proofscript" id="proof51">
+ <span class="id">solve_decision</span>. Defined.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="sum_eq_dec">sum_eq_dec</a></span> `{<span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">A</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">B</span>} : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> (<span class="id">A</span> + <span class="id">B</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof52')">Proof.</div>
+<div class="proofscript" id="proof52">
+ <span class="id">solve_decision</span>. Defined.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Reflexive_reexpress_impl">Reflexive_reexpress_impl</a></span> {<span class="id">A</span>} (<span class="id">R</span> <span class="id">S</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">Relation_Definitions.relation</a></span> <span class="id">A</span>):<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#relation_equivalence">relation_equivalence</a></span> <span class="id">R</span> <span class="id">S</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Reflexive">Reflexive</a></span> <span class="id">R</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Reflexive">Reflexive</a></span> <span class="id">S</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof53')">Proof.</div>
+<div class="proofscript" id="proof53">
+&nbsp;&nbsp;<span class="tactic">clear</span>;<span class="tactic">firstorder</span>.<br/>
+Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="complement_equivalence">complement_equivalence</a></span> {<span class="id">A</span>}:<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#Proper">Morphisms.Proper</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.Morphisms.html#respectful">Morphisms.respectful</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#relation_equivalence">relation_equivalence</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#relation_equivalence">relation_equivalence</a></span>) (@<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#complement">complement</a></span> <span class="id">A</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof54')">Proof.</div>
+<div class="proofscript" id="proof54">
+&nbsp;&nbsp;<span class="tactic">clear</span>;<span class="tactic">firstorder</span>.<br/>
+Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="Transitive_reexpress_impl">Transitive_reexpress_impl</a></span> {<span class="id">A</span>} (<span class="id">R</span> <span class="id">S</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">Relation_Definitions.relation</a></span> <span class="id">A</span>):<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#relation_equivalence">relation_equivalence</a></span> <span class="id">R</span> <span class="id">S</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id">R</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id">S</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof55')">Proof.</div>
+<div class="proofscript" id="proof55">
+&nbsp;&nbsp;<span class="tactic">clear</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#relation_equivalence">relation_equivalence</a></span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#predicate_equivalence">predicate_equivalence</a></span>; <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">Hrel</span> <span class="id">HtransR</span> <span class="id">x</span> <span class="id">y</span> <span class="id">z</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- !<span class="id">Hrel</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">HtransR</span>.<br/>
+Qed.</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="StrictOrder_reexpress_impl">StrictOrder_reexpress_impl</a></span> {<span class="id">A</span>} (<span class="id">R</span> <span class="id">S</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relation_Definitions.html#relation">Relation_Definitions.relation</a></span> <span class="id">A</span>):<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#relation_equivalence">relation_equivalence</a></span> <span class="id">R</span> <span class="id">S</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> <span class="id">R</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#StrictOrder">StrictOrder</a></span> <span class="id">S</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof56')">Proof.</div>
+<div class="proofscript" id="proof56">
+&nbsp;&nbsp;<span class="tactic">clear</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">Hrel</span> [<span class="id">Hirr</span> <span class="id">Htrans</span>]. <span class="id">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id">revert</span> <span class="id">Hirr</span>;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#Reflexive_reexpress_impl">Reflexive_reexpress_impl</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#complement_equivalence">complement_equivalence</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id">revert</span> <span class="id">Htrans</span>;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#Transitive_reexpress_impl">Transitive_reexpress_impl</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="dec_sig">dec_sig</a></span> {<span class="id">A</span>} (<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) {<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)} : <span class="kwd">Type</span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#sig">sig</a></span> (<span class="kwd">fun</span> <span class="id">a</span> =&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide">bool_decide</a></span> (<span class="id">P</span> <span class="id">a</span>) = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span>).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="dec_exist">dec_exist</a></span> {<span class="id">A</span>} (<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) {<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id">A</span>) (<span class="id">p</span> : <span class="id">P</span> <span class="id">a</span>) : <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">a</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide_True">decide_True</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> <span class="id">p</span>).<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="dec_proj1_sig">dec_proj1_sig</a></span><br/>
+&nbsp;&nbsp;`{<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span> : <span class="id">A</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">ap</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span>) : <span class="id">A</span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ap</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="dec_proj2_sig">dec_proj2_sig</a></span><br/>
+&nbsp;&nbsp;`{<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span>: <span class="id">A</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">ap</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span>) : <span class="id">P</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#dec_proj1_sig">dec_proj1_sig</a></span> <span class="id">ap</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof57')">Proof.</div>
+<div class="proofscript" id="proof57">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">ap</span>;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true">bool_decide_eq_true</a></span> <span class="kwd">in</span> <span class="id">e</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="dec_sig_eq_iff">dec_sig_eq_iff</a></span><br/>
+&nbsp;&nbsp;`{<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span>: <span class="id">A</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">xp</span> <span class="id">yp</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span>)<br/>
+&nbsp;&nbsp;: <span class="id">xp</span> = <span class="id">yp</span> &lt;-&gt; <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_proj1_sig">dec_proj1_sig</a></span> <span class="id">xp</span> = <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_proj1_sig">dec_proj1_sig</a></span> <span class="id">yp</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof58')">Proof.</div>
+<div class="proofscript" id="proof58">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#eq_sig_hprop_iff">eq_sig_hprop_iff</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">x</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true_proof_irrelevance">bool_decide_eq_true_proof_irrelevance</a></span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">destructs a dec_sig element into a dec_exist construct
+</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="dec_sig_to_exist">dec_sig_to_exist</a></span> {<span class="id">A</span>} <span class="id">P</span> {<span class="id">P_dec</span>: <span class="kwd">forall</span> (<span class="id">x</span>:<span class="id">A</span>), <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">a</span>: <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span>): <span class="id">exists</span> <span class="id">a</span>' (<span class="id">e</span>: <span class="id">P</span> <span class="id">a</span>'), <span class="id">a</span> = <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_exist">dec_exist</a></span> <span class="id">_</span> <span class="id">a</span>' <span class="id">e</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof59')">Proof.</div>
+<div class="proofscript" id="proof59">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">a</span> <span class="kwd">as</span> (<span class="id">x</span>,<span class="id">e</span>).<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">x</span>, (<span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true_1">bool_decide_eq_true_1</a></span> <span class="id">_</span> <span class="id">e</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig_eq_iff">dec_sig_eq_iff</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Ltac</span> <span class="id">destruct_dec_sig</span>  <span class="id">a</span> <span class="id">a</span>' <span class="id">e</span> <span class="id">H</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">type</span> <span class="id">of</span> <span class="id">a</span> <span class="kwd">with</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> ?<span class="id">P</span> =&gt;<br/>
+&nbsp;&nbsp;<span class="id">pose</span> <span class="id">proof</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig_to_exist">dec_sig_to_exist</a></span> <span class="id">P</span> <span class="id">a</span>) <span class="kwd">as</span> [<span class="id">a</span>' [<span class="id">e</span> <span class="id">H</span>]]<br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="dec_sig_eq_dec">dec_sig_eq_dec</a></span><br/>
+&nbsp;&nbsp;`{<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span>: <span class="id">A</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">EqDecA</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> <span class="id">A</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.Lib.Classes.html#EqDecision">EqDecision</a></span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof60')">Proof.</div>
+<div class="proofscript" id="proof60">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">x</span> <span class="id">y</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#Decision_iff">Decision_iff</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#iff_sym">iff_sym</a></span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig_eq_iff">dec_sig_eq_iff</a></span> <span class="id">_</span> <span class="id">_</span>))).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">EqDecA</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="dec_sig_sigT_eq">dec_sig_sigT_eq</a></span><br/>
+&nbsp;&nbsp;{<span class="id">A</span>} (<span class="id">P</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>) {<span class="id">P_dec</span> : <span class="kwd">forall</span> <span class="id">x</span>, <span class="id"><a href="CasperCBC.Lib.Classes.html#Decision">Decision</a></span> (<span class="id">P</span> <span class="id">x</span>)}<br/>
+&nbsp;&nbsp;(<span class="id">F</span> : <span class="id">A</span> -&gt; <span class="kwd">Type</span>)<br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id">b1</span> <span class="id">b2</span> : <span class="id">F</span> <span class="id">a</span>)<br/>
+&nbsp;&nbsp;(<span class="id">e1</span> <span class="id">e2</span> : <span class="id">P</span> <span class="id">a</span>)<br/>
+&nbsp;&nbsp;(<span class="id">pa1</span> := <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_exist">dec_exist</a></span> <span class="id">_</span> <span class="id">a</span> <span class="id">e1</span>)<br/>
+&nbsp;&nbsp;(<span class="id">pa2</span> := <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_exist">dec_exist</a></span> <span class="id">_</span> <span class="id">a</span> <span class="id">e2</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Heqb</span> : <span class="id">b1</span> = <span class="id">b2</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> (<span class="kwd">fun</span> <span class="id">pa</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span> =&gt; <span class="id">F</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">pa</span>)) <span class="id">pa1</span> <span class="id">b1</span><br/>
+&nbsp;&nbsp;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> (<span class="kwd">fun</span> <span class="id">pa</span> : <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_sig">dec_sig</a></span> <span class="id">P</span> =&gt; <span class="id">F</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">pa</span>)) <span class="id">pa2</span> <span class="id">b2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof61')">Proof.</div>
+<div class="proofscript" id="proof61">
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">b2</span> <span class="id">pa1</span> <span class="id">pa2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#dec_exist">dec_exist</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">replace</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide_True">decide_True</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> <span class="id">e1</span>) <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.Lib.Classes.html#decide_True">decide_True</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#true">true</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#false">false</a></span> <span class="id">e2</span>)<br/>
+&nbsp;&nbsp;; [<span class="tactic">reflexivity</span>|].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.Lib.Classes.html#bool_decide_eq_true_proof_irrelevance">bool_decide_eq_true_proof_irrelevance</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="ex_out">ex_out</a></span> (<span class="id">A</span> : <span class="kwd">Type</span>) (<span class="id">P</span> : <span class="kwd">Prop</span>) (<span class="id">Q</span> : <span class="id">A</span> -&gt; <span class="kwd">Prop</span>):<br/>
+&nbsp;&nbsp;(<span class="id">exists</span> <span class="id">x</span>, <span class="id">P</span> /\ <span class="id">Q</span> <span class="id">x</span>) &lt;-&gt; (<span class="id">P</span> /\ <span class="id">exists</span> <span class="id">x</span>, <span class="id">Q</span> <span class="id">x</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof62')">Proof.</div>
+<div class="proofscript" id="proof62">
+ <span class="tactic">firstorder</span>. Qed.</div>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>

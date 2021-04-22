@@ -1,0 +1,745 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.VLSM.SubProjectionTraces</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.VLSM.SubProjectionTraces" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.VLSM.SubProjectionTraces</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Nat.html">Nat</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.micromega.Lia.html">Lia</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FunctionalExtensionality.html">FunctionalExtensionality</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.micromega.Lia.html">Lia</a></span> <span class="kwd">Program</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html">FinFun</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.Eqdep.html">Eqdep</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC</span><br/>
+<span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Lib.ListExtras</span> <span class="id">Lib.Preamble</span> <span class="id"><a href="CasperCBC.VLSM.Common.html">VLSM.Common</a></span> <span class="id"><a href="CasperCBC.VLSM.Composition.html">VLSM.Composition</a></span> <span class="id"><a href="CasperCBC.VLSM.Equivocation.html">VLSM.Equivocation</a></span>.<br/>
+<br/>
+<h1> VLSM Subcomposition </h1>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="sub_composition">sub_composition</a></span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;{<span class="id">message</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id">index</span> : <span class="kwd">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id">IndEqDec</span> : <span class="id">EqDecision</span> <span class="id">index</span>}<br/>
+&nbsp;&nbsp;(<span class="id">IM</span> : <span class="id">index</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id">message</span>)<br/>
+&nbsp;&nbsp;(<span class="id">sub_index_list</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id">index</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hi0_sub</span> : <span class="id">sub_index_list</span> &lt;&gt; [])<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="sub_index_prop">sub_index_prop</a></span> (<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>) : <span class="kwd">Prop</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">i</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_index_list">sub_index_list</a></span>.<br/>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Instance</span> <span class="id"><a name="sub_index_prop_dec">sub_index_prop_dec</a></span><br/>
+&nbsp;&nbsp;(<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id">Decision</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">i</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof388')">Proof.</div>
+<div class="proofscript" id="proof388">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_dec">in_dec</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="sub_index">sub_index</a></span> : <span class="kwd">Type</span><br/>
+&nbsp;&nbsp;:= <span class="id">dec_sig</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span>.<br/>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Instance</span> <span class="id"><a name="sub_index_i0">sub_index_i0</a></span> : <span class="id">Inhabited</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof389')">Proof.</div>
+<div class="proofscript" id="proof389">
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#destruct_list">destruct_list</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_index_list">sub_index_list</a></span>) <span class="kwd">as</span> [[<span class="id">x</span> [<span class="id">tl</span> <span class="id">Heq</span>]]| <span class="id">n</span>]<br/>
+&nbsp;&nbsp;; [|<span class="tactic">elim</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.Hi0_sub">Hi0_sub</a></span>; <span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">x</span>. <span class="tactic">apply</span> <span class="id">bool_decide_eq_true</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span>. <span class="tactic">subst</span> <span class="id">sub_index_list</span>. <span class="id">left</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Instance</span> <span class="id"><a name="sub_index_eq_dec">sub_index_eq_dec</a></span> : <span class="id">EqDecision</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof390')">Proof.</div>
+<div class="proofscript" id="proof390">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">dec_sig_eq_dec</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;(<span class="id">ei</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ei</span>).<br/>
+<br/>
+&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="sub_IM_state_update_eq">sub_IM_state_update_eq</a></span><br/>
+&nbsp;&nbsp;(<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">si</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>))<br/>
+&nbsp;&nbsp;(<span class="id">e1</span> <span class="id">e2</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update">state_update</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> <span class="id">s</span> (<span class="id">dec_exist</span> <span class="id">_</span> <span class="id">i</span> <span class="id">e1</span>) <span class="id">si</span> (<span class="id">dec_exist</span> <span class="id">_</span> <span class="id">i</span> <span class="id">e2</span>) = <span class="id">si</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof391')">Proof.</div>
+<div class="proofscript" id="proof391">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">dec_exist</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">forall</span> <span class="id">be1</span> <span class="id">be2</span>, <span class="id">be1</span> = <span class="id">be2</span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update">state_update</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> <span class="id">s</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">i</span> <span class="id">be1</span>) <span class="id">si</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> <span class="id">i</span> <span class="id">be2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="id">si</span>).<br/>
+&nbsp;&nbsp;{ <span class="tactic">intros</span>. <span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_eq">state_update_eq</a></span>. }<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">bool_decide_eq_true_proof_irrelevance</span>.<br/>
+Qed.</div>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="free_sub_vlsm_composition">free_sub_vlsm_composition</a></span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM">VLSM</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.Composition.html#free_composite_vlsm">free_composite_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="seeded_free_sub_composition">seeded_free_sub_composition</a></span><br/>
+&nbsp;&nbsp;(<span class="id">messageSet</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm">pre_loaded_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#free_sub_vlsm_composition">free_sub_vlsm_composition</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">fun</span> <span class="id">m</span> =&gt; <span class="id">messageSet</span> <span class="id">m</span> \/ <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_initial_message_prop">composite_initial_message_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">m</span>).<br/>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Lemma</span> <span class="id"><a name="i0">i0</a></span> : <span class="id">Inhabited</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof392')">Proof.</div>
+<div class="proofscript" id="proof392">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#exists_last">exists_last</a></span> <span class="kwd">in</span> <span class="id">Hi0_sub</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.Hi0_sub">Hi0_sub</a></span> <span class="kwd">as</span> (<span class="id">_</span>, (<span class="id">a</span>, <span class="id">_</span>)).<br/>
+&nbsp;&nbsp;<span class="id">constructor</span>. <span class="tactic">exact</span> <span class="id">a</span>.<br/>
+Qed.</div>
+<br/>
+<span class="id">Existing</span> <span class="kwd">Instance</span> <span class="id">i0</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="composite_state_sub_projection">composite_state_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;:= <span class="kwd">fun</span> (<span class="id">subi</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span>) =&gt; <span class="id">s</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">subi</span>) : <span class="id"><a href="CasperCBC.VLSM.Common.html#vstate">vstate</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> <span class="id">subi</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="composite_initial_state_sub_projection">composite_initial_state_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hs</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_initial_state_prop">composite_initial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_initial_state_prop">composite_initial_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof393')">Proof.</div>
+<div class="proofscript" id="proof393">
+&nbsp;&nbsp;<span class="tactic">intros</span> (<span class="id">i</span>, <span class="id">Hi</span>). <span class="tactic">apply</span> <span class="id">Hs</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">item</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">i</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">item</span>))<br/>
+&nbsp;&nbsp;(<span class="id">e</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;(<span class="id">j</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> := <span class="id">dec_exist</span> <span class="id">_</span> <span class="id">i</span> <span class="id">e</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;@<span class="id"><a href="CasperCBC.VLSM.Common.html#Build_transition_item">Build_transition_item</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_type">composite_type</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>) (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> <span class="id">_</span> <span class="id">j</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT2">projT2</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">item</span>))) (<span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> <span class="id">item</span>) (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> <span class="id">item</span>)) (<span class="id"><a href="CasperCBC.VLSM.Common.html#output">output</a></span> <span class="id">item</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="composite_state_transition_item_sub_projection">composite_state_transition_item_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">item</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">i</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">item</span>))<br/>
+&nbsp;&nbsp;(<span class="id">e</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;(<span class="id">j</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> := <span class="id">dec_exist</span> <span class="id">_</span> <span class="id">i</span> <span class="id">e</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> <span class="id">item</span>)<br/>
+&nbsp;&nbsp;= <span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">item</span> <span class="id">e</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof394')">Proof.</div>
+<div class="proofscript" id="proof394">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">item</span>. <span class="tactic">destruct</span> <span class="id">l</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> *. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="composite_transition_item_sub_projection_proof_irrelevance">composite_transition_item_sub_projection_proof_irrelevance</a></span><br/>
+&nbsp;&nbsp;(<span class="id">item</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">i</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">item</span>))<br/>
+&nbsp;&nbsp;(<span class="id">e1</span> <span class="id">e2</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">i</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">item</span> <span class="id">e1</span> = <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">item</span> <span class="id">e2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof395')">Proof.</div>
+<div class="proofscript" id="proof395">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">item</span>. <span class="tactic">destruct</span> <span class="id">l</span>. <span class="tactic">unfold</span> <span class="id">i</span> <span class="kwd">in</span> *. <span class="tactic">clear</span> <span class="id">i</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> *. <span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (@<span class="id">dec_sig_sigT_eq</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop_dec">sub_index_prop_dec</a></span> (<span class="kwd">fun</span> <span class="id">i</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>))).<br/>
+&nbsp;&nbsp;<span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="from_sub_projection">from_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:= <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">a</span>)).<br/>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="finite_trace_sub_projection">finite_trace_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">trx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">trx</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; []<br/>
+&nbsp;&nbsp;| <span class="id">item</span> :: <span class="id">trx</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">tail</span> := <span class="id">finite_trace_sub_projection</span> <span class="id">trx</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">item</span>) <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">e</span> =&gt; <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">item</span> <span class="id">e</span> :: <span class="id">tail</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id">tail</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="finite_trace_sub_projection_alt">finite_trace_sub_projection_alt</a></span><br/>
+&nbsp;&nbsp;(<span class="id">trx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">ftrx</span> := (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter">filter</a></span> (<span class="kwd">fun</span> <span class="id">a</span> =&gt; <span class="id">bool_decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">a</span>)) <span class="id">trx</span>))<br/>
+&nbsp;&nbsp;(<span class="id">Hall</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">ftrx</span> := <span class="id">filter_Forall</span> <span class="id">trx</span>)<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">List.map</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="kwd">fun</span> <span class="id">item</span> : {<span class="id">a</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> | <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">a</span>} =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">item</span>, <span class="id">e</span>) := <span class="id">item</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">item</span> <span class="id">e</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br/>
+&nbsp;&nbsp;(<span class="id">list_annotate</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">ftrx</span> <span class="id">Hall</span>).<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_trace_sub_projection_alt_iff">finite_trace_sub_projection_alt_iff</a></span><br/>
+&nbsp;&nbsp;(<span class="id">trx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_alt">finite_trace_sub_projection_alt</a></span> <span class="id">trx</span> = <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">trx</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof396')">Proof.</div>
+<div class="proofscript" id="proof396">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_alt">finite_trace_sub_projection_alt</a></span>.<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- <span class="id">context</span> [<span class="id">list_annotate</span> <span class="id">_</span> <span class="id">_</span> ?<span class="id">H</span>] =&gt; <span class="tactic">generalize</span> <span class="id">H</span> <span class="kwd">as</span> <span class="id">Hall</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">trx</span>; <span class="tactic">intros</span>; [<span class="tactic">reflexivity</span>|].<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">unfold</span> <span class="id">bool_decide</span> <span class="tactic">at</span> 1. <span class="tactic">unfold</span> <span class="id">decide</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Hall</span>. <span class="tactic">unfold</span> <span class="id">bool_decide</span> <span class="kwd">in</span> <span class="id">Hall</span> <span class="tactic">at</span> 1.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop_dec">sub_index_prop_dec</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">a</span>))) <span class="id">eqn</span>:<span class="id">Ha</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id">list_annotate_unroll</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map_cons">map_cons</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+  <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection_proof_irrelevance">composite_transition_item_sub_projection_proof_irrelevance</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHtrx</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id">IHtrx</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="sub_composition.sub_projection_with_no_equivocation_constraints">sub_projection_with_no_equivocation_constraints</a></span>.<br/>
+<br/>
+<span class="id">Existing</span> <span class="kwd">Instance</span>  <span class="id">IndEqDec</span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">has_been_sent_capabilities</span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>, (<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability">has_been_sent_capability</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>)))<br/>
+&nbsp;&nbsp;{<span class="id">index_listing</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>}<br/>
+&nbsp;&nbsp;(<span class="id">finite_index</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html#Listing">Listing</a></span> <span class="id">index_listing</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Free</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#free_composite_vlsm">free_composite_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Sub_Free</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#free_composite_vlsm">free_composite_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">X_has_been_sent_capability</span> : <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability">has_been_sent_capability</a></span> <span class="id">Free</span> := <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#composite_has_been_sent_capability">composite_has_been_sent_capability</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>) <span class="id">finite_index</span> <span class="id">has_been_sent_capabilities</span>)<br/>
+&nbsp;&nbsp;(<span class="id">X</span> := <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_vlsm">composite_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">constraint</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Pre</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_composite_vlsm">free_composite_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="sub_has_been_sent_capabilities">sub_has_been_sent_capabilities</a></span> : <span class="kwd">forall</span> <span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span>, (<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability">has_been_sent_capability</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> <span class="id">i</span>)).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof397')">Proof.</div>
+<div class="proofscript" id="proof397">
+&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">i</span> <span class="id">Hi</span>]. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.has_been_sent_capabilities">has_been_sent_capabilities</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Fixpoint</span> <span class="id"><a name="select_sub_indices">select_sub_indices</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">l</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; []<br/>
+&nbsp;&nbsp;| <span class="id">h</span> :: <span class="id">t</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">t</span>' := <span class="id">select_sub_indices</span> <span class="id">t</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">h</span>) <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">e</span> =&gt; <span class="id">dec_exist</span> <span class="id">_</span> <span class="id">h</span> <span class="id">e</span> :: <span class="id">t</span>'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id">t</span>'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="sub_index_listing">sub_index_listing</a></span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> := <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#select_sub_indices">select_sub_indices</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.index_listing">index_listing</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="in_select_sub_indices">in_select_sub_indices</a></span><br/>
+&nbsp;&nbsp;(<span class="id">a</span>: <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">s</span>: <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">a</span>)<br/>
+&nbsp;&nbsp;(<span class="id">l</span>: <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> (<span class="id">dec_exist</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">a</span> <span class="id">s</span>) (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#select_sub_indices">select_sub_indices</a></span> <span class="id">l</span>) &lt;-&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">a</span> <span class="id">l</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof398')">Proof.</div>
+<div class="proofscript" id="proof398">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">l</span>; [<span class="tactic">simpl</span>; <span class="tactic">intuition</span>|].<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">a0</span>)); [|<span class="tactic">rewrite</span> <span class="id">IHl</span>].<br/>
+&nbsp;&nbsp;- <span class="tactic">split</span>; <span class="tactic">intros</span> [<span class="id">Heq</span> | <span class="id">H</span>]; [<span class="id">left</span> |<span class="id">right</span>; <span class="tactic">apply</span> <span class="id">IHl</span>; <span class="tactic">assumption</span>| <span class="id">left</span> |<span class="id">right</span>; <span class="tactic">apply</span> <span class="id">IHl</span>; <span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">dec_sig_eq_iff</span> <span class="kwd">in</span> <span class="id">Heq</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">dec_sig_eq_iff</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">split</span>; [<span class="tactic">intuition</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> [<span class="id">Heq</span> | <span class="id">H</span>]; [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="id">contradiction</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_sub_index">finite_sub_index</a></span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FinFun.html#Listing">Listing</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_listing">sub_index_listing</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof399')">Proof.</div>
+<div class="proofscript" id="proof399">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_listing">sub_index_listing</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">clear</span> -<span class="id">finite_index</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.finite_index">finite_index</a></span> <span class="kwd">as</span> [<span class="id">Hnodup</span> <span class="id">Hfinite</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">clear</span> <span class="id">Hfinite</span> <span class="id">finite_index</span>. <span class="tactic">induction</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.index_listing">index_listing</a></span>; [<span class="id">constructor</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Hnodup</span>. <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="id">spec</span> <span class="id">IHl</span> <span class="id">H2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">a</span>)); [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">constructor</span>; [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">contra</span>. <span class="tactic">elim</span> <span class="id">H1</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#in_select_sub_indices">in_select_sub_indices</a></span> <span class="kwd">in</span> <span class="id">contra</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">intros</span> <span class="id">subi</span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> <span class="kwd">in</span> <span class="id">subi</span>. <span class="id">destruct_dec_sig</span> <span class="id">subi</span> <span class="id">i</span> <span class="id">Hi</span> <span class="id">Heq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#in_select_sub_indices">in_select_sub_indices</a></span>. <span class="tactic">apply</span> <span class="id">Hfinite</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Local</span> <span class="kwd">Instance</span> <span class="id"><a name="Sub_Free_has_been_sent_capability">Sub_Free_has_been_sent_capability</a></span><br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent_capability">has_been_sent_capability</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Sub_Free">Sub_Free</a></span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#composite_has_been_sent_capability">composite_has_been_sent_capability</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>) <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_sub_index">finite_sub_index</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_has_been_sent_capabilities">sub_has_been_sent_capabilities</a></span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_trace_sub_projection_empty">finite_trace_sub_projection_empty</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">trx</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">Htr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id">s</span> <span class="id">trx</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hempty</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">trx</span> = [])<br/>
+&nbsp;&nbsp;(<span class="id">t</span> : (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition_item">vtransition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">Hin</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">t</span> <span class="id">trx</span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">forall</span> <span class="id">j</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">j</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_index_list">sub_index_list</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#destination">destination</a></span> <span class="id">t</span> <span class="id">j</span> = <span class="id">s</span> <span class="id">j</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof400')">Proof.</div>
+<div class="proofscript" id="proof400">
+&nbsp;&nbsp;<span class="tactic">generalize</span> <span class="tactic">dependent</span> <span class="id">t</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">Htr</span>; <span class="tactic">simpl</span>; <span class="tactic">intros</span> <span class="id">t</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> [<span class="id">i</span> <span class="id">l</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [[[<span class="id">_om</span> <span class="id">Hs</span>'] [[<span class="id">_s</span> <span class="id">Hiom</span>] <span class="id">Hvalid</span>]] <span class="id">Htransition</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition">transition</a></span> <span class="kwd">in</span> <span class="id">Htransition</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Htransition</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>) <span class="id">l</span> (<span class="id">s</span>' <span class="id">i</span>, <span class="id">iom</span>)) <span class="kwd">as</span> [<span class="id">si</span>' <span class="id">om</span>'] <span class="id">eqn</span>:<span class="id">Hteq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Htransition</span>; <span class="tactic">subst</span>. <span class="tactic">clear</span> <span class="id">Htransition</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">type</span> <span class="id">of</span> <span class="id">Hempty</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> (?<span class="id">i</span> :: <span class="id">_</span>) = <span class="id">_</span> =&gt; <span class="id">remember</span> <span class="id">i</span> <span class="kwd">as</span> <span class="id">item</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Hempty</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">item</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; [<span class="tactic">inversion</span> <span class="id">Hempty</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHHtr</span> <span class="id">Hempty</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Heqitem</span> <span class="kwd">in</span> <span class="id">n</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="kwd">in</span> <span class="id">n</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">n</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hin</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>]; <span class="tactic">intros</span> <span class="id">j</span> <span class="id">Hj</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_neq">state_update_neq</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">contra</span>. <span class="tactic">subst</span>. <span class="id">contradiction</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">assert</span> (<span class="id">Hji</span> : <span class="id">j</span> &lt;&gt; <span class="id">i</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">intro</span> <span class="id">contra</span>. <span class="tactic">subst</span>. <span class="id">contradiction</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">IHHtr</span> <span class="id">_</span> <span class="id">Hin</span> <span class="id">j</span> <span class="id">Hj</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_neq">state_update_neq</a></span> <span class="kwd">in</span> <span class="id">IHHtr</span>; <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_trace_sub_projection_app">finite_trace_sub_projection_app</a></span><br/>
+&nbsp;&nbsp;(<span class="id">tr1</span> <span class="id">tr2</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> (<span class="id">tr1</span> ++ <span class="id">tr2</span>) =<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr1</span> ++ <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr2</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof401')">Proof.</div>
+<div class="proofscript" id="proof401">
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">tr1</span>;[<span class="tactic">reflexivity</span>|].<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- <span class="id">context</span> [<span class="id">decide</span> ?<span class="id">d</span>] =&gt; <span class="tactic">destruct</span> (<span class="id">decide</span> <span class="id">d</span>)<br/>
+&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;; [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id">IHtr1</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_trace_sub_projection_list_in">finite_trace_sub_projection_list_in</a></span><br/>
+&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">itemX</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">HitemX</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">itemX</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;(<span class="id">j</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#l">l</a></span> <span class="id">itemX</span>))<br/>
+&nbsp;&nbsp;(<span class="id">Hj</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">j</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">itemX</span> <span class="id">Hj</span>) (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof402')">Proof.</div>
+<div class="proofscript" id="proof402">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_split">in_split</a></span> <span class="kwd">in</span> <span class="id">HitemX</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">HitemX</span> <span class="kwd">as</span> [<span class="id">pre</span> [<span class="id">suf</span> <span class="id">HitemX</span>]].<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id">change</span> (<span class="id">itemX</span> :: <span class="id">suf</span>) <span class="kwd">with</span> ([<span class="id">itemX</span>] ++ <span class="id">suf</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span>! <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_app">finite_trace_sub_projection_app</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span>. <span class="id">right</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_app_iff">in_app_iff</a></span>. <span class="id">left</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">itemX</span>)); [|<span class="id">contradiction</span>].<br/>
+&nbsp;&nbsp;<span class="id">left</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection_proof_irrelevance">composite_transition_item_sub_projection_proof_irrelevance</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_trace_sub_projection_list_in_rev">finite_trace_sub_projection_list_in_rev</a></span><br/>
+&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">j</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">itemj</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hitemj</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">itemj</span>  (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr</span>))<br/>
+&nbsp;&nbsp;: <span class="id">exists</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">itemX</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">HitemX</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">itemX</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">itemX</span> <span class="id">tr</span> /\ <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">itemX</span> <span class="id">HitemX</span> = <span class="id">itemj</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof403')">Proof.</div>
+<div class="proofscript" id="proof403">
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_alt_iff">finite_trace_sub_projection_alt_iff</a></span> <span class="kwd">in</span> <span class="id">Hitemj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_map_iff">in_map_iff</a></span> <span class="kwd">in</span> <span class="id">Hitemj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hitemj</span> <span class="kwd">as</span> [(<span class="id">itemX</span>, <span class="id">HitemX</span>) [<span class="id">Heq</span> <span class="id">Hin</span>]].<br/>
+&nbsp;&nbsp;<span class="id">exists</span> <span class="id">itemX</span>, <span class="id">HitemX</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">in_list_annotate_forget</span> <span class="kwd">in</span> <span class="id">Hin</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#filter_In">filter_In</a></span> <span class="kwd">in</span> <span class="id">Hin</span>. <span class="tactic">apply</span> <span class="id">Hin</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="preloaded_finite_trace_sub_projection_last_state">preloaded_finite_trace_sub_projection_last_state</a></span><br/>
+&nbsp;&nbsp;(<span class="id">start</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">transitions</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">Htr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Pre">Pre</a></span> <span class="id">start</span> <span class="id">transitions</span>)<br/>
+&nbsp;&nbsp;(<span class="id">lstx</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last">finite_trace_last</a></span> <span class="id">start</span> <span class="id">transitions</span>)<br/>
+&nbsp;&nbsp;(<span class="id">lstj</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last">finite_trace_last</a></span> <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">start</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">transitions</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br/>
+&nbsp;&nbsp;: <span class="id">lstj</span> = <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">lstx</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof404')">Proof.</div>
+<div class="proofscript" id="proof404">
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">lstx</span>. <span class="tactic">unfold</span> <span class="id">lstj</span>. <span class="tactic">clear</span> <span class="id">lstx</span>. <span class="tactic">clear</span> <span class="id">lstj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">Htr</span>; [<span class="tactic">reflexivity</span>|].<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- <span class="id">context</span>[<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> (?<span class="id">i</span> :: <span class="id">_</span>)] =&gt; <span class="id">remember</span> <span class="id">i</span> <span class="kwd">as</span> <span class="id">item</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last_cons">finite_trace_last_cons</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">item</span>)).<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last_cons">finite_trace_last_cons</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">simpl</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">subst</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">IHHtr</span>; <span class="tactic">clear</span> <span class="id">IHHtr</span>. <span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H</span> <span class="kwd">as</span> [[[<span class="id">_om</span> <span class="id">Hs</span>'] [[<span class="id">_s</span> <span class="id">Hiom</span>] <span class="id">Hvalid</span>]] <span class="id">Htransition</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#transition">transition</a></span> <span class="kwd">in</span> <span class="id">Htransition</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Htransition</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> <span class="kwd">in</span> <span class="id">Htransition</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Htransition</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> (<span class="id">i</span>, <span class="id">l</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>) <span class="id">l</span> (<span class="id">s</span>' <span class="id">i</span>, <span class="id">iom</span>)) <span class="kwd">as</span> [<span class="id">si</span>' <span class="id">om</span>'] <span class="id">eqn</span>:<span class="id">Hteq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Htransition</span>; <span class="tactic">subst</span>. <span class="tactic">clear</span> <span class="id">Htransition</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="kwd">in</span> <span class="id">n</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">n</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FunctionalExtensionality.html#functional_extensionality_dep_good">functional_extensionality_dep_good</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> (<span class="id">j</span>, <span class="id">Hj</span>). <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">symmetry</span>. <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_neq">state_update_neq</a></span> <span class="id">_</span> <span class="id">s</span>').<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">bool_decide_eq_true_1</span> <span class="kwd">in</span> <span class="id">Hj</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">clear</span> -<span class="id">n</span> <span class="id">Hj</span>; <span class="tactic">congruence</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="X_incl_Pre">X_incl_Pre</a></span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Pre">Pre</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof405')">Proof.</div>
+<div class="proofscript" id="proof405">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_trans">VLSM_incl_trans</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_composite_vlsm">free_composite_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)).<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_free_incl">constraint_free_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.constraint">constraint</a></span>).<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#vlsm_incl_pre_loaded_with_all_messages_vlsm">vlsm_incl_pre_loaded_with_all_messages_vlsm</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_trace_sub_projection_last_state">finite_trace_sub_projection_last_state</a></span><br/>
+&nbsp;&nbsp;(<span class="id">start</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">transitions</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">Htr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id">start</span> <span class="id">transitions</span>)<br/>
+&nbsp;&nbsp;(<span class="id">lstx</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last">finite_trace_last</a></span> <span class="id">start</span> <span class="id">transitions</span>)<br/>
+&nbsp;&nbsp;(<span class="id">lstj</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last">finite_trace_last</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">start</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">transitions</span>))<br/>
+&nbsp;&nbsp;: <span class="id">lstj</span> = <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">lstx</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof406')">Proof.</div>
+<div class="proofscript" id="proof406">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#preloaded_finite_trace_sub_projection_last_state">preloaded_finite_trace_sub_projection_last_state</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_finite_protocol_trace_from">VLSM_incl_finite_protocol_trace_from</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span>); [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#X_incl_Pre">X_incl_Pre</a></span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="transition_sub_projection">transition_sub_projection</a></span><br/>
+&nbsp;&nbsp;<span class="id">l</span> <span class="id">s</span> <span class="id">om</span> <span class="id">s</span>' <span class="id">om</span>'<br/>
+&nbsp;&nbsp;(<span class="id">Ht</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition">composite_transition</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">l</span>  (<span class="id">s</span>, <span class="id">om</span>) = (<span class="id">s</span>', <span class="id">om</span>'))<br/>
+&nbsp;&nbsp;(<span class="id">Hsub</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> <span class="id">l</span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition">composite_transition</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> (<span class="kwd">fun</span> <span class="id">n</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> <span class="id">n</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">dec_exist</span> <span class="id">_</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> <span class="id">l</span>) <span class="id">Hsub</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT2">projT2</a></span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>, <span class="id">om</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;= (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>', <span class="id">om</span>').<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof407')">Proof.</div>
+<div class="proofscript" id="proof407">
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Ht</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> (<span class="id">i</span>, <span class="id">li</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="tactic">at</span> 1. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#vtransition">vtransition</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>) <span class="id">li</span> (<span class="id">s</span> <span class="id">i</span>, <span class="id">om</span>)) <span class="kwd">as</span> (<span class="id">si</span>', <span class="id">omi</span>') <span class="id">eqn</span>:<span class="id">Hti</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Ht</span>. <span class="tactic">subst</span> <span class="id">omi</span>' <span class="id">s</span>'. <span class="tactic">clear</span> <span class="id">Ht</span>.<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- (<span class="kwd">let</span> (<span class="id">_</span>, <span class="id">_</span>) := ?<span class="id">t</span> <span class="kwd">in</span> <span class="id">_</span>) = <span class="id">_</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">replace</span> <span class="id">t</span> <span class="kwd">with</span> (<span class="id">si</span>', <span class="id">om</span>')<br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.FunctionalExtensionality.html#functional_extensionality_dep">functional_extensionality_dep</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">sub_j</span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> <span class="kwd">in</span> <span class="id">sub_j</span>.<br/>
+&nbsp;&nbsp;<span class="id">destruct_dec_sig</span> <span class="id">sub_j</span> <span class="id">j</span> <span class="id">Hj</span> <span class="id">Heqj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">sub_j</span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="tactic">at</span> 2.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id">j</span> = <span class="id">i</span>)).<br/>
+&nbsp;&nbsp;- <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_eq">state_update_eq</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM_state_update_eq">sub_IM_state_update_eq</a></span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">rewrite</span>! <span class="id"><a href="CasperCBC.VLSM.Composition.html#state_update_neq">state_update_neq</a></span>; [<span class="tactic">reflexivity</span>|<span class="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intro</span> <span class="id">contra</span>. <span class="tactic">apply</span> <span class="id">dec_sig_eq_iff</span> <span class="kwd">in</span> <span class="id">contra</span>. <span class="id">contradiction</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="valid_sub_projection">valid_sub_projection</a></span><br/>
+&nbsp;&nbsp;<span class="id">l</span> <span class="id">s</span> <span class="id">om</span><br/>
+&nbsp;&nbsp;(<span class="id">Hv</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_valid">composite_valid</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">l</span>  (<span class="id">s</span>, <span class="id">om</span>))<br/>
+&nbsp;&nbsp;(<span class="id">Hsub</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> <span class="id">l</span>))<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_valid">composite_valid</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> (<span class="kwd">fun</span> <span class="id">n</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index">sub_index</a></span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> <span class="id">n</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">dec_exist</span> <span class="id">_</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> <span class="id">l</span>) <span class="id">Hsub</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT2">projT2</a></span> <span class="id">l</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>, <span class="id">om</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof408')">Proof.</div>
+<div class="proofscript" id="proof408">
+&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">Hv</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">l</span> <span class="kwd">as</span> (<span class="id">i</span>, <span class="id">li</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="composite_state_sub_projection_lift">composite_state_sub_projection_lift</a></span><br/>
+&nbsp;&nbsp;(<span class="id">ss</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span>)<br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_index_prop">sub_index_prop</a></span> <span class="id">i</span>)) <span class="kwd">with</span><br/>
+&nbsp;&nbsp;| <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#left">left</a></span> <span class="id">e</span> =&gt; <span class="id">ss</span> (<span class="id">dec_exist</span> <span class="id">_</span> <span class="id">i</span> <span class="id">e</span>)<br/>
+&nbsp;&nbsp;| <span class="id">_</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_s0">composite_s0</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>) <span class="id">i</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="sub_constraint">sub_constraint</a></span><br/>
+&nbsp;&nbsp;(<span class="id">l</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">som</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">i</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT1">projT1</a></span> <span class="id">l</span>) <span class="kwd">in</span><br/>
+&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">li</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#projT2">projT2</a></span> <span class="id">l</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">lx</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> := (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#existT">existT</a></span> (<span class="kwd">fun</span> <span class="id">i</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.index">index</a></span> =&gt; <span class="id"><a href="CasperCBC.VLSM.Common.html#vlabel">vlabel</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id">i</span>)) <span class="id">i</span> <span class="id">li</span>) <span class="kwd">in</span><br/>
+&nbsp;&nbsp;<span class="kwd">let</span> (<span class="id">ss</span>, <span class="id">om</span>) := <span class="id">som</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;<span class="kwd">let</span> <span class="id">s</span> := <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection_lift">composite_state_sub_projection_lift</a></span> <span class="id">ss</span> <span class="kwd">in</span><br/>
+&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.constraint">constraint</a></span> <span class="id">lx</span> (<span class="id">s</span>, <span class="id">om</span>).<br/>
+<br/>
+<span class="id">Existing</span> <span class="kwd">Instance</span> <span class="id">X_has_been_sent_capability</span>.<br/>
+<br/>
+<span class="kwd">Context</span><br/>
+&nbsp;&nbsp;(<span class="id">seed</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hno_equiv</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#constraint_subsumption">constraint_subsumption</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.constraint">constraint</a></span> (<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#no_equivocations">no_equivocations</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Free">Free</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">seeded_constraint</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_label">composite_label</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> -&gt; <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> * <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#option">option</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.message">message</a></span> -&gt; <span class="kwd">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Xj</span> := <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#composite_no_equivocation_vlsm_with_pre_loaded">composite_no_equivocation_vlsm_with_pre_loaded</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>) <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_has_been_sent_capabilities">sub_has_been_sent_capabilities</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_sub_index">finite_sub_index</a></span> <span class="id">seed</span>)<br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="Xj_incl_Pre_Sub_Free">Xj_incl_Pre_Sub_Free</a></span><br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl">VLSM_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Sub_Free">Sub_Free</a></span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof409')">Proof.</div>
+<div class="proofscript" id="proof409">
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">Xj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#composite_no_equivocation_vlsm_with_pre_loaded">composite_no_equivocation_vlsm_with_pre_loaded</a></span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#preloaded_constraint_subsumption_pre_loaded_with_all_messages_incl">preloaded_constraint_subsumption_pre_loaded_with_all_messages_incl</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#no_equivocations_additional_constraint_with_pre_loaded">no_equivocations_additional_constraint_with_pre_loaded</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>) <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_has_been_sent_capabilities">sub_has_been_sent_capabilities</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_sub_index">finite_sub_index</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.seed">seed</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.VLSM.Composition.html#free_constraint">free_constraint</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_IM">sub_IM</a></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;) <span class="kwd">as</span> <span class="id">Hincl</span>.<br/>
+&nbsp;&nbsp;<span class="id">spec</span> <span class="id">Hincl</span>; [<span class="tactic">intros</span> <span class="id">s</span> <span class="id">Hs</span> <span class="id">l</span> <span class="id">om</span> <span class="id">H</span>; <span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>|].<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- <span class="id">context</span> [<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm">pre_loaded_vlsm</a></span> ?<span class="id">v</span> <span class="id">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_trans">VLSM_incl_trans</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id">v</span>))<br/>
+&nbsp;&nbsp;<span class="kwd">end</span><br/>
+&nbsp;&nbsp;; [| <span class="tactic">apply</span> <span class="id">Hincl</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">clear</span> <span class="id">Hincl</span>.<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- <span class="id">context</span> [<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> ?<span class="id">v</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_trans">VLSM_incl_trans</a></span> <span class="kwd">with</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm">pre_loaded_vlsm</a></span> <span class="id">v</span> (<span class="kwd">fun</span> <span class="id">m</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>)))<br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;- <span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|- <span class="id">context</span> [<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm">pre_loaded_vlsm</a></span> ?<span class="id">v</span> <span class="id">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_vlsm_incl">pre_loaded_vlsm_incl</a></span> <span class="id">v</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.seed">seed</a></span> (<span class="kwd">fun</span> <span class="id">m</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intuition</span>.<br/>
+&nbsp;&nbsp;- <span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|- <span class="id">context</span> [<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> ?<span class="id">v</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm_is_pre_loaded_with_True">pre_loaded_with_all_messages_vlsm_is_pre_loaded_with_True</a></span> <span class="id">v</span>) <span class="kwd">as</span> <span class="id">Hincl</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_eq_incl_iff">VLSM_eq_incl_iff</a></span> <span class="kwd">in</span> <span class="id">Hincl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#proj2">proj2</a></span> <span class="kwd">in</span> <span class="id">Hincl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="trace_sub_item_input_is_seeded_or_sub_previously_sent">trace_sub_item_input_is_seeded_or_sub_previously_sent</a></span><br/>
+&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">pre</span> <span class="id">item</span> <span class="id">suf</span> <span class="id">m</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">tr</span> = <span class="id">pre</span> ++ [<span class="id">item</span>] ++ <span class="id">suf</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#input">input</a></span> <span class="id">item</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">m</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">item</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.seed">seed</a></span> <span class="id">m</span> \/ <span class="id">exists</span> <span class="id">pre_item</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">pre_item</span> <span class="id">pre</span> /\ <span class="id"><a href="CasperCBC.VLSM.Common.html#output">output</a></span> <span class="id">pre_item</span> = <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#Some">Some</a></span> <span class="id">m</span> /\ <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">pre_item</span>.<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="state_sub_item_input_is_seeded_or_sub_previously_sent">state_sub_item_input_is_seeded_or_sub_previously_sent</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;: <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;:= <span class="kwd">forall</span> <span class="id">is</span> <span class="id">tr</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_init_to">finite_protocol_trace_init_to</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Pre">Pre</a></span> <span class="id">is</span> <span class="id">s</span> <span class="id">tr</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#trace_sub_item_input_is_seeded_or_sub_previously_sent">trace_sub_item_input_is_seeded_or_sub_previously_sent</a></span> <span class="id">tr</span>.<br/>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_protocol_trace_sub_projection">finite_protocol_trace_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">Hmsg</span> :  <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#trace_sub_item_input_is_seeded_or_sub_previously_sent">trace_sub_item_input_is_seeded_or_sub_previously_sent</a></span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Htr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace">finite_protocol_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id">s</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace">finite_protocol_trace</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>) (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof410')">Proof.</div>
+<div class="proofscript" id="proof410">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Htr</span> <span class="kwd">as</span> [<span class="id">Htr</span> <span class="id">His</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_initial_state_sub_projection">composite_initial_state_sub_projection</a></span> <span class="id">s</span>) <span class="kwd">in</span> <span class="id">His</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#initial_is_protocol">initial_is_protocol</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span>) <span class="kwd">in</span> <span class="id">His</span> <span class="kwd">as</span> <span class="id">Hisp</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">tr</span> <span class="kwd">using</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#rev_ind">rev_ind</a></span>; <span class="tactic">simpl</span><br/>
+&nbsp;&nbsp;; [<span class="id">constructor</span>; <span class="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from_app_iff">finite_protocol_trace_from_app_iff</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Htr</span> <span class="kwd">as</span> [<span class="id">Htr</span> <span class="id">Hx</span>].<br/>
+&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHtr</span>.<br/>
+&nbsp;&nbsp;{ <span class="tactic">intros</span> <span class="id">pre</span> <span class="id">item</span> <span class="id">suf</span> <span class="id">m</span> <span class="id">Heq</span> <span class="id">Hin_m</span> <span class="id">Hitem</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">tr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hmsg</span> <span class="id">pre</span> <span class="id">item</span> (<span class="id">suf</span> ++ [<span class="id">x</span>]) <span class="id">m</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span>! <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#app_assoc">app_assoc</a></span> <span class="kwd">in</span> <span class="id">Hmsg</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hmsg</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span> <span class="id">Hin_m</span> <span class="id">Hitem</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hmsg</span> <span class="kwd">as</span> [<span class="id">Hseed</span> | <span class="id">Hmsg</span>]<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; [<span class="id">left</span> | <span class="id">right</span>] ; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHtr</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_app">finite_trace_sub_projection_app</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from_app_iff">finite_protocol_trace_from_app_iff</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">split</span>; [<span class="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hmsg</span> <span class="id">tr</span> <span class="id">x</span> []).<br/>
+&nbsp;&nbsp;<span class="kwd">match</span> <span class="id">goal</span> <span class="kwd">with</span><br/>
+&nbsp;&nbsp;|- <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id">_</span> ?<span class="id">l</span> <span class="id">_</span> =&gt; <span class="id">remember</span> <span class="id">l</span> <span class="kwd">as</span> <span class="id">lst</span><br/>
+&nbsp;&nbsp;<span class="kwd">end</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hlst</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> <span class="id">lst</span>).<br/>
+&nbsp;&nbsp;{ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_ptrace_last_pstate">finite_ptrace_last_pstate</a></span> <span class="kwd">in</span> <span class="id">IHtr</span>. <span class="tactic">subst</span>. <span class="tactic">assumption</span>. }<br/>
+&nbsp;&nbsp;<span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id">decide</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#from_sub_projection">from_sub_projection</a></span> <span class="id">x</span>))<br/>
+&nbsp;&nbsp;;[|<span class="id">constructor</span>; <span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#finite_ptrace_singleton">finite_ptrace_singleton</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span>).<br/>
+&nbsp;&nbsp;<span class="tactic">inversion</span> <span class="id">Hx</span>. <span class="tactic">subst</span> <span class="id">x</span> <span class="id">tl</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H3</span> <span class="kwd">as</span> [<span class="id">Hv</span> <span class="id">Ht</span>].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#transition_sub_projection">transition_sub_projection</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Ht</span> <span class="id">f</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">as</span> <span class="id">Htj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hv</span> <span class="kwd">as</span> [<span class="id">_</span> [<span class="id">_</span> [<span class="id">Hv</span> <span class="id">Hc</span>]]].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#valid_sub_projection">valid_sub_projection</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hv</span> <span class="id">f</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">as</span> <span class="id">Hvj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> &lt;- <span class="id">H1</span> <span class="kwd">in</span> <span class="id">Htj</span>, <span class="id">Hvj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hlst</span>' : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>' = <span class="id">lst</span>).<br/>
+&nbsp;&nbsp;{ <span class="tactic">subst</span> <span class="id">lst</span> <span class="id">s</span>'. <span class="tactic">symmetry</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_last_state">finite_trace_sub_projection_last_state</a></span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hlst</span>' <span class="kwd">in</span> <span class="id">Htj</span>, <span class="id">Hvj</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">repeat</span> <span class="tactic">split</span>; [<span class="tactic">assumption</span> | | <span class="tactic">assumption</span> | | <span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">iom</span> <span class="kwd">as</span> [<span class="id">m</span>|]; [|<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#option_protocol_message_None">option_protocol_message_None</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#option_protocol_message_Some">option_protocol_message_Some</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hmsg</span> <span class="id">m</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span> <span class="id">f</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hmsg</span> <span class="kwd">as</span> [<span class="id">Hseed</span> | [<span class="id">item</span> [<span class="id">Hitem</span> [<span class="id">Hout</span> <span class="id">Hsub_item</span>]]]]<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; [<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#initial_message_is_protocol">initial_message_is_protocol</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span>); <span class="id">right</span>; <span class="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_list_in">finite_trace_sub_projection_list_in</a></span> <span class="id">tr</span> <span class="id">item</span> <span class="id">Hitem</span> <span class="id">Hsub_item</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">as</span> <span class="id">Hin_sub</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_trace_output_is_protocol">protocol_trace_output_is_protocol</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">IHtr</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span>. <span class="id">eexists</span> <span class="id">_</span>. <span class="tactic">split</span>; [<span class="tactic">apply</span> <span class="id">Hin_sub</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Hno_equiv">Hno_equiv</a></span> <span class="kwd">in</span> <span class="id">Hc</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">iom</span> <span class="kwd">as</span> [<span class="id">m</span>|]; [|<span class="tactic">exact</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#I">I</a></span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hmsg</span> <span class="id">m</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#eq_refl">eq_refl</a></span> <span class="id">f</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hmsg</span> <span class="kwd">as</span> [<span class="id">Hseed</span> | [<span class="id">item</span> [<span class="id">Hitem</span> [<span class="id">Hout</span> <span class="id">Hsub_item</span>]]]]<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;; [<span class="id">right</span>; <span class="id">right</span>; <span class="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">left</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.Equivocation.html#proper_sent">proper_sent</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Sub_Free">Sub_Free</a></span> <span class="id">lst</span>) <span class="kwd">as</span> <span class="id">Hproper</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hlstp</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#pre_loaded_with_all_messages_vlsm">pre_loaded_with_all_messages_vlsm</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Sub_Free">Sub_Free</a></span>) <span class="id">lst</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_protocol_state">VLSM_incl_protocol_state</a></span> <span class="kwd">with</span> (<span class="id">MX</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#machine">machine</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span>); [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#Xj_incl_Pre_Sub_Free">Xj_incl_Pre_Sub_Free</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">Hproper</span> <span class="id">Hlstp</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hproper</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Equivocation.html#has_been_sent_consistency">has_been_sent_consistency</a></span>; [<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#Sub_Free_has_been_sent_capability">Sub_Free_has_been_sent_capability</a></span>| <span class="tactic">assumption</span>| ].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>), (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="tactic">split</span>;[|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_finite_protocol_trace_from_to">VLSM_incl_finite_protocol_trace_from_to</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#Xj_incl_Pre_Sub_Free">Xj_incl_Pre_Sub_Free</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_add_last">ptrace_add_last</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">symmetry</span>;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#trace_has_message">trace_has_message</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span>. <span class="id">exists</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_transition_item_sub_projection">composite_transition_item_sub_projection</a></span> <span class="id">item</span> <span class="id">Hsub_item</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; [|<span class="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_list_in">finite_trace_sub_projection_list_in</a></span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="protocol_state_sub_projection">protocol_state_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hs</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#state_sub_item_input_is_seeded_or_sub_previously_sent">state_sub_item_input_is_seeded_or_sub_previously_sent</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hps</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id">s</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_prop">protocol_state_prop</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof411')">Proof.</div>
+<div class="proofscript" id="proof411">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#protocol_state_has_trace">protocol_state_has_trace</a></span> <span class="kwd">in</span> <span class="id">Hps</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hps</span> <span class="kwd">as</span> [<span class="id">is</span> [<span class="id">tr</span> <span class="id">Htr</span>]].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id">Hs</span> <span class="id">_</span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_finite_protocol_trace_init_to">VLSM_incl_finite_protocol_trace_init_to</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#X_incl_Pre">X_incl_Pre</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">_</span> <span class="id">Htr</span>)).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_get_last">ptrace_get_last</a></span> <span class="kwd">in</span> <span class="id">Htr</span> <span class="kwd">as</span> <span class="id">Hlst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_forget_last">ptrace_forget_last</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_last_state">finite_trace_sub_projection_last_state</a></span> <span class="id">_</span> <span class="id">_</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#proj1">proj1</a></span> <span class="id">Htr</span>)) <span class="kwd">as</span> <span class="id">Hlst</span>'.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_protocol_trace_sub_projection">finite_protocol_trace_sub_projection</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hs</span>) <span class="kwd">in</span> <span class="id">Htr</span> <span class="kwd">as</span> <span class="id">Hptr</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">Hptr</span> <span class="kwd">as</span> [<span class="id">Hptr</span> <span class="id">_</span>]. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_ptrace_last_pstate">finite_ptrace_last_pstate</a></span> <span class="kwd">in</span> <span class="id">Hptr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hlst</span>' <span class="kwd">in</span> <span class="id">Hptr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="finite_protocol_trace_from_sub_projection">finite_protocol_trace_from_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s</span> : <span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_state">composite_state</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">tr</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> (<span class="id"><a href="CasperCBC.VLSM.Composition.html#composite_transition_item">composite_transition_item</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.IM">IM</a></span>))<br/>
+&nbsp;&nbsp;(<span class="id">lst</span> := <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last">finite_trace_last</a></span> <span class="id">s</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hmsg</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#state_sub_item_input_is_seeded_or_sub_previously_sent">state_sub_item_input_is_seeded_or_sub_previously_sent</a></span> <span class="id">lst</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Htr</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id">s</span> <span class="id">tr</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from">finite_protocol_trace_from</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s</span>) (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof412')">Proof.</div>
+<div class="proofscript" id="proof412">
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from_complete_left">finite_protocol_trace_from_complete_left</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Htr</span> <span class="kwd">as</span> [<span class="id">is</span> [<span class="id">pre</span> [<span class="id">Htr</span> <span class="id">Hs</span>]]].<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">Hpre</span> := <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#proj1">proj1</a></span> <span class="id">Htr</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from_app_iff">finite_protocol_trace_from_app_iff</a></span> <span class="kwd">in</span> <span class="id">Hpre</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hpre</span> <span class="kwd">as</span> [<span class="id">Hpre</span> <span class="id">_</span>].<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_last_state">finite_trace_sub_projection_last_state</a></span> <span class="id">_</span> <span class="id">_</span> <span class="id">Hpre</span>) <span class="kwd">as</span> <span class="id">Hpre_lst</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_protocol_trace_sub_projection">finite_protocol_trace_sub_projection</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">Htr</span> <span class="kwd">as</span> [<span class="id">Htr</span> <span class="id">His</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_app">finite_trace_sub_projection_app</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_protocol_trace_from_app_iff">finite_protocol_trace_from_app_iff</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Htr</span> <span class="kwd">as</span> [<span class="id">_</span> <span class="id">Htr</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">s</span>. <span class="tactic">simpl</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Hpre_lst</span> <span class="kwd">in</span> <span class="id">Htr</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id">specialize</span> (<span class="id">Hmsg</span> <span class="id">is</span> (<span class="id">pre</span> ++ <span class="id">tr</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hmsg</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#VLSM_incl_finite_protocol_trace_init_to">VLSM_incl_finite_protocol_trace_init_to</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#X_incl_Pre">X_incl_Pre</a></span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_add_last">ptrace_add_last</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#finite_trace_last_app">finite_trace_last_app</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id">lst</span>. <span class="tactic">subst</span>. <span class="tactic">reflexivity</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Lemma</span> <span class="id"><a name="in_futures_sub_projection">in_futures_sub_projection</a></span><br/>
+&nbsp;&nbsp;(<span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#state">state</a></span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hs2</span> : <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#state_sub_item_input_is_seeded_or_sub_previously_sent">state_sub_item_input_is_seeded_or_sub_previously_sent</a></span> <span class="id">s2</span>)<br/>
+&nbsp;&nbsp;(<span class="id">Hfutures</span> : <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.X">X</a></span> <span class="id">s1</span> <span class="id">s2</span>)<br/>
+&nbsp;&nbsp;: <span class="id"><a href="CasperCBC.VLSM.Common.html#in_futures">in_futures</a></span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints.Xj">Xj</a></span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s1</span>) (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#composite_state_sub_projection">composite_state_sub_projection</a></span> <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof413')">Proof.</div>
+<div class="proofscript" id="proof413">
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">Hfutures</span> <span class="kwd">as</span> [<span class="id">tr</span> <span class="id">Htr</span>].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_get_last">ptrace_get_last</a></span> <span class="kwd">in</span> <span class="id">Htr</span> <span class="kwd">as</span> <span class="id">Heq_s2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_forget_last">ptrace_forget_last</a></span> <span class="kwd">in</span> <span class="id">Htr</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">subst</span> <span class="id">s2</span>.<br/>
+&nbsp;&nbsp;<span class="id">specialize</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_protocol_trace_from_sub_projection">finite_protocol_trace_from_sub_projection</a></span> <span class="id">s1</span> <span class="id">tr</span> <span class="id">Hs2</span> <span class="id">Htr</span>); <span class="tactic">intros</span> <span class="id">Htrj</span>.<br/>
+&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection">finite_trace_sub_projection</a></span> <span class="id">tr</span>).<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.Common.html#ptrace_add_last">ptrace_add_last</a></span>;[<span class="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#finite_trace_sub_projection_last_state">finite_trace_sub_projection_last_state</a></span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition.sub_projection_with_no_equivocation_constraints">sub_projection_with_no_equivocation_constraints</a></span>.<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.VLSM.SubProjectionTraces.html#sub_composition">sub_composition</a></span>.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>

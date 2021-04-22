@@ -1,0 +1,397 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Module CasperCBC.CBC.Protocol</title>
+<meta name="description" content="Documentation of Coq module CasperCBC.CBC.Protocol" />
+<link href="coq2html.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="coq2html.js"> </script>
+</head>
+
+<body onload="hideAll('proofscript')">
+<h1 class="title">Module CasperCBC.CBC.Protocol</h1>
+<div class="coq">
+<span class="id">From</span> <span class="id">Coq</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Reals.html">Reals</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Bool.Bool.html">Bool</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Relations.Relations.html">Relations</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html">RelationClasses</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html">List</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.ListSet.html">ListSet</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Setoids.Setoid.html">Setoid</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Sorting.Permutation.html">Permutation</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.EqdepFacts.html">EqdepFacts</a></span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Logic.ProofIrrelevance.html">ProofIrrelevance</a></span>.<br/>
+<span class="kwd">Import</span> <span class="id">ListNotations</span>.<br/>
+<br/>
+<span class="id">From</span> <span class="id">CasperCBC.Lib</span> <span class="kwd">Require</span> <span class="kwd">Import</span> <span class="id">Preamble</span> <span class="id">ListExtras</span> <span class="id">ListSetExtras</span>.<br/>
+<br/>
+<h1> CBC Protocol Definitions and Lemmas </h1>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="PartialOrder">PartialOrder</a></span> (<span class="id">A</span> : <span class="kwd">Type</span>) :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a name="A_eq_dec">A_eq_dec</a></span> : <span class="kwd">forall</span> (<span class="id">a1</span> <span class="id">a2</span> : <span class="id">A</span>), {<span class="id">a1</span> = <span class="id">a2</span>} + {<span class="id">a1</span> &lt;&gt; <span class="id">a2</span>};<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="A_inhabited">A_inhabited</a></span> : <span class="id">exists</span> (<span class="id">a0</span> : <span class="id">A</span>), <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="A_rel">A_rel</a></span> : <span class="id">A</span> -&gt; <span class="id">A</span> -&gt; <span class="kwd">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="A_rel_refl">A_rel_refl</a></span> :&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Reflexive">Reflexive</a></span> <span class="id">A_rel</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="A_rel_trans">A_rel_trans</a></span> :&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id">A_rel</span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="PartialOrderNonLCish">PartialOrderNonLCish</a></span> (<span class="id">A</span> : <span class="kwd">Type</span>) `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#PartialOrder">PartialOrder</a></span> <span class="id">A</span>} :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a name="no_local_confluence_ish">no_local_confluence_ish</a></span> : <span class="id">exists</span> (<span class="id">a</span> <span class="id">a1</span> <span class="id">a2</span> : <span class="id">A</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel">A_rel</a></span> <span class="id">a</span> <span class="id">a1</span> /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel">A_rel</a></span> <span class="id">a</span> <span class="id">a2</span> /\<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~ <span class="id">exists</span> (<span class="id">a</span>' : <span class="id">A</span>), <span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel">A_rel</a></span> <span class="id">a1</span> <span class="id">a</span>' /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel">A_rel</a></span> <span class="id">a2</span> <span class="id">a</span>';<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="CBC_protocol_eq">CBC_protocol_eq</a></span> :=<br/>
+&nbsp;&nbsp;&nbsp;{<br/>
+<div class="doc">Consensus values equipped with reflexive transitive comparison *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="consensus_values">consensus_values</a></span> : <span class="kwd">Type</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_consensus_values">about_consensus_values</a></span> : <span class="id">StrictlyComparable</span> <span class="id">consensus_values</span>;<br/>
+<div class="doc">Validators equipped with reflexive transitive comparison *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="validators">validators</a></span> : <span class="kwd">Type</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_validators">about_validators</a></span> : <span class="id">StrictlyComparable</span> <span class="id">validators</span>;<br/>
+<div class="doc">Weights are positive reals *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="weight">weight</a></span> : <span class="id">validators</span> -&gt; {<span class="id">r</span> | (<span class="id">r</span> &gt; 0)%<span class="id">R</span>};<br/>
+<div class="doc">Threshold is a non-negative real *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="t">t</a></span> : {<span class="id">r</span> | (<span class="id">r</span> &gt;= 0)%<span class="id">R</span>};<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="suff_val">suff_val</a></span> : <span class="id">exists</span> <span class="id">vs</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#NoDup">NoDup</a></span> <span class="id">vs</span> /\ ((<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> (<span class="kwd">fun</span> <span class="id">v</span> <span class="id">r</span> =&gt; (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id">weight</span> <span class="id">v</span>) + <span class="id">r</span>)%<span class="id">R</span>) 0%<span class="id">R</span>) <span class="id">vs</span> &gt; (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">t</span>))%<span class="id">R</span>;<br/>
+<div class="doc">States with equality and union *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="state">state</a></span> : <span class="kwd">Type</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_state">about_state</a></span> : <span class="id">StrictlyComparable</span> <span class="id">state</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="state0">state0</a></span> : <span class="id">state</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="state_eq">state_eq</a></span> : <span class="id">state</span> -&gt; <span class="id">state</span> -&gt; <span class="kwd">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="state_union">state_union</a></span> : <span class="id">state</span> -&gt; <span class="id">state</span> -&gt; <span class="id">state</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="state_union_comm">state_union_comm</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, <span class="id">state_eq</span> (<span class="id">state_union</span> <span class="id">s1</span> <span class="id">s2</span>) (<span class="id">state_union</span> <span class="id">s2</span> <span class="id">s1</span>);<br/>
+<div class="doc">Reachability relation *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="reach">reach</a></span> : <span class="id">state</span> -&gt; <span class="id">state</span> -&gt; <span class="kwd">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="reach_refl">reach_refl</a></span> : <span class="kwd">forall</span> <span class="id">s</span>, <span class="id">reach</span> <span class="id">s</span> <span class="id">s</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="reach_trans">reach_trans</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">s3</span>, <span class="id">reach</span> <span class="id">s1</span> <span class="id">s2</span> -&gt; <span class="id">reach</span> <span class="id">s2</span> <span class="id">s3</span> -&gt; <span class="id">reach</span> <span class="id">s1</span> <span class="id">s3</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="reach_union">reach_union</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, <span class="id">reach</span> <span class="id">s1</span> (<span class="id">state_union</span> <span class="id">s1</span> <span class="id">s2</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="reach_morphism">reach_morphism</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">s3</span>, <span class="id">reach</span> <span class="id">s1</span> <span class="id">s2</span> -&gt; <span class="id">state_eq</span> <span class="id">s2</span> <span class="id">s3</span> -&gt; <span class="id">reach</span> <span class="id">s1</span> <span class="id">s3</span>;<br/>
+<div class="doc">Total estimator *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="E">E</a></span> : <span class="id">state</span> -&gt; <span class="id">consensus_values</span> -&gt; <span class="kwd">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="estimator_total">estimator_total</a></span> : <span class="kwd">forall</span> <span class="id">s</span>, <span class="id">exists</span> <span class="id">c</span>, <span class="id">E</span> <span class="id">s</span> <span class="id">c</span>;<br/>
+<div class="doc">Protocol state definition as predicate *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="prot_state">prot_state</a></span> : <span class="id">state</span> -&gt; <span class="kwd">Prop</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_state0">about_state0</a></span> : <span class="id">prot_state</span> <span class="id">state0</span>;<br/>
+<div class="doc">Equivocation weights from states *</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="equivocation_weight">equivocation_weight</a></span> : <span class="id">state</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.Rdefinitions.html#RbaseSymbolsImpl.R">R</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="equivocation_weight_compat">equivocation_weight_compat</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, (<span class="id">equivocation_weight</span> <span class="id">s1</span> &lt;= <span class="id">equivocation_weight</span> (<span class="id">state_union</span> <span class="id">s2</span> <span class="id">s1</span>))%<span class="id">R</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_prot_state">about_prot_state</a></span> : <span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span>, <span class="id">prot_state</span> <span class="id">s1</span> -&gt; <span class="id">prot_state</span> <span class="id">s2</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id">equivocation_weight</span> (<span class="id">state_union</span> <span class="id">s1</span> <span class="id">s2</span>) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">t</span>)%<span class="id">R</span> -&gt; <span class="id">prot_state</span> (<span class="id">state_union</span> <span class="id">s1</span> <span class="id">s2</span>);<br/>
+&nbsp;&nbsp;&nbsp;}.<br/>
+<br/>
+<span class="kwd">Theorem</span> <span class="id"><a name="reach_total">reach_total</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s</span>, <span class="id">exists</span> <span class="id">s</span>', <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach">reach</a></span> <span class="id">s</span> <span class="id">s</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof283')">Proof.</div>
+<div class="proofscript" id="proof283">
+ <span class="tactic">intro</span> <span class="id">s</span>. <span class="id">exists</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">s</span> <span class="id">s</span>). <span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union">reach_union</a></span> <span class="id">s</span> <span class="id">s</span>). Qed.</div>
+<br/>
+<div class="doc">Defining A *</div>
+<span class="kwd">Definition</span> <span class="id"><a name="pstate">pstate</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="kwd">Type</span> := {<span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span> | <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id">s</span>}.<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="pstate_proj1">pstate_proj1</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">p</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span> :=<br/>
+&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">p</span>.<br/>
+<span class="kwd">Coercion</span> <span class="id">pstate_proj1</span> : <span class="id">pstate</span> &gt;-&gt; <span class="id">state</span>.<br/>
+<br/>
+<div class="doc">Proving A_eq_dec *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="pstate_eq_dec">pstate_eq_dec</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="kwd">forall</span> (<span class="id">p1</span> <span class="id">p2</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>), {<span class="id">p1</span> = <span class="id">p2</span>} + {<span class="id">p1</span> &lt;&gt; <span class="id">p2</span>}.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof284')">Proof.</div>
+<div class="proofscript" id="proof284">
+&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">p1</span> <span class="id">p2</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_useful</span> := <span class="id"><a href="CasperCBC.CBC.Protocol.html#about_state">about_state</a></span>).<br/>
+&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id">sigify_eq_dec</span>.<br/>
+Qed.</div>
+<br/>
+<div class="doc">Proving A_inhabited *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="pstate_inhabited">pstate_inhabited</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="id">exists</span> (<span class="id">p1</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>), <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#True">True</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof285')">Proof.</div>
+<div class="proofscript" id="proof285">
+ <span class="id">now</span> <span class="id">exists</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#about_state0">about_state0</a></span>). Qed.</div>
+<br/>
+<div class="doc">Defining A_rel *</div>
+<span class="kwd">Definition</span> <span class="id"><a name="pstate_rel">pstate_rel</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">p1</span> <span class="id">p2</span> =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach">reach</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_proj1">pstate_proj1</a></span> <span class="id">p1</span>) (<span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_proj1">pstate_proj1</a></span> <span class="id">p2</span>).<br/>
+<br/>
+<div class="doc">Proving A_rel_refl *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="pstate_rel_refl">pstate_rel_refl</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Reflexive">Reflexive</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof286')">Proof.</div>
+<div class="proofscript" id="proof286">
+ <span class="tactic">red</span>; <span class="tactic">intro</span> <span class="id">p</span>; <span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_refl">reach_refl</a></span>. Qed.</div>
+<br/>
+<div class="doc">Proving A_rel_trans *</div>
+<span class="kwd">Lemma</span> <span class="id"><a name="pstate_rel_trans">pstate_rel_trans</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="id"><a href="http://coq.inria.fr/library/Coq.Classes.RelationClasses.html#Transitive">Transitive</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof287')">Proof.</div>
+<div class="proofscript" id="proof287">
+&nbsp;&nbsp;<span class="tactic">red</span>; <span class="tactic">intros</span> <span class="id">p1</span> <span class="id">p2</span> <span class="id">p3</span> <span class="id">H_12</span> <span class="id">H_23</span>.<br/>
+&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">p1</span> <span class="kwd">as</span> [<span class="id">p1</span> <span class="id">about_p1</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">p2</span> <span class="kwd">as</span> [<span class="id">p2</span> <span class="id">about_p2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">p3</span> <span class="kwd">as</span> [<span class="id">p3</span> <span class="id">about_p3</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;<span class="id">now</span> <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_trans">reach_trans</a></span> <span class="kwd">with</span> <span class="id">p2</span>.<br/>
+Qed.</div>
+<br/>
+<span class="kwd">Instance</span> <span class="id"><a name="level0">level0</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} : <span class="id"><a href="CasperCBC.CBC.Protocol.html#PartialOrder">PartialOrder</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> :=<br/>
+&nbsp;&nbsp;{ <span class="id"><a href="CasperCBC.CBC.Protocol.html#A_eq_dec">A_eq_dec</a></span> := <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_eq_dec">pstate_eq_dec</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#A_inhabited">A_inhabited</a></span> := <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_inhabited">pstate_inhabited</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel">A_rel</a></span> := <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel_refl">A_rel_refl</a></span> := <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel_refl">pstate_rel_refl</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#A_rel_trans">A_rel_trans</a></span> := <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel_trans">pstate_rel_trans</a></span>;<br/>
+&nbsp;&nbsp;}.<br/>
+<br/>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="CommonFutures">CommonFutures</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Theorem</span> <span class="id"><a name="pair_common_futures">pair_common_futures</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>}:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>, <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">s1</span> <span class="id">s</span> /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">s2</span> <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof288')">Proof.</div>
+<div class="proofscript" id="proof288">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">H_weight</span>. <span class="id">remember</span> <span class="id">s1</span> <span class="kwd">as</span> <span class="id">ps1</span>. <span class="id">remember</span> <span class="id">s2</span> <span class="kwd">as</span> <span class="id">ps2</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">s1</span> <span class="kwd">as</span> [<span class="id">s1</span> <span class="id">H_s1</span>]. <span class="tactic">destruct</span> <span class="id">s2</span> <span class="kwd">as</span> [<span class="id">s2</span> <span class="id">H_s2</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id">Heqps1</span>, <span class="id">Heqps2</span> <span class="kwd">in</span> <span class="id">H_weight</span>; <span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H_weight</span>.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>) (<span class="id"><a href="CasperCBC.CBC.Protocol.html#about_prot_state">about_prot_state</a></span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">H_s1</span> <span class="id">H_s2</span> <span class="id">H_weight</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union">reach_union</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_morphism">reach_morphism</a></span> <span class="id">s2</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">s2</span> <span class="id">s1</span>) (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union">reach_union</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union_comm">state_union_comm</a></span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="reach_union_iter">reach_union_iter</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s</span> <span class="id">ls</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">s</span> <span class="id">ls</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach">reach</a></span> <span class="id">s</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">ls</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof289')">Proof.</div>
+<div class="proofscript" id="proof289">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s</span> <span class="id">ls</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">ls</span> <span class="kwd">as</span> [|<span class="id">hd</span> <span class="id">tl</span> <span class="id">IHtl</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H_in</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hneq</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union">reach_union</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id">spec</span> <span class="id">IHtl</span> <span class="id">Hneq</span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">eapply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_trans">reach_trans</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">exact</span> <span class="id">IHtl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_morphism">reach_morphism</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">tl</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">tl</span>) <span class="id">hd</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">hd</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">tl</span>))).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union">reach_union</a></span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union_comm">state_union_comm</a></span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="prot_state_union_iter">prot_state_union_iter</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">ls</span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id">ls</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">ls</span>) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">ls</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof290')">Proof.</div>
+<div class="proofscript" id="proof290">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">ls</span> <span class="id">H_ls</span> <span class="id">H_weight</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">ls</span> <span class="kwd">as</span> [|<span class="id">hd</span> <span class="id">tl</span> <span class="id">IHls</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">exact</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#about_state0">about_state0</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">simpl</span>. <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#about_prot_state">about_prot_state</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_inv">Forall_inv</a></span> <span class="id">H_ls</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHls</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>. <span class="tactic">intros</span> <span class="id">x</span> <span class="id">H_in</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">H_ls</span>. <span class="id">spec</span> <span class="id">H_ls</span> <span class="id">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_ls</span>. <span class="id">right</span>; <span class="tactic">assumption</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">IHls</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">simpl</span> <span class="kwd">in</span> <span class="id">H_weight</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Reals.RIneq.html#Rle_trans">Rle_trans</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">tl</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">hd</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">tl</span>)))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight_compat">equivocation_weight_compat</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>. <span class="tactic">assumption</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="pstate_list">pstate_list</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">pls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> (<span class="kwd">fun</span> <span class="id">ps</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ps</span>) <span class="id">pls</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof291')">Proof.</div>
+<div class="proofscript" id="proof291">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">induction</span> <span class="id">pls</span>; <span class="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">inversion</span> <span class="id">H0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="tactic">destruct</span> <span class="id">H0</span> <span class="kwd">as</span> [<span class="id">Heq</span> | <span class="id">Hin</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">subst</span>. <span class="tactic">destruct</span> <span class="id">a</span> <span class="kwd">as</span> [<span class="id">a</span> <span class="id">H_a</span>]. <span class="tactic">simpl</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="tactic">apply</span> <span class="id">IHpls</span>. <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Theorem</span> <span class="id"><a name="n_common_futures">n_common_futures</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> (<span class="kwd">fun</span> <span class="id">ps</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ps</span>) <span class="id">ls</span>)) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">ps</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>, <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> (<span class="kwd">fun</span> <span class="id">ps</span>' =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">ps</span>' <span class="id">ps</span>) <span class="id">ls</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof292')">Proof.</div>
+<div class="proofscript" id="proof292">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">pls</span> <span class="id">H_weight</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">remember</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> (<span class="kwd">fun</span> <span class="id">ps</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ps</span>) <span class="id">pls</span>) <span class="kwd">as</span> <span class="id">ls</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id">H_ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall">Forall</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id">ls</span>) <span class="tactic">by</span> (<span class="tactic">subst</span>; <span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_list">pstate_list</a></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> <span class="id">_</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> <span class="id">ls</span>) (<span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state_union_iter">prot_state_union_iter</a></span> <span class="id">ls</span> <span class="id">H_ls</span> <span class="id">H_weight</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span>. <span class="tactic">intros</span>. <span class="tactic">destruct</span> <span class="id">x</span> <span class="kwd">as</span> [<span class="id">x</span> <span class="id">H_x</span>]. <span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span>. <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_union_iter">reach_union_iter</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">subst</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#in_map_iff">in_map_iff</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#exist">exist</a></span> (<span class="kwd">fun</span> <span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span> =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id">s</span>) <span class="id">x</span> <span class="id">H_x</span>). <span class="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">split</span>; <span class="tactic">reflexivity</span> || <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#CommonFutures">CommonFutures</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Definition</span> <span class="id"><a name="reach_one">reach_one</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">sigma1</span> <span class="id">sigma2</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id">sigma1</span> &lt;&gt; <span class="id">sigma2</span> /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">sigma1</span> <span class="id">sigma2</span> /\<br/>
+&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">sigma</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;,  <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">sigma1</span> <span class="id">sigma</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">sigma</span> <span class="id">sigma2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id">sigma</span> = <span class="id">sigma1</span> \/ <span class="id">sigma</span> = <span class="id">sigma2</span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Inductive</span> <span class="id"><a name="all_path_eventually">all_path_eventually</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id"><a name="all_path_holds_now">all_path_holds_now</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id">P</span> <span class="id">sigma</span> -&gt; <span class="id">all_path_eventually</span> <span class="id">P</span> <span class="id">sigma</span><br/>
+&nbsp;&nbsp;| <span class="id"><a name="all_path_holds_next">all_path_holds_next</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:  (<span class="id">exists</span> <span class="id">sigma</span>', <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_one">reach_one</a></span> <span class="id">sigma</span> <span class="id">sigma</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; (<span class="kwd">forall</span> <span class="id">sigma</span>', <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_one">reach_one</a></span> <span class="id">sigma</span> <span class="id">sigma</span>' -&gt; <span class="id">all_path_eventually</span> <span class="id">P</span> <span class="id">sigma</span>')<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id">all_path_eventually</span> <span class="id">P</span> <span class="id">sigma</span><br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<span class="kwd">Inductive</span> <span class="id"><a name="one_path_eventually">one_path_eventually</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span>) (<span class="id">sigma</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id"><a name="one_path_holds_now">one_path_holds_now</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id">P</span> <span class="id">sigma</span> -&gt; <span class="id">one_path_eventually</span> <span class="id">P</span> <span class="id">sigma</span><br/>
+&nbsp;&nbsp;| <span class="id"><a name="one_path_holds_next">one_path_holds_next</a></span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:  <span class="kwd">forall</span> <span class="id">sigma</span>'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;,  <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach_one">reach_one</a></span> <span class="id">sigma</span> <span class="id">sigma</span>'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id">one_path_eventually</span> <span class="id">P</span> <span class="id">sigma</span>'<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id">one_path_eventually</span> <span class="id">P</span> <span class="id">sigma</span><br/>
+&nbsp;&nbsp;.<br/>
+<br/>
+<br/>
+<br/>
+<span class="kwd">Section</span> <span class="id"><a name="Consistency">Consistency</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="decided">decided</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) =&gt; <span class="kwd">forall</span> <span class="id">s</span>', <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">s</span> <span class="id">s</span>' -&gt; <span class="id">P</span> <span class="id">s</span>'.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="decided_on_predicate">decided_on_predicate</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;:=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> (<span class="id">future</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) =&gt; <span class="kwd">forall</span> <span class="id">c</span>', <span class="id"><a href="CasperCBC.CBC.Protocol.html#E">E</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">future</span>) <span class="id">c</span>' -&gt; <span class="id">c</span>' = <span class="id">c</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="decided_on">decided_on</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on_predicate">decided_on_predicate</a></span> <span class="id">c</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="locked_on">locked_on</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#all_path_eventually">all_path_eventually</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on">decided_on</a></span> <span class="id">c</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="not_locked_off">not_locked_off</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#one_path_eventually">one_path_eventually</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided_on">decided_on</a></span> <span class="id">c</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="not">not</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id">P</span> <span class="id">s</span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Logic.html#False">False</a></span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="locked_off">locked_off</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#not">not</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#not_locked_off">not_locked_off</a></span> <span class="id">c</span>).<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="forward_consistency">forward_consistency</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s</span> <span class="id">P</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="id">P</span> <span class="id">s</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">s</span> <span class="id">s</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="id">P</span> <span class="id">s</span>'.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof293')">Proof.</div>
+<div class="proofscript" id="proof293">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s</span> <span class="id">P</span> <span class="id">H_dec</span> <span class="id">s</span>' <span class="id">H_rel</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s</span>'' <span class="id">H_rel</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assert</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">s</span> <span class="id">s</span>'') <span class="tactic">by</span> (<span class="tactic">apply</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel_trans">pstate_rel_trans</a></span> <span class="id">s</span> <span class="id">s</span>' <span class="id">s</span>''); <span class="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec</span> <span class="id">s</span>''; <span class="id">now</span> <span class="tactic">apply</span> <span class="id">H_dec</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Lemma</span> <span class="id"><a name="backward_consistency">backward_consistency</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s</span> <span class="id">s</span>',<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel">pstate_rel</a></span> <span class="id">s</span> <span class="id">s</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">P</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="id">P</span> <span class="id">s</span>' -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~ <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#not">not</a></span> <span class="id">P</span>) <span class="id">s</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof294')">Proof.</div>
+<div class="proofscript" id="proof294">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s</span> <span class="id">s</span>' <span class="id">H_rel</span> <span class="id">P</span> <span class="id">H_dec</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="kwd">in</span> *.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">Hnot</span> <span class="id">s</span>' <span class="id">H_rel</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">Hnot</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id">H_dec</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate_rel_refl">pstate_rel_refl</a></span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Theorem</span> <span class="id"><a name="pair_consistency_prot">pair_consistency_prot</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">s1</span> <span class="id">s2</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id">s1</span> <span class="id">s2</span>) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">P</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~ (<span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="id">P</span> <span class="id">s1</span> /\ <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#not">not</a></span> <span class="id">P</span>) <span class="id">s2</span>).<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof295')">Proof.</div>
+<div class="proofscript" id="proof295">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">H_weight</span> <span class="id">P</span> [<span class="id">H_dec</span> <span class="id">H_dec_not</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#pair_common_futures">pair_common_futures</a></span> <span class="id">s1</span> <span class="id">s2</span> <span class="id">H_weight</span>) <span class="kwd">as</span> [<span class="id">s</span> [<span class="id">H_r1</span> <span class="id">H_r2</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec</span> <span class="id">s</span> <span class="id">H_r1</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec_not</span> <span class="id">s</span> <span class="id">H_r2</span>. <span class="id">contradiction</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="state_consistency">state_consistency</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">s</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists">Exists</a></span> (<span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> <span class="id">P</span> <span class="id">s</span>) <span class="id">ls</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">P</span> <span class="id">s</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Theorem</span> <span class="id"><a name="n_consistency_prot">n_consistency_prot</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> (<span class="kwd">fun</span> <span class="id">ps</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ps</span>) <span class="id">ls</span>)) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#state_consistency">state_consistency</a></span> <span class="id">ls</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof296')">Proof.</div>
+<div class="proofscript" id="proof296">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">ls</span> <span class="id">H_weight</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#n_common_futures">n_common_futures</a></span> <span class="id">ls</span> <span class="id">H_weight</span>) <span class="kwd">as</span> [<span class="id">s</span>' <span class="id">H_reach</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">s</span>'.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">P</span> <span class="id">H_exists</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span> <span class="kwd">in</span> <span class="id">H_exists</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_exists</span> <span class="kwd">as</span> [<span class="id">s</span>'' [<span class="id">H_in</span>'' <span class="id">H_dec</span>'']].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">rewrite</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Forall_forall">Forall_forall</a></span> <span class="kwd">in</span> <span class="id">H_reach</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_reach</span> <span class="id">s</span>'' <span class="id">H_in</span>''.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec</span>'' <span class="id">s</span>' <span class="id">H_reach</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="lift">lift</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span> -&gt; <span class="kwd">Prop</span>) : <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span> -&gt; <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="kwd">forall</span> <span class="id">c</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span>, <span class="id"><a href="CasperCBC.CBC.Protocol.html#E">E</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">s</span>) <span class="id">c</span> -&gt; <span class="id">P</span> <span class="id">c</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Definition</span> <span class="id"><a name="consensus_value_consistency">consensus_value_consistency</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} (<span class="id">ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>) : <span class="kwd">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">c</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> (<span class="id">P</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_values">consensus_values</a></span> -&gt; <span class="kwd">Prop</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists">Exists</a></span> (<span class="kwd">fun</span> <span class="id">s</span> =&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#decided">decided</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#lift">lift</a></span> <span class="id">P</span>) <span class="id">s</span>) <span class="id">ls</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">P</span> <span class="id">c</span>.<br/>
+<br/>
+&nbsp;&nbsp;<span class="kwd">Theorem</span> <span class="id"><a name="n_consistency_consensus">n_consistency_consensus</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">forall</span> <span class="id">ls</span> : <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#pstate">pstate</a></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#fold_right">fold_right</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state_union">state_union</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#state0">state0</a></span> (<span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#map">map</a></span> (<span class="kwd">fun</span> <span class="id">ps</span> =&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id">ps</span>) <span class="id">ls</span>)) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a href="CasperCBC.CBC.Protocol.html#consensus_value_consistency">consensus_value_consistency</a></span> <span class="id">ls</span>.<br/>
+<div class="toggleproof" onclick="toggleDisplay('proof297')">Proof.</div>
+<div class="proofscript" id="proof297">
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">intros</span> <span class="id">ls</span> <span class="id">H_weight</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#n_consistency_prot">n_consistency_prot</a></span> <span class="id">ls</span> <span class="id">H_weight</span>) <span class="kwd">as</span> [<span class="id">s</span> <span class="id">H_dec</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#estimator_total">estimator_total</a></span> <span class="id">s</span>) <span class="kwd">as</span> [<span class="id">c</span> <span class="id">about_c</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">c</span>. <span class="tactic">intros</span> <span class="id">P</span> <span class="id">H_exists</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span> <span class="kwd">in</span> <span class="id">H_exists</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">destruct</span> <span class="id">H_exists</span> <span class="kwd">as</span> [<span class="id">s</span>' [<span class="id">H_in</span>' <span class="id">H_dec</span>']].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec</span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#lift">lift</a></span> <span class="id">P</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec</span>. <span class="tactic">apply</span> <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#Exists_exists">Exists_exists</a></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">exists</span> <span class="id">s</span>'. <span class="tactic">split</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tactic">unfold</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#lift">lift</a></span> <span class="kwd">in</span> <span class="id">H_dec</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id">spec</span> <span class="id">H_dec</span> <span class="id">c</span> <span class="id">about_c</span>; <span class="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;Qed.</div>
+<br/>
+<span class="kwd">End</span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#Consistency">Consistency</a></span>.<br/>
+<br/>
+<br/>
+<span class="kwd">Class</span> <span class="id"><a name="CBC_protocol_eq_plus">CBC_protocol_eq_plus</a></span> `{<span class="id"><a href="CasperCBC.CBC.Protocol.html#CBC_protocol_eq">CBC_protocol_eq</a></span>} :=<br/>
+&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="two_validators">two_validators</a></span> : <span class="id">exists</span> (<span class="id">v1</span> <span class="id">v2</span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#validators">validators</a></span>), <span class="id">v1</span> &lt;&gt; <span class="id">v2</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="equivocating_senders">equivocating_senders</a></span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span> -&gt; <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Datatypes.html#list">list</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#validators">validators</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="next_equivocation">next_equivocation</a></span> : <span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#validators">validators</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#validators">validators</a></span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#state">state</a></span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_next_equivocation1">about_next_equivocation1</a></span> : <span class="kwd">forall</span> <span class="id">s</span> <span class="id">v</span> <span class="id">v</span>', <span class="id"><a href="CasperCBC.CBC.Protocol.html#reach">reach</a></span> <span class="id">s</span> (<span class="id">next_equivocation</span> <span class="id">s</span> <span class="id">v</span> <span class="id">v</span>');<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_next_equivocation2">about_next_equivocation2</a></span> : <span class="kwd">forall</span> <span class="id">s</span>, <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id">s</span> -&gt; <span class="kwd">forall</span> <span class="id">v</span> <span class="id">v</span>', ~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">v</span> (<span class="id">equivocating_senders</span> <span class="id">s</span>) -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id">next_equivocation</span> <span class="id">s</span> <span class="id">v</span> <span class="id">v</span>') = (<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> <span class="id">s</span> + <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#weight">weight</a></span> <span class="id">v</span>))%<span class="id">R</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id"><a name="about_next_equivocation3">about_next_equivocation3</a></span> : <span class="kwd">forall</span> <span class="id">s</span>, <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> <span class="id">s</span> -&gt; <span class="kwd">forall</span> <span class="id">v</span> <span class="id">v</span>', ~ <span class="id"><a href="http://coq.inria.fr/library/Coq.Lists.List.html#In">In</a></span> <span class="id">v</span> (<span class="id">equivocating_senders</span> <span class="id">s</span>) -&gt; (<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> <span class="id">s</span> + <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#weight">weight</a></span> <span class="id">v</span>) &lt;= <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> <span class="id"><a href="CasperCBC.CBC.Protocol.html#t">t</a></span>)%<span class="id">R</span> -&gt; <span class="id"><a href="CasperCBC.CBC.Protocol.html#prot_state">prot_state</a></span> (<span class="id">next_equivocation</span> <span class="id">s</span> <span class="id">v</span> <span class="id">v</span>') /\ (<span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> (<span class="id">next_equivocation</span> <span class="id">s</span> <span class="id">v</span> <span class="id">v</span>') = <span class="id"><a href="CasperCBC.CBC.Protocol.html#equivocation_weight">equivocation_weight</a></span> <span class="id">s</span> + <span class="id"><a href="http://coq.inria.fr/library/Coq.Init.Specif.html#proj1_sig">proj1_sig</a></span> (<span class="id"><a href="CasperCBC.CBC.Protocol.html#weight">weight</a></span> <span class="id">v</span>))%<span class="id">R</span>;<br/>
+&nbsp;&nbsp;}.<br/>
+
+</div>
+<div class="footer"><hr/>Generated by <a href="https://github.com/xavierleroy/coq2html/">coq2html</a></div>
+</body>
+</html>
