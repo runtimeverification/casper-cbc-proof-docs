@@ -1,0 +1,556 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"><script>document.write("<a href='" + document.title + ".svg'>" + document.title + "</a>")</script></span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="./../../..">Project Website</a>
+      <a href="./indexpage.html">Index</a>
+      <a href="./toc.html">Table of Contents</a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<div id="toc">
+<ul class="doclist">
+<li><a href="CasperCBC.Lib.Classes.html#lab1">General typeclasses</a>
+<ul class="doclist">
+<li><a href="CasperCBC.Lib.Classes.html#lab2">Top-level classes</a>
+
+</li>
+<li><a href="CasperCBC.Lib.Classes.html#lab3">Boolean coercion</a>
+
+</li>
+<li><a href="CasperCBC.Lib.Classes.html#lab4">Basic instances</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.Lib.Preamble.html#lab5">General utility definitions, lemmas, and tactics</a>
+
+</li>
+<li><a href="CasperCBC.Lib.SsrExport.html#lab6">SSReflect exports</a>
+
+</li>
+<li><a href="CasperCBC.Lib.ListExtras.html#lab7">Utility lemmas about lists</a>
+
+</li>
+<li><a href="CasperCBC.Lib.ListSetExtras.html#lab8">List set utility definitions and lemmas</a>
+
+</li>
+<li><a href="CasperCBC.Lib.SortedLists.html#lab9">Sorted list utility functions and lemmas</a>
+
+</li>
+<li><a href="CasperCBC.Lib.FinExtras.html#lab10">Finite type utility definitions and lemmas</a>
+
+</li>
+<li><a href="CasperCBC.Lib.FinFunExtras.html#lab11">Finite function utility definitions and lemmas</a>
+
+</li>
+<li><a href="CasperCBC.Lib.RealsExtras.html#lab12">Real number utility lemmas</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TopSort.html#lab13">Topological sorting implementation</a>
+<ul class="doclist">
+<li><a href="CasperCBC.Lib.TopSort.html#lab14">Finding an element with a minimal number of predecessors</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TopSort.html#lab15">Topologically sorted lists. Definition and properties.</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TopSort.html#lab16">The topological sorting algorithm</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.Lib.StreamExtras.html#lab17">Stream utility definitions and lemmas</a>
+
+</li>
+<li><a href="CasperCBC.Lib.Traces.html#lab18">Definition of possibly-infinite traces</a>
+<ul class="doclist">
+<li><a href="CasperCBC.Lib.Traces.html#lab19">Core trace definition and decomposition</a>
+
+</li>
+<li><a href="CasperCBC.Lib.Traces.html#lab20">Bisimulations between traces</a>
+
+</li>
+<li><a href="CasperCBC.Lib.Traces.html#lab21">Appending traces to one another</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab22">Core properties of possibly-infinite traces</a>
+<ul class="doclist">
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab23">Infiniteness property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab24">Finiteness property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab25">Final element properties</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab26">Basic trace properties and connectives</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab27">Basic trace element properties and connectives</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab28">Singleton property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab29">Duplicate element property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab30">Follows property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab31">Append property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab32">Iteration property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab33">Last property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab34">Midpoint property</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceProperties.html#lab35">Trace property operators and notations</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceClassicalProperties.html#lab36">Properties of possibly-infinite traces requiring classical logic</a>
+<ul class="doclist">
+<li><a href="CasperCBC.Lib.TraceClassicalProperties.html#lab37">Relating finiteness and infiniteness</a>
+
+</li>
+<li><a href="CasperCBC.Lib.TraceClassicalProperties.html#lab38">Using midpoints to show the right associativity of the append property</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.Lib.Measurable.html#lab39">Measure-related definitions and lemmas</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab40">VLSM Basics</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Common.html#lab41">VLSM definition</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Common.html#lab42">The type of a VLSM</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab43">The signature of a VLSM</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab44">VLSM class definition</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab45">Traces</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Common.html#lab46">Protocol states and messages</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab47">Protocol validity and protocol transitions</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab48">Protocol state and protocol message characterization</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab49">Trace Properties</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Common.html#lab50">Finite <span class="inlinecode"><span class="id" title="var">protocol_trace</span></span>s</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab51">VLSM Inclusion and Equality</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Common.html#lab52">Pre-loaded VLSMs</a>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.CommonTraces.html#lab53">VLSM Protocols Described by Possibly-Infinite Traces</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.CommonTraces.html#lab54">Core protocol definitions</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CommonTraces.html#lab55">Mappings between finite traces and lists of transition items</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CommonTraces.html#lab56">Mappings between infinite traces and streams of transition items</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CommonTraces.html#lab57">Mappings between Trace containers and possibly-infinite traces</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab58">VLSM Composition</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Composition.html#lab59">The type of a composite VLSM</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab60">The signature of a composite VLSM</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab61">Constrained VLSM composition</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab62">Constraint subsumption</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab63">Composite VLSM projections</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab64">Projection traces are Byzantine</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab65">A sufficient condition for being <span class="inlinecode"><span class="id" title="var">projection_friendly</span></span>.</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab66">Projections of free compositions</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab67">Free composition of two VLSMs</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Composition.html#lab68">Composite decidable initial message</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.ProjectionTraces.html#lab69">VLSM Projection Traces</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Validating.html#lab70">VLSM Validating Projections</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Validating.html#lab71">Validating projections and Byzantine behavior</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Validating.html#lab72">VLSM self-validation</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.ByzantineTraces.html#lab73">VLSM Byzantine Traces</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.ByzantineTraces.html#lab74">Definition and basic properties</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ByzantineTraces.html#lab75">An alternative definition</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ByzantineTraces.html#lab76">Equivalence between the two Byzantine trace definitions</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ByzantineTraces.html#lab77">Composite-validating Byzantine traces are free</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Decisions.html#lab78">VLSM Decisions on Consensus Values</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CommonFutures.html#lab79">VLSM Common Futures and Decision Consistency</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.CommonFutures.html#lab80">Common futures estimates definition</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CommonFutures.html#lab81">Final and consistent decisions</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.SubProjectionTraces.html#lab82">VLSM Subcomposition</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Plans.html#lab83">VLSM Plans</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab84">VLSM Equivocation Definitions</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab85">Basic equivocation</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab86">State-message oracles. Endowing states with history.</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab87">Stepwise consistency properties for <span class="inlinecode"><span class="id" title="var">state_message_oracle</span></span>.</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab88">Stepwise view of <span class="inlinecode"><span class="id" title="var">has_been_sent_capability</span></span></a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab89">Stepwise view of <span class="inlinecode"><span class="id" title="var">has_been_received_capability</span></span></a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab90">A state message oracle for messages sent or received</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab91">No-Equivocation Invariants</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab92">Equivocation in compositions.</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocation.html#lab93">Pre-loading a VLSM composition with no equivocations constraint</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab94">VLSM Observable Equivocation</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab95">Defining observable equivocation based on observable messages</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab96">Linking observable equivocation to message-based equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab97">Linking evidence of equivocation with observable equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab98">No-equivocation composition constraint guarantees no equivocations</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab99">Observable messages in a VLSM composition</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab100">Unforgeability and observations</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.ObservableEquivocation.html#lab101">On stating unforgeability for received messages</a>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.PreceedsEquivocation.html#lab102">VLSM Preceeds Equivocation</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.PreceedsEquivocation.html#lab103">Message-based equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.PreceedsEquivocation.html#lab104">Equivocation for states encapsulating messages</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.PreceedsEquivocation.html#lab105">VLSM equivocation based-on full-node-like  <span class="inlinecode"><span class="id" title="var">message_equivocation_evidence</span></span></a>
+
+</li>
+<li><a href="CasperCBC.VLSM.PreceedsEquivocation.html#lab106">Deriving observable equivocation evidence from message-based equivocation evidence</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Common.html#lab107">VLSM Equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Projections.html#lab108">VLSM Projecting Equivocator Traces</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.MessageProperties.html#lab109">VLSM Message Properties</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocators.MessageProperties.html#lab110">Lifting properties about sent messages to the equivocators</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.MessageProperties.html#lab111">Lifting the <span class="inlinecode"><span class="id" title="var">has_been_sent_capability</span></span></a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.MessageProperties.html#lab112">Lifting the <span class="inlinecode"><span class="id" title="var">computable_sent_messages</span></span> property</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.MergeProjections.html#lab113">VLSM Merging of Projections</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocators.MergeProjections.html#lab114">Reconstructing equivocator traces from projections</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.Common.html#lab115">VLSM Equivocator Composition</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.Common.html#lab116">Extracting equivocator traces from equivocator composition traces</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.Projections.html#lab117">VLSM Equivocator Composition Projections</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.SimulatingFree.FullReplayTraces.html#lab118">VLSM Equivocator Full Replay Traces</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.SimulatingFree.SimulatingFree.html#lab119">VLSM Equivocators Simulating Free Composite</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.FixedEquivocation.html#lab120">VLSM Equivocators Fixed Equivocation</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.FixedEquivocation.html#lab121">From composition of equivocators to composition of simple nodes</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Equivocators.Composition.LimitedEquivocation.LimitedEquivocation.html#lab122">VLSM Limited Equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ListValidator.ListValidator.html#lab123">VLSM List Validator Protocol</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ListValidator.Equivocation.html#lab124">VLSM List Validator Equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ListValidator.Observations.html#lab125">VLSM List Validator Observations</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ListValidator.EquivocationAwareListValidator.html#lab126">VLSM Equivocation Aware List Validator</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ListValidator.EquivocationAwareComposition.html#lab127">VLSM Free Composition of List Validators</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.ListValidator.CommonFutures.html#lab128">VLSM List Validator Common Futures</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.ListValidator.CommonFutures.html#lab129">The Common Futures Theorem for List Validators.</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Client.html#lab130">VLSM Full-Node Client</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Validator.html#lab131">VLSM Full Node Composite Validator</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Validator.html#lab132">Full-node validator VLSM instance</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Validator.State.html#lab133">VLSM Full-Node State Tracking Sent Messages</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Validator.State.html#lab134">Full node state properties</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Validator.Equivocation.html#lab135">VLSM Full Node State Equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Composite.Free.html#lab136">VLSM Full Node Clients and Validators Free Composition</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.CBC.FullNode.Composite.LimitedEquivocation.html#lab137">VLSM Composing Validators with Limited Equivocation</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Liveness.html#lab138">VLSM Liveness</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Liveness.html#lab139">Liveness definitions</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Liveness.html#lab140">Clocks</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Liveness.html#lab141">Plans</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Liveness.html#lab142">Synchrony Constraints</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.VLSM.Liveness.SimpleFragileProtocol.html#lab143">VLSM Simple Live Protocol</a>
+<ul class="doclist">
+<li><a href="CasperCBC.VLSM.Liveness.SimpleFragileProtocol.html#lab144">Validators</a>
+
+</li>
+<li><a href="CasperCBC.VLSM.Liveness.SimpleFragileProtocol.html#lab145">Composition and Proofs</a>
+
+</li>
+</ul>
+
+</li>
+<li><a href="CasperCBC.CBC.Common.html#lab146">CBC General Definitions and Lemmas</a>
+
+</li>
+<li><a href="CasperCBC.CBC.Definitions.html#lab147">CBC State Definitions and Lemmas</a>
+
+</li>
+<li><a href="CasperCBC.CBC.Protocol.html#lab148">CBC Protocol Definitions and Lemmas</a>
+
+</li>
+<li><a href="CasperCBC.CBC.CTL.html#lab149">CBC CTL Definition and Properties</a>
+
+</li>
+<li><a href="CasperCBC.CBC.Binary.html#lab150">CBC Binary Consensus Protocol</a>
+
+</li>
+<li><a href="CasperCBC.CBC.LightNode.html#lab151">CBC Light Node Protocol</a>
+
+</li>
+<li><a href="CasperCBC.CBC.FullNode.html#lab152">CBC Full Node Protocol</a>
+
+</li>
+<li><a href="CasperCBC.CBC.FullNodeSimpleVLSM.html#lab153">CBC Full Node Model as a Single VLSM Instance</a>
+
+</li>
+</ul>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr">coqdoc</a> and improved with <a href="https://github.com/palmskog/coqdocjs">CoqdocJS</a> as adapted for <a href="https://github.com/coq-community">coq-community</a>
+</div>
+</div>
+</body>
+
+</html>
